@@ -81,16 +81,13 @@ public class PreviewManager {
         thread.start();
     }
 
-    private ZipInputStream fetch(String themId) throws IOException {
-        FileInputStream fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/" +
-                Globals.THEME_PATH + "/" + themId);
-        ZipInputStream zis = new ZipInputStream(fis);
-        ZipEntry ze = null;
-        while ((ze = zis.getNextEntry()) != null) {
-            if (ze.getName().equals("preview/preview_launcher_0.png"))
-                return zis;
+    private InputStream fetch(String themeId) throws IOException {
+        if (!ThemeUtils.themeCacheDirExists(themeId)) {
+            ThemeUtils.extractThemePreviews(themeId, Environment.getExternalStorageDirectory() + "/" +
+                Globals.THEME_PATH + "/" + themeId + ".mtz");
         }
+        FileInputStream fis = new FileInputStream(Globals.CACHE_DIR + "/" + themeId + "/preview_launcher_0.png");
 
-        return null;
+        return fis;
     }
 }

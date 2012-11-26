@@ -3,10 +3,8 @@
     package="com.android.thememanager"
     android:versionCode="1"
     android:versionName="1.0"
-    coreApp="true"
-    android:sharedUserId="android.uid.system" >
+    android:sharedUserId="android.uid.radio" >
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-sdk
@@ -27,6 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="com.android.thememanager.provider.FileProvider"
+            android:authorities="com.android.thememanager"
+            android:exported="true" />
+
     </application>
 
 </manifest>

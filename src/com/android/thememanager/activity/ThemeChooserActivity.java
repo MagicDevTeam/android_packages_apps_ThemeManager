@@ -104,11 +104,13 @@ public class ThemeChooserActivity extends Activity {
 
         public ImageAdapter(Context c) {
             mContext = c;
-            mImages = new ImageView[mImageIds.length];
-            for (int i = 0; i < mImages.length; i++) {
-                mImages[i] = new ImageView(mContext);
-                mImages[i].setImageResource(R.drawable.preview);
-                mPreviewManager.fetchDrawableOnThread(ThemeUtils.stripExtension(mImageIds[i]), mImages[i]);
+            if (mImages == null) {
+                mImages = new ImageView[mImageIds.length];
+                for (int i = 0; i < mImages.length; i++) {
+                    mImages[i] = new ImageView(mContext);
+                    mImages[i].setImageResource(R.drawable.preview);
+                    mPreviewManager.fetchDrawableOnThread(ThemeUtils.stripExtension(mImageIds[i]), mImages[i]);
+                }
             }
         }
 

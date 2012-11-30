@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -27,7 +27,7 @@ public class PreviewManager {
     private final Map<String, BitmapDrawable> drawableMap;
 
     public PreviewManager() {
-        drawableMap = new HashMap<String, BitmapDrawable>();
+        drawableMap = new WeakHashMap<String, BitmapDrawable>();
     }
 
     public BitmapDrawable fetchDrawable(String themId) {

@@ -65,7 +65,10 @@ public class PreviewManager {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
-                imageView.setImageDrawable((BitmapDrawable) message.obj);
+                if (message.obj != null)
+                    imageView.setImageDrawable((BitmapDrawable) message.obj);
+                else
+                    imageView.setImageResource(R.drawable.no_preview);
             }
         };
 

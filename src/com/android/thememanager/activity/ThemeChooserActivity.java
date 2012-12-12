@@ -112,14 +112,17 @@ public class ThemeChooserActivity extends Activity {
             return;
         
         new ApplyThemeTask().execute(mThemeList[index]);
-        /*
+    }
+
+    public void clearTheme(View view) {
+        // have the theme service remove the existing theme
         IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
         try {
-            ts.applyTheme(FileProvider.CONTENT + mThemeList[index]);
+            ts.removeTheme();
+            ts.applyInstalledTheme();
         } catch (Exception e) {
-            Log.e(TAG, "Failed to call ThemeService.applyTheme", e);
+            Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
         }
-        */
     }
 
     public class ImageAdapter extends BaseAdapter {

@@ -12,13 +12,34 @@
         android:layout_weight="1.0"
         />
     
-    <Button
-        android:id="@+id/btn_apply"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/btn_apply_theme"
-        android:onClick="applyTheme"
-         />
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btn_apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="5dip"
+            android:layout_weight="1"
+            android:text="@string/btn_apply_theme"
+            android:onClick="applyTheme"
+            />
+    
+        <Button
+            android:id="@+id/btn_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
+            android:text="@string/btn_clear_theme"
+            android:onClick="clearTheme"
+            />
+
+    </LinearLayout>
     
 </LinearLayout>

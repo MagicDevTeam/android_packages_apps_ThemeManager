@@ -13,4 +13,6 @@
 
     <string name="tab_themes">Installed Themes</string>
     <string name="tab_mixer">Theme Mixer</string>
+
+    <string name="coming_soon">Coming Soon!</string>
 </resources>

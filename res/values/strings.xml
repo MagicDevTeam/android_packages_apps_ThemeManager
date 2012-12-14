@@ -4,9 +4,13 @@
     <string name="app_name">Theme Manager</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="menu_reset">Reset theme</string>
 
     <string name="btn_apply_theme">Apply</string>
-    <string name="btn_clear_theme">Reset</string>
 
+    <string name="loading_themes">Loading themes...</string>
     <string name="applying_theme">Applying theme...</string>
+
+    <string name="tab_themes">Installed Themes</string>
+    <string name="tab_mixer">Theme Mixer</string>
 </resources>

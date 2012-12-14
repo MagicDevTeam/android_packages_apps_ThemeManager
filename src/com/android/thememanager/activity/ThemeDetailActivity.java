@@ -2,7 +2,10 @@ package com.android.thememanager.activity;
 
 import android.content.Context;
 import android.content.res.IThemeManagerService;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,60 +13,58 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.ServiceManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.Gallery;
-import android.widget.ImageView;
-import com.android.thememanager.Globals;
-import com.android.thememanager.ThemeUtils;
-import com.android.thememanager.PreviewManager;
-import com.android.thememanager.provider.FileProvider;
-import com.android.thememanager.R;
-import cos.util.CommandLineUtils;
+import android.widget.*;
+import com.android.thememanager.*;
 
 import java.io.*;
-import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ThemeChooserActivity extends Activity {
+public class ThemeDetailActivity extends Activity {
     private static final String TAG = "ThemeManager";
     private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
 
     private static final int DIALOG_PROGRESS = 0;
 
-    private Gallery mCoverFlow = null;
-    private String[] mThemeList = null;
-    private Button mApplyButton = null;
+    private Gallery mPreviews = null;
+    private String[] mPreviewList = null;
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
+    private String mThemeName = "";
+    private ThemeUtils.ThemeDetails mDetails;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_theme_chooser);
 
-        mThemeList = themeList(THEMES_PATH);
-        
-        ThemeUtils.createCacheDir();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_theme_detail);
+
+
+        mThemeName = getIntent().getStringExtra("theme_name");
+        mPreviewList = PreviewHelper.getAllPreviews(THEMES_PATH + "/.cache/" +
+                ThemeUtils.stripExtension(mThemeName));
+
+        mDetails = ThemeUtils.getThemeDetails(Environment.getExternalStorageDirectory()
+                + "/" + Globals.THEME_PATH + "/" + mThemeName);
+
+        ((TextView)findViewById(R.id.theme_name)).setText(mDetails.title);
+
+        if (TextUtils.isEmpty(mThemeName))
+            finish();
 
         mAdapter = new ImageAdapter(this);
-        mCoverFlow = (Gallery) findViewById(R.id.coverflow);
-        mCoverFlow.setAdapter(mAdapter);
-        mCoverFlow.setSpacing(20);
-        mCoverFlow.setAnimationDuration(1000);
-	}
+        mPreviews = (Gallery) findViewById(R.id.previews);
+        mPreviews.setAdapter(mAdapter);
+        mPreviews.setSpacing(20);
+        mPreviews.setAnimationDuration(1000);
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_theme_chooser, menu);
-		return true;
-	}
+    }
 
     @Override
     protected void onDestroy() {
@@ -82,93 +83,65 @@ public class ThemeChooserActivity extends Activity {
         try {
             dismissDialog(DIALOG_PROGRESS);
         } catch (Exception e) {}
-    }
 
-    private String[] themeList(String path) {
-        Log.d(TAG, "Returning theme list for " + path);
-        FilenameFilter themeFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File file, String s) {
-                if (s.toLowerCase().endsWith(".mtz"))
-                    return true;
-                else
-                    return false;
-            }
-        };
-
-        File dir = new File(path);
-        String[] dirList = null;
-        if (dir.exists() && dir.isDirectory())
-            dirList = dir.list(themeFilter);
-        else
-            Log.e(TAG, path + " does not exist or is not a directory!");
-        return dirList;
+        mAdapter.notifyDataSetChanged();
     }
 
     public void applyTheme(View view) {
-        int index = mCoverFlow.getSelectedItemPosition();
-
-        if (index < 0 || index >= mThemeList.length)
-            return;
-        
-        new ApplyThemeTask().execute(mThemeList[index]);
-    }
-
-    public void clearTheme(View view) {
-        // have the theme service remove the existing theme
-        IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-        try {
-            ts.removeTheme();
-            ts.applyInstalledTheme();
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
-        }
+        new ApplyThemeTask().execute(mThemeName);
     }
 
     public class ImageAdapter extends BaseAdapter {
-        int mGalleryItemBackground;
         private Context mContext;
-
-        private PreviewManager mPreviewManager = new PreviewManager();
-
-        private String[] mImageIds = themeList(THEMES_PATH);
 
         private ImageView[] mImages;
 
         public ImageAdapter(Context c) {
             mContext = c;
             if (mImages == null) {
-                mImages = new ImageView[mImageIds.length];
-                for (int i = 0; i < mImages.length; i++) {
-                    mImages[i] = new ImageView(mContext);
-                    mImages[i].setImageResource(R.drawable.preview);
-                    mPreviewManager.fetchDrawableOnThread(ThemeUtils.stripExtension(mImageIds[i]), mImages[i]);
-                }
+                mImages = new ImageView[mPreviewList.length];
             }
         }
 
+        @Override
         public int getCount() {
-            return mImageIds.length;
+            return mPreviewList.length;
         }
 
+        @Override
         public Object getItem(int position) {
             return position;
         }
 
+        @Override
         public long getItemId(int position) {
             return position;
         }
 
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            //Use this code if you want to load from resources
-            ImageView i = mImages[position];//new ImageView(mContext);
-            //i.setImageResource(R.drawable.preview);
-            i.setLayoutParams(new Gallery.LayoutParams(240, 427));
-            i.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            //mPreviewManager.fetchDrawableOnThread(mImageIds[position], i);
+            if (mImages[position] == null) {
+                mImages[position] = new ImageView(mContext);
+                FileInputStream is = null;
+                try {
+                    is = new FileInputStream(THEMES_PATH + "/.cache/" +
+                        ThemeUtils.stripExtension(mThemeName) + "/" + mPreviewList[position]);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                if (is != null) {
+                    BitmapFactory.Options opts = new BitmapFactory.Options();
+                    opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                    Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
+                    Drawable drawable = new BitmapDrawable(bmp);
+                    mImages[position].setImageDrawable(drawable);
+                } else
+                    mImages[position].setImageResource(R.drawable.no_preview);
+                mImages[position].setAdjustViewBounds(true);
+            }
 
-            return i;
+            return mImages[position];
 
             //return mImages[position];
         }
@@ -180,13 +153,13 @@ public class ThemeChooserActivity extends Activity {
         }
 
         public void destroyImages() {
-            for (int i = 0; i < mImages.length; i++) {
-                if (mImages[i].getDrawable() != null)
-                    mImages[i].getDrawable().setCallback(null);
-                mImages[i].setImageDrawable(null);
+            for (int i = 0; mImages != null && i < mImages.length; i++) {
+                if (mImages[i] != null) {
+                    if (mImages[i].getDrawable() != null)
+                        mImages[i].getDrawable().setCallback(null);
+                    mImages[i].setImageDrawable(null);
+                }
             }
-
-            mPreviewManager = null;
         }
     }
 
@@ -222,7 +195,7 @@ public class ThemeChooserActivity extends Activity {
     }
 
     private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
-		@Override
+        @Override
         protected void onPreExecute() {
             super.onPreExecute();
             showDialog( DIALOG_PROGRESS );
@@ -254,14 +227,14 @@ public class ThemeChooserActivity extends Activity {
                         zip.closeEntry();
                         continue;
                     }
-            
+
                     Log.d(TAG, "Creating file " + ze.getName());
                     copyInputStream(zip,
                             new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
                     (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
                     zip.closeEntry();
                 }
-            
+
                 zip.close();
                 try {
                     ts.applyInstalledTheme();

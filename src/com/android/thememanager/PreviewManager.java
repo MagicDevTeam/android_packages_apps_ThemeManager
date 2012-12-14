@@ -7,7 +7,10 @@ package com.android.thememanager;
  * Time: 9:43 AM
  * To change this template use File | Settings | File Templates.
  */
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -38,8 +41,15 @@ public class PreviewManager {
         Log.d(this.getClass().getSimpleName(), "theme ID:" + themId);
         try {
             InputStream is = fetch(themId);
-            BitmapDrawable drawable = (BitmapDrawable)BitmapDrawable.createFromStream(is, "src");
-
+            BitmapDrawable drawable = null;
+            if (is != null) {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
+                drawable = new BitmapDrawable(bmp);
+                //drawable = (BitmapDrawable)BitmapDrawable.createFromStream(is, "src");
+                is.close();
+            }
 
             if (drawable != null) {
                 drawableMap.put(themId, drawable);
@@ -85,6 +95,8 @@ public class PreviewManager {
     }
 
     private InputStream fetch(String themeId) throws IOException {
+//        return ThemeUtils.getThemePreview(Environment.getExternalStorageDirectory() + "/" +
+//                Globals.THEME_PATH + "/" + themeId + ".mtz", "preview_launcher_0.png");
         if (!ThemeUtils.themeCacheDirExists(themeId)) {
             ThemeUtils.extractThemePreviews(themeId, Environment.getExternalStorageDirectory() + "/" +
                 Globals.THEME_PATH + "/" + themeId + ".mtz");

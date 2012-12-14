@@ -1,0 +1,156 @@
+/*
+ * Copyright (C) 2012 The ChameleonOS Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.thememanager;
+
+public class Theme {
+
+    private long id;
+    private String fileName;
+    private String title;
+    private String author;
+    private String designer;
+    private String version;
+    private long uiVersion;
+    private String themePath;
+    private boolean hasWallpaper;
+    private boolean hasIcons;
+    private boolean hasLockscreen;
+    private boolean hasSystemUI;
+    private boolean hasFramework;
+    private boolean hasRingtones;
+    private boolean hasBootanimation;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getDesigner() {
+        return designer;
+    }
+
+    public void setDesigner(String designer) {
+        this.designer = designer;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public long getUiVersion() {
+        return uiVersion;
+    }
+
+    public void setUiVersion(long uiVersion) {
+        this.uiVersion = uiVersion;
+    }
+
+    public String getThemePath() {
+        return themePath;
+    }
+
+    public void setThemePath(String themePath) {
+        this.themePath = themePath;
+    }
+
+    public boolean getHasWallpaper() {
+        return hasWallpaper;
+    }
+
+    public void setHasWallpaper(boolean hasWallpaper) {
+        this.hasWallpaper = hasWallpaper;
+    }
+
+    public boolean getHasIcons() {
+        return hasIcons;
+    }
+
+    public void setHasIcons(boolean hasIcons) {
+        this.hasIcons = hasIcons;
+    }
+
+    public boolean getHasLockscreen() {
+        return hasLockscreen;
+    }
+
+    public void setHasLockscreen(boolean hasLockscreen) {
+        this.hasLockscreen = hasLockscreen;
+    }
+
+    public boolean getHasSystemUI() {
+        return hasSystemUI;
+    }
+
+    public void setHasSystemUI(boolean hasSystemUI) {
+        this.hasSystemUI = hasSystemUI;
+    }
+
+    public boolean getHasFramework() {
+        return hasFramework;
+    }
+
+    public void setHasFramework(boolean hasFramework) {
+        this.hasFramework = hasFramework;
+    }
+
+    public boolean getHasRingtones() {
+        return hasRingtones;
+    }
+
+    public void setHasRingtones(boolean hasRingtones) {
+        this.hasRingtones = hasRingtones;
+    }
+
+    public boolean getHasBootanimation() {
+        return hasBootanimation;
+    }
+
+    public void setHasBootanimation(boolean hasBootanimation) {
+        this.hasBootanimation = hasBootanimation;
+    }
+}

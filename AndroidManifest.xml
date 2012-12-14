@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.thememanager"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:sharedUserId="android.uid.radio" >
+    android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -17,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.ThemeChooserActivity"
+            android:name=".activity.ThemeManagerTabActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.ThemeDetailActivity"/>
 
         <provider
             android:name="com.android.thememanager.provider.FileProvider"

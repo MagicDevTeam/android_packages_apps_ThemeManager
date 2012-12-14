@@ -16,11 +16,16 @@
 
 package com.android.thememanager;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Xml;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class ThemeUtils {
@@ -111,5 +116,144 @@ public class ThemeUtils {
         }
 
         return true;
+    }
+
+    public static boolean addThemeEntryToDb(String themeId, String themePath, Context context) {
+        try {
+            ThemesDataSource dataSource = new ThemesDataSource(context);
+            dataSource.open();
+            if (dataSource.entryExists(themeId)) {
+                dataSource.close();
+                return true;
+            }
+
+            ZipFile zip = new ZipFile(themePath);
+            ZipEntry entry = zip.getEntry("description.xml");
+            ThemeDetails details = getThemeDetails(zip.getInputStream(entry));
+
+            Theme theme = new Theme();
+            theme.setFileName(themeId);
+            theme.setThemePath(themePath);
+            theme.setTitle(details.title);
+            theme.setAuthor(details.author);
+            theme.setDesigner(details.designer);
+            theme.setVersion(details.version);
+            theme.setUiVersion(Long.getLong(details.uiVersion, 1));
+            theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
+            theme.setHasIcons(zip.getEntry("icons") != null);
+            theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
+            theme.setHasSystemUI(zip.getEntry("com.android.systemui") != null);
+            theme.setHasFramework(zip.getEntry("framework-res") != null);
+            theme.setHasRingtones(zip.getEntry("ringtones") != null);
+            theme.setHasBootanimation(zip.getEntry("boots") != null);
+
+            try {
+                dataSource.createThemeEntry(theme);
+            } catch (Exception e) {}
+            dataSource.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void extractThemePreviews(ZipFile themeZip) {
+
+    }
+
+    public static InputStream getThemePreview(String themePath, String previewName) throws IOException {
+        ZipFile zip = new ZipFile(themePath);
+        ZipEntry entry = zip.getEntry("preview/" + previewName);
+        if (entry == null)
+            return null;
+
+        return zip.getInputStream(entry);
+    }
+
+    public static ThemeDetails getThemeDetails(InputStream descriptionEntry) {
+        ThemeDetails details = new ThemeDetails();
+        XmlPullParser parser = Xml.newPullParser();
+
+        try {
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            if (descriptionEntry == null)
+                return details;
+
+            parser.setInput(descriptionEntry, null);
+            parser.nextTag();
+
+            parser.require(XmlPullParser.START_TAG, null, "MIUI-Theme");
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.getEventType() != XmlPullParser.START_TAG) {
+                    continue;
+                }
+
+                String name = parser.getName();
+                if ("title".equals(name)) {
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        details.title = parser.getText();
+                        parser.nextTag();
+                    }
+                } else if ("designer".equals(name)) {
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        details.designer = parser.getText();
+                        parser.nextTag();
+                    }
+                } else if ("author".equals(name)) {
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        details.author = parser.getText();
+                        parser.nextTag();
+                    }
+                } else if ("version".equals(name)) {
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        details.version = parser.getText();
+                        parser.nextTag();
+                    }
+                } else if ("uiVersion".equals(name)) {
+                    if (parser.next() == XmlPullParser.TEXT) {
+                        details.uiVersion = parser.getText();
+                        parser.nextTag();
+                    }
+                }
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return details;
+    }
+
+    public static ThemeDetails getThemeDetails(String themePath) {
+        ThemeDetails details = new ThemeDetails();
+
+        try {
+            ZipFile zip = new ZipFile(themePath);
+            ZipEntry entry = zip.getEntry("description.xml");
+            if (entry == null)
+                return details;
+
+            details = getThemeDetails(zip.getInputStream(entry));
+            zip.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return details;
+    }
+
+    public static class ThemeDetails {
+        public String title;
+        public String designer;
+        public String author;
+        public String version;
+        public String uiVersion;
     }
 }

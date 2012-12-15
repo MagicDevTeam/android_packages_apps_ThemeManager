@@ -81,7 +81,7 @@ public class ThemesDataSource {
                 allColumns, ThemeSQLiteHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
-        Theme newTheme = cursorToComment(cursor);
+        Theme newTheme = cursorToTheme(cursor);
         cursor.close();
         return newTheme;
     }
@@ -111,8 +111,8 @@ public class ThemesDataSource {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Theme comment = cursorToComment(cursor);
-            themes.add(comment);
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
             cursor.moveToNext();
         }
         // Make sure to close the cursor
@@ -120,7 +120,133 @@ public class ThemesDataSource {
         return themes;
     }
 
-    private Theme cursorToComment(Cursor cursor) {
+    public List<Theme> getIconThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_ICONS + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getWallpaperThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getSystemUIThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getFrameworkThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getLockscreenThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getRingtoneThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_RINGTONES + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    public List<Theme> getBootanimationThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
+    private Theme cursorToTheme(Cursor cursor) {
         Theme theme = new Theme();
         theme.setId(cursor.getLong(0));
         theme.setFileName(cursor.getString(1));

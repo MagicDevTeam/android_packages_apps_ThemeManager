@@ -18,6 +18,22 @@ package com.android.thememanager;
 
 public class Theme {
 
+    public static final int THEME_ELEMENT_TYPE_ICONS = 0;
+    public static final int THEME_ELEMENT_TYPE_WALLPAPER = 1;
+    public static final int THEME_ELEMENT_TYPE_SYSTEMUI = 2;
+    public static final int THEME_ELEMENT_TYPE_FRAMEWORK = 3;
+    public static final int THEME_ELEMENT_TYPE_LOCKSCREEN = 4;
+    public static final int THEME_ELEMENT_TYPE_RINGTONES = 5;
+    public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 6;
+
+    public static int[] sElementLabels = { R.string.mixer_icons_label,
+            R.string.mixer_walllpaper_label,
+            R.string.mixer_systemui_label,
+            R.string.mixer_framework_label,
+            R.string.mixer_lockscreen_label,
+            R.string.mixer_ringtones_label,
+            R.string.mixer_bootanimation_label };
+
     private long id;
     private String fileName;
     private String title;

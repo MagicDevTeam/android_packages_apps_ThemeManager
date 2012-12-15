@@ -14,65 +14,63 @@
  * limitations under the License.
  */
 
-package com.android.thememanager.fragment;
+package com.android.thememanager.activity;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.IThemeManagerService;
 import android.os.*;
-import android.app.Fragment;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.android.thememanager.Globals;
+import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.PreviewManager;
 import com.android.thememanager.R;
-import com.android.thememanager.ThemeUtils;
-import com.android.thememanager.activity.ThemeDetailActivity;
-import com.android.thememanager.activity.ThemeManagerTabActivity;
 
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-public class ThemeChooserFragment extends Fragment {
+public class ThemeChooserActivity extends Activity {
     private static final String TAG = "ThemeManager";
     private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
+
+    private static final int DIALOG_PROGRESS = 0;
 
     private GridView mGridView = null;
     private String[] mThemeList = null;
     private Button mApplyButton = null;
     private ImageAdapter mAdapter = null;
+    private ProgressDialog mProgressDialog;
     private LoadThemesInfoTask mTask = null;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        this.setHasOptionsMenu(true);
-        this.setRetainInstance(true);
-	}
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_theme_chooser, container, false);
+		setContentView(R.layout.activity_theme_chooser);
 
         mThemeList = themeList(THEMES_PATH);
 
         ThemeUtils.createCacheDir();
 
-        mGridView = (GridView) v.findViewById(R.id.coverflow);
+        mGridView = (GridView) findViewById(R.id.coverflow);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), ThemeDetailActivity.class);
+                Intent intent = new Intent(ThemeChooserActivity.this, ThemeDetailActivity.class);
                 intent.putExtra("theme_name", mThemeList[i]);
                 startActivity(intent);
             }
         });
+        getActionBar().show();
 
+        mTask = (LoadThemesInfoTask)getLastNonConfigurationInstance();
         if (mTask == null) {
             mTask = new LoadThemesInfoTask(this);
             mTask.execute();
@@ -81,22 +79,28 @@ public class ThemeChooserFragment extends Fragment {
             if (mTask.getProgress() >= mThemeList.length)
                 markAsDone();
         }
-
-        return v;
-    }
+	}
 
     private Handler mViewUpdateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            mAdapter = new ImageAdapter(getActivity());
+            mAdapter = new ImageAdapter(ThemeChooserActivity.this);
             mGridView.setAdapter(mAdapter);
-            getActivity().dismissDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
+            dismissDialog(DIALOG_PROGRESS);
         }
     };
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        dismissDialog(DIALOG_PROGRESS);
+    }
+
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.activity_theme_chooser, menu);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_theme_chooser, menu);
+		return true;
 	}
 
     @Override
@@ -117,7 +121,7 @@ public class ThemeChooserFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         mAdapter.destroyImages();
         mAdapter = null;
@@ -125,8 +129,14 @@ public class ThemeChooserFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        mTask.detach();
+        return mTask;
     }
 
     private String[] themeList(String path) {
@@ -155,6 +165,7 @@ public class ThemeChooserFragment extends Fragment {
     }
 
     public class ImageAdapter extends BaseAdapter {
+        int mGalleryItemBackground;
         private Context mContext;
 
         private PreviewManager mPreviewManager = new PreviewManager();
@@ -221,11 +232,27 @@ public class ThemeChooserFragment extends Fragment {
         }
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_PROGRESS:
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setMessage(getResources().getText(R.string.loading_themes));
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.setCancelable(false );
+                mProgressDialog.setProgress(0);
+                mProgressDialog.show();
+                return mProgressDialog;
+            default:
+                return null;
+        }
+    }
+
     private class LoadThemesInfoTask extends AsyncTask<String, Integer, Boolean> {
-        ThemeChooserFragment activity = null;
+        ThemeChooserActivity activity = null;
         int progress = 0;
 
-        LoadThemesInfoTask(ThemeChooserFragment activity) {
+        LoadThemesInfoTask(ThemeChooserActivity activity) {
             attach(activity);
         }
 
@@ -233,7 +260,7 @@ public class ThemeChooserFragment extends Fragment {
             activity = null;
         }
 
-        void attach(ThemeChooserFragment activity) {
+        void attach(ThemeChooserActivity activity) {
             this.activity = activity;
         }
 
@@ -244,7 +271,7 @@ public class ThemeChooserFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
+            showDialog(DIALOG_PROGRESS);
         }
 
         @Override
@@ -252,7 +279,7 @@ public class ThemeChooserFragment extends Fragment {
             for (String themeId : mThemeList) {
                 ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
                         THEMES_PATH + "/" + themeId,
-                        getActivity());
+                        ThemeChooserActivity.this);
 
                 progress++;
             }

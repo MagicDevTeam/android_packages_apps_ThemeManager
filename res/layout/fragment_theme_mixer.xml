@@ -4,14 +4,15 @@
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <GridView
+        android:id="@+id/mixer_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:text="@string/coming_soon"
-        android:textSize="30dp"
-        android:textColor="@android:color/holo_red_light"
-        android:textStyle="bold"
+        android:layout_margin="2dp"
+        android:numColumns="3"
+        android:horizontalSpacing="2dp"
+        android:verticalSpacing="2dp"
         />
 
 </RelativeLayout>

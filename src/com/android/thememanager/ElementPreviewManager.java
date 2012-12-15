@@ -19,37 +19,34 @@ package com.android.thememanager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
+import com.android.thememanager.activity.ThemeMixerChooserActivity;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.WeakHashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.WeakHashMap;
 
-public class PreviewManager {
+public class ElementPreviewManager {
     private final Map<String, BitmapDrawable> drawableMap;
 
-    public PreviewManager() {
+    public ElementPreviewManager() {
         drawableMap = new WeakHashMap<String, BitmapDrawable>();
     }
 
-    public BitmapDrawable fetchDrawable(String themId) {
+    public BitmapDrawable fetchDrawable(String themId, int elementType) {
         if (drawableMap.containsKey(themId)) {
             return drawableMap.get(themId);
         }
 
         Log.d(this.getClass().getSimpleName(), "theme ID:" + themId);
         try {
-            InputStream is = fetch(themId);
+            InputStream is = fetch(themId, elementType);
             BitmapDrawable drawable = null;
             if (is != null) {
                 BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -77,7 +74,7 @@ public class PreviewManager {
         }
     }
 
-    public void fetchDrawableOnThread(final String themId, final ImageView imageView) {
+    public void fetchDrawableOnThread(final String themId, final int elementType, final ImageView imageView) {
         if (drawableMap.containsKey(themId)) {
             imageView.setImageDrawable(drawableMap.get(themId));
         }
@@ -96,7 +93,7 @@ public class PreviewManager {
             @Override
             public void run() {
                 //TODO : set imageView to a "pending" image
-                BitmapDrawable drawable = fetchDrawable(themId);
+                BitmapDrawable drawable = fetchDrawable(themId, elementType);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
@@ -104,14 +101,41 @@ public class PreviewManager {
         thread.start();
     }
 
-    private InputStream fetch(String themeId) throws IOException {
+    private InputStream fetch(String themeId, int elementType) throws IOException {
 //        return ThemeUtils.getThemePreview(Environment.getExternalStorageDirectory() + "/" +
 //                Globals.THEME_PATH + "/" + themeId + ".mtz", "preview_launcher_0.png");
-        if (!ThemeUtils.themeCacheDirExists(themeId)) {
-            ThemeUtils.extractThemePreviews(themeId, Environment.getExternalStorageDirectory() + "/" +
-                Globals.THEME_PATH + "/" + themeId + ".mtz");
+        String previewName = null;
+        try{
+            switch(elementType) {
+                case Theme.THEME_ELEMENT_TYPE_ICONS:
+                    previewName = PreviewHelper.getIconPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
+                    previewName = PreviewHelper.getLauncherPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
+                    previewName = PreviewHelper.getStatusbarPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
+                    previewName = PreviewHelper.getLauncherPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
+                    previewName = PreviewHelper.getLockscreenPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_RINGTONES:
+                    previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
+                    previewName = PreviewHelper.getBootanimationPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+            }
+        } catch (Exception e) {
+            previewName = null;
         }
-        FileInputStream fis = new FileInputStream(Globals.CACHE_DIR + "/" + themeId + "/preview_launcher_0.png");
+
+        FileInputStream fis = null;
+        if (previewName != null)
+            fis = new FileInputStream(Globals.CACHE_DIR + "/" + themeId + "/" + previewName);
 
         return fis;
     }

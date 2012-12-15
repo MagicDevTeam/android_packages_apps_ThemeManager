@@ -25,6 +25,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ThemeDetailActivity"/>
+        <activity android:name=".activity.ThemeMixerChooserActivity"/>
+        <activity android:name=".activity.ThemeElementDetailActivity"/>
 
         <provider
             android:name="com.android.thememanager.provider.FileProvider"

@@ -26,6 +26,14 @@ public class Theme {
     public static final int THEME_ELEMENT_TYPE_RINGTONES = 5;
     public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 6;
 
+    public static int[] sElementIcons = { android.R.drawable.ic_menu_view,
+            android.R.drawable.ic_menu_gallery,
+            android.R.drawable.ic_menu_sort_by_size,
+            android.R.drawable.ic_menu_today,
+            android.R.drawable.ic_menu_rotate,
+            android.R.drawable.ic_menu_call,
+            android.R.drawable.ic_menu_slideshow };
+
     public static int[] sElementLabels = { R.string.mixer_icons_label,
             R.string.mixer_walllpaper_label,
             R.string.mixer_systemui_label,
@@ -49,6 +57,7 @@ public class Theme {
     private boolean hasFramework;
     private boolean hasRingtones;
     private boolean hasBootanimation;
+    private long lastModified;
 
     public long getId() {
         return id;
@@ -168,5 +177,13 @@ public class Theme {
 
     public void setHasBootanimation(boolean hasBootanimation) {
         this.hasBootanimation = hasBootanimation;
+    }
+
+    public long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(long lastModified) {
+        this.lastModified = lastModified;
     }
 }

@@ -45,7 +45,8 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI,
             ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK,
             ThemeSQLiteHelper.COLUMN_HAS_RINGTONES,
-            ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION };
+            ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION,
+            ThemeSQLiteHelper.COLUMN_LAST_MODIFIED };
 
     public ThemesDataSource(Context context) {
         dbHelper = new ThemeSQLiteHelper(context);
@@ -75,8 +76,15 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK, theme.getHasFramework());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONES, theme.getHasRingtones());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION, theme.getHasBootanimation());
-        long insertId = database.insert(ThemeSQLiteHelper.TABLE_THEMES, null,
-                values);
+        values.put(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED, "" + theme.getLastModified());
+        long insertId;
+        if (entryExists(theme.getFileName()))
+            insertId = database.update(ThemeSQLiteHelper.TABLE_THEMES, values,
+                    ThemeSQLiteHelper.COLUMN_THEME_FILE_NAME + "='" + theme.getFileName() + "'",
+                    allColumns);
+        else
+            insertId = database.insert(ThemeSQLiteHelper.TABLE_THEMES, null,
+                    values);
         Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
                 allColumns, ThemeSQLiteHelper.COLUMN_ID + " = " + insertId, null,
                 null, null, null);
@@ -101,6 +109,22 @@ public class ThemesDataSource {
         boolean exists = (c != null && c.getCount() > 0);
         c.close();
         return exists;
+    }
+
+    public boolean entryIsOlder(String themeId, long lastModified) {
+        Cursor c = database.query(ThemeSQLiteHelper.TABLE_THEMES, allColumns,
+                ThemeSQLiteHelper.COLUMN_THEME_FILE_NAME + "='" + themeId + "'",
+                null, null, null, null);
+        boolean isOlder = false;
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            String modified = c.getString(c.getColumnIndex(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED));
+            if (modified == null || lastModified > Long.parseLong(modified))
+                isOlder = true;
+        }
+        c.close();
+        return isOlder;
     }
 
     public List<Theme> getAllThemes() {
@@ -263,6 +287,7 @@ public class ThemesDataSource {
         theme.setHasFramework(cursor.getInt(12) == 1);
         theme.setHasRingtones(cursor.getInt(13) == 1);
         theme.setHasBootanimation(cursor.getInt(14) == 1);
+        theme.setLastModified(Long.getLong(cursor.getString(15), 0));
         return theme;
     }
 }

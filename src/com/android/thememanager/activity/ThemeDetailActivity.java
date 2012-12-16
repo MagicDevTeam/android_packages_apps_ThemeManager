@@ -31,8 +31,6 @@ import android.os.Environment;
 import android.os.ServiceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -195,21 +193,6 @@ public class ThemeDetailActivity extends Activity {
         }
     }
 
-    /**
-     * Simple copy routine given an input stream and an output stream
-     */
-    private void copyInputStream(InputStream in, OutputStream out)
-            throws IOException {
-        byte[] buffer = new byte[1024];
-        int len;
-
-        while ((len = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, len);
-        }
-
-        out.close();
-    }
-
     private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -231,27 +214,7 @@ public class ThemeDetailActivity extends Activity {
                     Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
 
-                while ((ze = zip.getNextEntry()) != null) {
-                    if (ze.isDirectory()) {
-                        // Assume directories are stored parents first then children
-                        Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
-                        File dir = new File("/data/system/theme/" + ze.getName());
-                        dir.mkdir();
-                        dir.setReadable(true, false);
-                        dir.setWritable(true, false);
-                        dir.setExecutable(true, false);
-                        zip.closeEntry();
-                        continue;
-                    }
-
-                    Log.d(TAG, "Creating file " + ze.getName());
-                    copyInputStream(zip,
-                            new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                    (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                    zip.closeEntry();
-                }
-
-                zip.close();
+                ThemeZipUtils.extractTheme(THEMES_PATH + "/" + theme[0], "/data/system/theme");
                 try {
                     ts.applyInstalledTheme();
                 } catch (Exception e) {

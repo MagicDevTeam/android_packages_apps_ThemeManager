@@ -40,8 +40,6 @@ import android.widget.TextView;
 import com.android.thememanager.*;
 
 import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class ThemeElementDetailActivity extends Activity {
     private static final String TAG = "ThemeManager";
@@ -228,21 +226,6 @@ public class ThemeElementDetailActivity extends Activity {
         }
     }
 
-    /**
-     * Simple copy routine given an input stream and an output stream
-     */
-    private void copyInputStream(InputStream in, OutputStream out)
-            throws IOException {
-        byte[] buffer = new byte[1024];
-        int len;
-
-        while ((len = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, len);
-        }
-
-        out.close();
-    }
-
     private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -252,109 +235,8 @@ public class ThemeElementDetailActivity extends Activity {
 
         protected Boolean doInBackground(String... theme) {
             try{
-                ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
-                        new FileInputStream(THEMES_PATH + "/" + theme[0])));
-                ZipEntry ze = null;
-
-                boolean done = false;
-
+                ThemeZipUtils.extractThemeElement(THEMES_PATH + "/" + theme[0], "/data/system/theme", mElementType);
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-                while ((ze = zip.getNextEntry()) != null && !done) {
-                    switch (mElementType) {
-                        case Theme.THEME_ELEMENT_TYPE_ICONS:
-                            if (ze.getName().equals("icons")) {
-                                copyInputStream(zip,
-                                        new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                done = true;
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                            if (ze.getName().contains("wallpaper")) {
-                                if (ze.isDirectory()) {
-                                    // Assume directories are stored parents first then children
-                                    Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
-                                    File dir = new File("/data/system/theme/" + ze.getName());
-                                    dir.mkdir();
-                                    dir.setReadable(true, false);
-                                    dir.setWritable(true, false);
-                                    dir.setExecutable(true, false);
-                                    zip.closeEntry();
-                                    continue;
-                                } else {
-                                    copyInputStream(zip,
-                                            new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                    (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                }
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
-                            if (ze.getName().equals("com.android.systemui")) {
-                                copyInputStream(zip,
-                                        new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                done = true;
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
-                            if (ze.getName().equals("framework-res")) {
-                                copyInputStream(zip,
-                                        new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                done = true;
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
-                            if (ze.getName().equals("lockscreen")) {
-                                copyInputStream(zip,
-                                        new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                done = true;
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_RINGTONES:
-                            if (ze.getName().contains("ringtones")) {
-                                if (ze.isDirectory()) {
-                                    // Assume directories are stored parents first then children
-                                    Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
-                                    File dir = new File("/data/system/theme/" + ze.getName());
-                                    dir.mkdir();
-                                    dir.setReadable(true, false);
-                                    dir.setWritable(true, false);
-                                    dir.setExecutable(true, false);
-                                    zip.closeEntry();
-                                    continue;
-                                } else {
-                                    copyInputStream(zip,
-                                            new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                    (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                }
-                            }
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
-                            if (ze.getName().contains("boots")) {
-                                if (ze.isDirectory()) {
-                                    // Assume directories are stored parents first then children
-                                    Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
-                                    File dir = new File("/data/system/theme/" + ze.getName());
-                                    dir.mkdir();
-                                    dir.setReadable(true, false);
-                                    dir.setWritable(true, false);
-                                    dir.setExecutable(true, false);
-                                    zip.closeEntry();
-                                    continue;
-                                } else {
-                                    copyInputStream(zip,
-                                            new BufferedOutputStream(new FileOutputStream("/data/system/theme/" + ze.getName())));
-                                    (new File("/data/system/theme/" + ze.getName())).setReadable(true, false);
-                                }
-                            }
-                            break;
-                    }
-                    zip.closeEntry();
-                }
-
-                zip.close();
                 try {
                     switch (mElementType) {
                         case Theme.THEME_ELEMENT_TYPE_ICONS:

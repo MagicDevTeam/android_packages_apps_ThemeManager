@@ -57,7 +57,12 @@ public class ThemeMixerChooserActivity extends Activity {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(ThemeMixerChooserActivity.this, ThemeElementDetailActivity.class);
+                Intent intent;
+                if (mElementType != Theme.THEME_ELEMENT_TYPE_BOOTANIMATION) {
+                    intent = new Intent(ThemeMixerChooserActivity.this, ThemeElementDetailActivity.class);
+                } else {
+                    intent = new Intent(ThemeMixerChooserActivity.this, ThemeBootanimationDetailActivity.class);
+                }
                 intent.putExtra("type", mElementType);
                 intent.putExtra("theme_name", mThemeList.get(i).getFileName());
                 startActivity(intent);

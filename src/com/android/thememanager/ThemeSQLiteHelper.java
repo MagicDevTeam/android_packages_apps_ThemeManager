@@ -40,9 +40,10 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_FRAMEWORK = "has_framework";
     public static final String COLUMN_HAS_RINGTONES = "has_ringtones";
     public static final String COLUMN_HAS_BOOTANIMATION = "has_bootanimation";
+    public static final String COLUMN_LAST_MODIFIED = "last_modified";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -61,7 +62,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + " integer, " + COLUMN_HAS_FRAMEWORK
             + " integer, " + COLUMN_HAS_RINGTONES
             + " integer, " + COLUMN_HAS_BOOTANIMATION
-            + " integer);";
+            + " integer, " + COLUMN_LAST_MODIFIED
+            + " text);";
 
 
     public ThemeSQLiteHelper(Context context) {

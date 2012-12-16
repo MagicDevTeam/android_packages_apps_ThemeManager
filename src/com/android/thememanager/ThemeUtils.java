@@ -24,6 +24,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -121,8 +123,10 @@ public class ThemeUtils {
     public static boolean addThemeEntryToDb(String themeId, String themePath, Context context) {
         try {
             ThemesDataSource dataSource = new ThemesDataSource(context);
+            File file = new File(themePath);
+            long lastModified = file.lastModified();
             dataSource.open();
-            if (dataSource.entryExists(themeId)) {
+            if (dataSource.entryExists(themeId) && !dataSource.entryIsOlder(themeId, lastModified)) {
                 dataSource.close();
                 return true;
             }
@@ -146,13 +150,13 @@ public class ThemeUtils {
             theme.setHasFramework(zip.getEntry("framework-res") != null);
             theme.setHasRingtones(zip.getEntry("ringtones") != null);
             theme.setHasBootanimation(zip.getEntry("boots") != null);
+            theme.setLastModified(lastModified);
 
             try {
                 dataSource.createThemeEntry(theme);
             } catch (Exception e) {}
             dataSource.close();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return false;
         }
 

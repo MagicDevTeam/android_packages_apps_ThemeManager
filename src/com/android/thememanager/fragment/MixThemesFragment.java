@@ -32,13 +32,6 @@ public class MixThemesFragment extends Fragment {
 
     private GridView mGridView;
     private MixerAdapter mAdapter = null;
-    private int[] mMixerItemsIcons = { android.R.drawable.ic_menu_view,
-            android.R.drawable.ic_menu_gallery,
-            android.R.drawable.ic_menu_sort_by_size,
-            android.R.drawable.ic_menu_today,
-            android.R.drawable.ic_menu_rotate,
-            android.R.drawable.ic_menu_call,
-            android.R.drawable.ic_menu_slideshow };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +68,7 @@ public class MixThemesFragment extends Fragment {
         }
 
         public int getCount() {
-            return mMixerItemsIcons.length;
+            return Theme.sElementIcons.length;
         }
 
         public Object getItem(int position) {
@@ -93,7 +86,7 @@ public class MixThemesFragment extends Fragment {
                 v = inflater.inflate(R.layout.mixer_item, null);
             }
             ImageView i = (ImageView)v.findViewById(R.id.mixer_icon);//mImages[position];//new ImageView(mContext);
-            i.setImageResource(mMixerItemsIcons[position]);
+            i.setImageResource(Theme.sElementIcons[position]);
 
             TextView tv = (TextView) v.findViewById(R.id.mixer_label);
 

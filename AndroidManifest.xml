@@ -17,16 +17,18 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activity.ThemeManagerTabActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ThemeDetailActivity"/>
-        <activity android:name=".activity.ThemeMixerChooserActivity"/>
-        <activity android:name=".activity.ThemeElementDetailActivity"/>
+        <activity android:name=".activity.ThemeDetailActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ThemeMixerChooserActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ThemeElementDetailActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ThemeBootanimationDetailActivity" android:screenOrientation="portrait"/>
 
         <provider
             android:name="com.android.thememanager.provider.FileProvider"

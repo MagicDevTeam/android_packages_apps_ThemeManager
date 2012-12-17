@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
 
 public class BootanimationImageView extends ImageView {
     private List<AnimationPart> mAnimationParts;
-    private long mFrameRateMillis;
+    private int mFrameRateMillis;
     private BitmapFactory.Options mOpts;
     private AnimationDrawable mAnimation;
 
@@ -40,7 +40,7 @@ public class BootanimationImageView extends ImageView {
         ZipEntry entry = zip.getEntry("desc.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry)));
         // first line, 3rd column has # of frames per second
-        mFrameRateMillis = 1000 / Long.getLong(reader.readLine().split(" ")[2], 10);
+        mFrameRateMillis = 1000 / Integer.parseInt(reader.readLine().split(" ")[2]);
         String line = "";
         mAnimationParts = new ArrayList<AnimationPart>();
         while ((line = reader.readLine()) != null) {
@@ -64,7 +64,7 @@ public class BootanimationImageView extends ImageView {
             for (Enumeration<? extends ZipEntry> e = zip.entries();e.hasMoreElements();) {
                 ZipEntry ze = e.nextElement();
                 if (!ze.isDirectory() && ze.getName().contains(a.partName)) {
-                    mAnimation.addFrame(loadFrame(zip.getInputStream(ze)), (int)mFrameRateMillis);
+                    mAnimation.addFrame(loadFrame(zip.getInputStream(ze)), mFrameRateMillis);
                 }
             }
         }

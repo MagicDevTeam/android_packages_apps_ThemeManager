@@ -79,6 +79,9 @@ public class ThemeChooserFragment extends Fragment {
             }
         });
 
+        mChameleon.setVisibility(View.VISIBLE);
+        mGridView.setVisibility(View.GONE);
+
         mTask = new LoadThemesInfoTask();
         mTask.execute();
 /*

@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/chameleon"
+            android:visibility="gone"
             />
 
         <GridView
@@ -26,7 +27,7 @@
             android:layout_margin="2dp"
             android:numColumns="3"
             android:horizontalSpacing="2dp"
-            android:visibility="gone"
+            android:visibility="visible"
             />
     </FrameLayout>
 

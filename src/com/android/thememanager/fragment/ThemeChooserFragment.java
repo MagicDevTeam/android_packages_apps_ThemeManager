@@ -36,6 +36,8 @@ import com.android.thememanager.activity.ThemeManagerTabActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ThemeChooserFragment extends Fragment {
     private static final String TAG = "ThemeManager";
@@ -43,15 +45,18 @@ public class ThemeChooserFragment extends Fragment {
 
     private GridView mGridView = null;
     private String[] mThemeList = null;
-    private Button mApplyButton = null;
     private ImageAdapter mAdapter = null;
     private LoadThemesInfoTask mTask = null;
+    private ImageView mChameleon = null;
+
+    private boolean mReady = true;
+    private List<Runnable> mPendingCallbacks = new LinkedList<Runnable>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        this.setHasOptionsMenu(true);
         this.setRetainInstance(true);
+        this.setHasOptionsMenu(true);
 	}
 
     @Override
@@ -62,6 +67,7 @@ public class ThemeChooserFragment extends Fragment {
 
         ThemeUtils.createCacheDir();
 
+        mChameleon = (ImageView) v.findViewById(R.id.loadingIndicator);
         mGridView = (GridView) v.findViewById(R.id.coverflow);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,16 +79,40 @@ public class ThemeChooserFragment extends Fragment {
             }
         });
 
-        if (mTask == null) {
-            mTask = new LoadThemesInfoTask(this);
-            mTask.execute();
-        } else {
-            mTask.attach(this);
-            if (mTask.getProgress() >= mThemeList.length)
+        mTask = new LoadThemesInfoTask();
+        mTask.execute();
+/*
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
+                for (String themeId : mThemeList) {
+                    ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
+                            THEMES_PATH + "/" + themeId,
+                            getActivity());
+                }
                 markAsDone();
-        }
-
+            }
+        });
+*/
         return v;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mReady = false;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mReady = true;
+
+        int pendingCallbakcs = mPendingCallbacks.size();
+
+        while(pendingCallbakcs-- > 0)
+            getActivity().runOnUiThread(mPendingCallbacks.remove(0));
     }
 
     private Handler mViewUpdateHandler = new Handler() {
@@ -90,9 +120,18 @@ public class ThemeChooserFragment extends Fragment {
         public void handleMessage(Message msg) {
             mAdapter = new ImageAdapter(getActivity());
             mGridView.setAdapter(mAdapter);
-            getActivity().dismissDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
+            mChameleon.setVisibility(View.GONE);
+            mGridView.setVisibility(View.VISIBLE);
+            //getActivity().dismissDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
         }
     };
+
+    public void runWhenReady(Runnable runnable) {
+        if (mReady)
+            getActivity().runOnUiThread(runnable);
+        else
+            mPendingCallbacks.add(runnable);
+    }
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -222,29 +261,12 @@ public class ThemeChooserFragment extends Fragment {
     }
 
     private class LoadThemesInfoTask extends AsyncTask<String, Integer, Boolean> {
-        ThemeChooserFragment activity = null;
         int progress = 0;
-
-        LoadThemesInfoTask(ThemeChooserFragment activity) {
-            attach(activity);
-        }
-
-        void detach() {
-            activity = null;
-        }
-
-        void attach(ThemeChooserFragment activity) {
-            this.activity = activity;
-        }
-
-        int getProgress() {
-            return(progress);
-        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
+            //getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
         }
 
         @Override
@@ -253,16 +275,18 @@ public class ThemeChooserFragment extends Fragment {
                 ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
                         THEMES_PATH + "/" + themeId,
                         getActivity());
-
-                progress++;
             }
             return Boolean.TRUE;
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            if (activity != null)
-                activity.markAsDone();
+            runWhenReady(new Runnable() {
+                @Override
+                public void run() {
+                    markAsDone();
+                }
+            });
         }
     }
 }

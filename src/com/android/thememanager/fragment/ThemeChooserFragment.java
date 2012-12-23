@@ -27,10 +27,7 @@ import android.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import com.android.thememanager.Globals;
-import com.android.thememanager.PreviewManager;
-import com.android.thememanager.R;
-import com.android.thememanager.ThemeUtils;
+import com.android.thememanager.*;
 import com.android.thememanager.activity.ThemeDetailActivity;
 import com.android.thememanager.activity.ThemeManagerTabActivity;
 
@@ -44,10 +41,10 @@ public class ThemeChooserFragment extends Fragment {
     private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
 
     private GridView mGridView = null;
-    private String[] mThemeList = null;
     private ImageAdapter mAdapter = null;
     private LoadThemesInfoTask mTask = null;
     private ImageView mChameleon = null;
+    private List<Theme> mThemesList;
 
     private boolean mReady = true;
     private List<Runnable> mPendingCallbacks = new LinkedList<Runnable>();
@@ -63,8 +60,6 @@ public class ThemeChooserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_theme_chooser, container, false);
 
-        mThemeList = themeList(THEMES_PATH);
-
         ThemeUtils.createCacheDir();
 
         mChameleon = (ImageView) v.findViewById(R.id.loadingIndicator);
@@ -74,7 +69,7 @@ public class ThemeChooserFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), ThemeDetailActivity.class);
-                intent.putExtra("theme_name", mThemeList[i]);
+                intent.putExtra("theme_id", mThemesList.get(i).getId());
                 startActivity(intent);
             }
         });
@@ -84,20 +79,6 @@ public class ThemeChooserFragment extends Fragment {
 
         mTask = new LoadThemesInfoTask();
         mTask.execute();
-/*
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
-                for (String themeId : mThemeList) {
-                    ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
-                            THEMES_PATH + "/" + themeId,
-                            getActivity());
-                }
-                markAsDone();
-            }
-        });
-*/
         return v;
     }
 
@@ -121,6 +102,11 @@ public class ThemeChooserFragment extends Fragment {
     private Handler mViewUpdateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            ThemesDataSource dataSource = new ThemesDataSource(getActivity());
+            dataSource.open();
+            mThemesList = dataSource.getAllThemes();
+            dataSource.close();
+
             mAdapter = new ImageAdapter(getActivity());
             mGridView.setAdapter(mAdapter);
             mChameleon.setVisibility(View.GONE);
@@ -176,7 +162,7 @@ public class ThemeChooserFragment extends Fragment {
         FilenameFilter themeFilter = new FilenameFilter() {
             @Override
             public boolean accept(File file, String s) {
-                if (s.toLowerCase().endsWith(".mtz"))
+                if (s.toLowerCase().endsWith(".ctz") || s.toLowerCase().endsWith(".mtz"))
                     return true;
                 else
                     return false;
@@ -201,26 +187,17 @@ public class ThemeChooserFragment extends Fragment {
 
         private PreviewManager mPreviewManager = new PreviewManager();
 
-        private String[] mImageIds = themeList(THEMES_PATH);
-
         private ImageView[] mImages;
-
-        private ThemeUtils.ThemeDetails[] mDetails;
 
         public ImageAdapter(Context c) {
             mContext = c;
             if (mImages == null) {
-                mImages = new ImageView[mImageIds.length];
-                mDetails = new ThemeUtils.ThemeDetails[mImageIds.length];
-                for (int i = 0; i < mImages.length; i++) {
-                    mDetails[i] = ThemeUtils.getThemeDetails(
-                            THEMES_PATH + "/" + mImageIds[i]);
-                }
+                mImages = new ImageView[mThemesList.size()];
             }
         }
 
         public int getCount() {
-            return mImageIds.length;
+            return mThemesList.size();
         }
 
         public Object getItem(int position) {
@@ -239,15 +216,19 @@ public class ThemeChooserFragment extends Fragment {
             }
             ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
             if (mImages[position] == null) {
-                mPreviewManager.fetchDrawableOnThread(ThemeUtils.stripExtension(mImageIds[position]), i);
+                mPreviewManager.fetchDrawableOnThread(mThemesList.get(position), i);
                 mImages[position] = i;
             } else
                 i.setImageDrawable(mImages[position].getDrawable());
             i.setAdjustViewBounds(true);
 
             TextView tv = (TextView) v.findViewById(R.id.theme_name);
+            tv.setText(mThemesList.get(position).getTitle());
 
-            tv.setText(mDetails[position].title);
+            if (mThemesList.get(position).getIsCosTheme())
+                v.findViewById(R.id.miui_indicator).setVisibility(View.GONE);
+            else
+                v.findViewById(R.id.miui_indicator).setVisibility(View.VISIBLE);
 
             return v;
         }
@@ -263,6 +244,23 @@ public class ThemeChooserFragment extends Fragment {
         }
     }
 
+    private void removeNonExistingThemes(String[] availableThemes) {
+        List<Theme> themes = ThemeUtils.getAllThemes(getActivity());
+        for (Theme theme : themes) {
+            boolean exists = false;
+            for (String s : availableThemes) {
+                if (theme.getThemePath().contains(s)) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                ThemeUtils.deleteTheme(theme, getActivity());
+                ThemeUtils.deleteThemeCacheDir(theme.getFileName());
+            }
+        }
+    }
+
     private class LoadThemesInfoTask extends AsyncTask<String, Integer, Boolean> {
         int progress = 0;
 
@@ -274,11 +272,13 @@ public class ThemeChooserFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(String... strings) {
-            for (String themeId : mThemeList) {
+            String[] availableThemes = themeList(THEMES_PATH);
+            for (String themeId : availableThemes) {
                 ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
                         THEMES_PATH + "/" + themeId,
                         getActivity());
             }
+            removeNonExistingThemes(availableThemes);
             return Boolean.TRUE;
         }
 

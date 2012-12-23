@@ -64,7 +64,7 @@ public class ThemeMixerChooserActivity extends Activity {
                     intent = new Intent(ThemeMixerChooserActivity.this, ThemeBootanimationDetailActivity.class);
                 }
                 intent.putExtra("type", mElementType);
-                intent.putExtra("theme_name", mThemeList.get(i).getFileName());
+                intent.putExtra("theme_id", mThemeList.get(i).getId());
                 startActivity(intent);
             }
         });
@@ -152,15 +152,19 @@ public class ThemeMixerChooserActivity extends Activity {
             }
             ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
             if (mImages[position] == null) {
-                mPreviewManager.fetchDrawableOnThread(ThemeUtils.stripExtension(mThemeList.get(position).getFileName()), mElementType, i);
+                mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, i);
                 mImages[position] = i;
             } else
                 i.setImageDrawable(mImages[position].getDrawable());
             i.setAdjustViewBounds(true);
 
             TextView tv = (TextView) v.findViewById(R.id.theme_name);
-
             tv.setText(mThemeList.get(position).getTitle());
+
+            if (mThemeList.get(position).getIsCosTheme())
+                v.findViewById(R.id.miui_indicator).setVisibility(View.GONE);
+            else
+                v.findViewById(R.id.miui_indicator).setVisibility(View.VISIBLE);
 
             return v;
         }

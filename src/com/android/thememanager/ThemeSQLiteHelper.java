@@ -33,6 +33,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_THEME_VERSION = "version";
     public static final String COLUMN_THEME_UI_VERRSION = "ui_version";
     public static final String COLUMN_THEME_PATH = "theme_path";
+    public static final String COLUMN_IS_COS_THEME = "cos_theme";
     public static final String COLUMN_HAS_WALLPAPER = "has_wallpaper";
     public static final String COLUMN_HAS_ICONS = "has_icons";
     public static final String COLUMN_HAS_LOCKSCREEN = "has_lockscreen";
@@ -43,7 +44,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -55,7 +56,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + " text, " + COLUMN_THEME_VERSION
             + " text, " + COLUMN_THEME_UI_VERRSION
             + " text, " + COLUMN_THEME_PATH
-            + " text not null, " + COLUMN_HAS_WALLPAPER
+            + " text not null, " + COLUMN_IS_COS_THEME
+            + " integer, " + COLUMN_HAS_WALLPAPER
             + " integer, " + COLUMN_HAS_ICONS
             + " integer, " + COLUMN_HAS_LOCKSCREEN
             + " integer, " + COLUMN_HAS_SYSTEMUI

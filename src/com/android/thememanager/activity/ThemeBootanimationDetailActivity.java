@@ -21,7 +21,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.res.IThemeManagerService;
 import android.os.*;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -34,15 +33,13 @@ import java.util.zip.ZipFile;
 
 public class ThemeBootanimationDetailActivity extends Activity {
     private static final String TAG = "ThemeManager";
-    private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
 
     private static final int DIALOG_PROGRESS = 0;
 
     private BootanimationImageView mPreview = null;
     private ProgressDialog mProgressDialog;
-    private String mThemeName = "";
-    private ThemeUtils.ThemeDetails mDetails;
     private int mElementType = 0;
+    private Theme mTheme = null;
 
 
     @Override
@@ -51,21 +48,18 @@ public class ThemeBootanimationDetailActivity extends Activity {
         setContentView(R.layout.activity_animation_detail);
 
 
-        mThemeName = getIntent().getStringExtra("theme_name");
-        mElementType = getIntent().getIntExtra("type", 0);
-        mDetails = ThemeUtils.getThemeDetails(Environment.getExternalStorageDirectory()
-                + "/" + Globals.THEME_PATH + "/" + mThemeName + ".mtz");
+        mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);
 
-        ((TextView)findViewById(R.id.theme_name)).setText(mDetails.title);
-
-        if (TextUtils.isEmpty(mThemeName))
+        if (mTheme == null)
             finish();
+        mElementType = getIntent().getIntExtra("type", 0);
+        ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
 
         setTitle(Theme.sElementLabels[mElementType]);
 
         mPreview = (BootanimationImageView) findViewById(R.id.preview);
         try {
-            extractAnimation(Globals.DEFAULT_THEME_PATH + "/" + mThemeName + ".mtz");
+            extractAnimation(mTheme.getThemePath());
             mPreview.LoadAnimation(Globals.CACHE_DIR + "/bootanimation.zip");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -98,7 +92,7 @@ public class ThemeBootanimationDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mThemeName + ".mtz");
+        new ApplyThemeTask().execute(mTheme.getThemePath());
     }
 
     @Override
@@ -141,7 +135,7 @@ public class ThemeBootanimationDetailActivity extends Activity {
 
         protected Boolean doInBackground(String... theme) {
             try{
-                ThemeZipUtils.extractThemeElement(THEMES_PATH + "/" + theme[0], "/data/system/theme",
+                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme",
                         Theme.THEME_ELEMENT_TYPE_BOOTANIMATION);
 
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));

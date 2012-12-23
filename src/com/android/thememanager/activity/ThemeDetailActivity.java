@@ -50,8 +50,7 @@ public class ThemeDetailActivity extends Activity {
     private String[] mPreviewList = null;
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
-    private String mThemeName = "";
-    private ThemeUtils.ThemeDetails mDetails;
+    private Theme mTheme = null;
 
 
     @Override
@@ -59,18 +58,15 @@ public class ThemeDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_theme_detail);
 
+        mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);
 
-        mThemeName = getIntent().getStringExtra("theme_name");
-        mPreviewList = PreviewHelper.getAllPreviews(THEMES_PATH + "/.cache/" +
-                ThemeUtils.stripExtension(mThemeName));
-
-        mDetails = ThemeUtils.getThemeDetails(Environment.getExternalStorageDirectory()
-                + "/" + Globals.THEME_PATH + "/" + mThemeName);
-
-        ((TextView)findViewById(R.id.theme_name)).setText(mDetails.title);
-
-        if (TextUtils.isEmpty(mThemeName))
+        if (mTheme == null)
             finish();
+
+        mPreviewList = PreviewHelper.getAllPreviews(THEMES_PATH + "/.cache/" +
+                mTheme.getFileName());
+
+        ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
 
         mAdapter = new ImageAdapter(this);
         mPreviews = (Gallery) findViewById(R.id.previews);
@@ -102,7 +98,7 @@ public class ThemeDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mThemeName);
+        new ApplyThemeTask().execute(mTheme.getThemePath());
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -140,7 +136,7 @@ public class ThemeDetailActivity extends Activity {
                 FileInputStream is = null;
                 try {
                     is = new FileInputStream(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName) + "/" + mPreviewList[position]);
+                        mTheme.getFileName() + "/" + mPreviewList[position]);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -203,7 +199,7 @@ public class ThemeDetailActivity extends Activity {
         protected Boolean doInBackground(String... theme) {
             try{
                 ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
-                        new FileInputStream(THEMES_PATH + "/" + theme[0])));
+                        new FileInputStream(theme[0])));
                 ZipEntry ze = null;
 
                 // have the theme service remove the existing theme
@@ -214,7 +210,7 @@ public class ThemeDetailActivity extends Activity {
                     Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
 
-                ThemeZipUtils.extractTheme(THEMES_PATH + "/" + theme[0], "/data/system/theme");
+                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme");
                 try {
                     ts.applyInstalledTheme();
                 } catch (Exception e) {

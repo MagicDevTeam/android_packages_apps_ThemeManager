@@ -19,7 +19,7 @@ package com.android.thememanager;
 import android.os.Environment;
 
 public class Globals {
-    public static final String THEME_PATH = "/MIUI/theme";
+    public static final String THEME_PATH = "/ChaOS/theme";
     public static final String DEFAULT_THEME_PATH = Environment.getExternalStorageDirectory() + THEME_PATH;
     public static final String CACHE_DIR = DEFAULT_THEME_PATH + "/.cache";
 }

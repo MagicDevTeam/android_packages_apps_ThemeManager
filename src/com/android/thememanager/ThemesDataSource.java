@@ -39,6 +39,7 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_THEME_VERSION,
             ThemeSQLiteHelper.COLUMN_THEME_UI_VERRSION,
             ThemeSQLiteHelper.COLUMN_THEME_PATH,
+            ThemeSQLiteHelper.COLUMN_IS_COS_THEME,
             ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER,
             ThemeSQLiteHelper.COLUMN_HAS_ICONS,
             ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
@@ -69,6 +70,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_THEME_VERSION, theme.getVersion());
         values.put(ThemeSQLiteHelper.COLUMN_THEME_UI_VERRSION, theme.getUiVersion());
         values.put(ThemeSQLiteHelper.COLUMN_THEME_PATH, theme.getThemePath());
+        values.put(ThemeSQLiteHelper.COLUMN_IS_COS_THEME, theme.getIsCosTheme());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER, theme.getHasWallpaper());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_ICONS, theme.getHasIcons());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
@@ -125,6 +127,22 @@ public class ThemesDataSource {
         }
         c.close();
         return isOlder;
+    }
+
+    public Theme getThemeById(long id) {
+        Theme theme = null;
+
+        Cursor c = database.query(ThemeSQLiteHelper.TABLE_THEMES, allColumns,
+                ThemeSQLiteHelper.COLUMN_ID + "='" + id + "'",
+                null, null, null, null);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            theme = cursorToTheme(c);
+        }
+
+        c.close();
+        return theme;
     }
 
     public List<Theme> getAllThemes() {
@@ -279,15 +297,16 @@ public class ThemesDataSource {
         theme.setDesigner(cursor.getString(4));
         theme.setVersion(cursor.getString(5));
         theme.setUiVersion(cursor.getLong(6));
-        theme.setVersion(cursor.getString(7));
-        theme.setHasWallpaper(cursor.getInt(8) == 1);
-        theme.setHasIcons(cursor.getInt(9) == 1);
-        theme.setHasLockscreen(cursor.getInt(10) == 1);
-        theme.setHasSystemUI(cursor.getInt(11) == 1);
-        theme.setHasFramework(cursor.getInt(12) == 1);
-        theme.setHasRingtones(cursor.getInt(13) == 1);
-        theme.setHasBootanimation(cursor.getInt(14) == 1);
-        theme.setLastModified(Long.getLong(cursor.getString(15), 0));
+        theme.setThemePath(cursor.getString(7));
+        theme.setIsCosTheme(cursor.getInt(8) == 1);
+        theme.setHasWallpaper(cursor.getInt(9) == 1);
+        theme.setHasIcons(cursor.getInt(10) == 1);
+        theme.setHasLockscreen(cursor.getInt(11) == 1);
+        theme.setHasSystemUI(cursor.getInt(12) == 1);
+        theme.setHasFramework(cursor.getInt(13) == 1);
+        theme.setHasRingtones(cursor.getInt(14) == 1);
+        theme.setHasBootanimation(cursor.getInt(15) == 1);
+        theme.setLastModified(Long.getLong(cursor.getString(16), 0));
         return theme;
     }
 }

@@ -26,6 +26,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -51,6 +52,14 @@ public class ThemeUtils {
         }
     }
 
+    private static void deleteFile(File file) {
+        if (file.isDirectory())
+            for (File f : file.listFiles())
+                deleteFile(f);
+        else
+            file.delete();
+    }
+
     /**
      * Checks if CACHE_DIR/themeName exists and returns true if it does
      */
@@ -67,6 +76,16 @@ public class ThemeUtils {
             File dir = new File(Globals.CACHE_DIR + "/" + themeName);
             dir.mkdirs();
         }
+    }
+
+    /**
+     * Deletes a theme directory inside CACHE_DIR for the given theme
+     * @param themeName theme to delete cache directory for
+     */
+    public static void deleteThemeCacheDir(String themeName) {
+        File f = new File(Globals.CACHE_DIR + "/" + themeName);
+        if (f.exists())
+            deleteFile(f);
     }
 
     /**
@@ -120,6 +139,32 @@ public class ThemeUtils {
         return true;
     }
 
+    public static Theme getThemeEntryById(long id, Context context) {
+        Theme theme = null;
+
+        ThemesDataSource dataSource = new ThemesDataSource(context);
+        dataSource.open();
+        theme = dataSource.getThemeById(id);
+        dataSource.close();
+
+        return theme;
+    }
+
+    public static void deleteTheme(Theme theme, Context context) {
+        ThemesDataSource dataSource = new ThemesDataSource(context);
+        dataSource.open();
+        dataSource.deleteTheme(theme);
+        dataSource.close();
+    }
+
+    public static List<Theme> getAllThemes(Context context) {
+        ThemesDataSource dataSource = new ThemesDataSource(context);
+        dataSource.open();
+        List<Theme> themes = dataSource.getAllThemes();
+        dataSource.close();
+        return themes;
+    }
+
     public static boolean addThemeEntryToDb(String themeId, String themePath, Context context) {
         try {
             ThemesDataSource dataSource = new ThemesDataSource(context);
@@ -142,7 +187,8 @@ public class ThemeUtils {
             theme.setAuthor(details.author);
             theme.setDesigner(details.designer);
             theme.setVersion(details.version);
-            theme.setUiVersion(Long.getLong(details.uiVersion, 1));
+            theme.setUiVersion(Long.parseLong(details.uiVersion));
+            theme.setIsCosTheme(details.isCosTheme);
             theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
@@ -186,10 +232,18 @@ public class ThemeUtils {
                 return details;
 
             parser.setInput(descriptionEntry, null);
-            parser.nextTag();
+            //parser.nextTag();
 
-            parser.require(XmlPullParser.START_TAG, null, "MIUI-Theme");
-            while (parser.next() != XmlPullParser.END_TAG) {
+            int eventType = parser.next();
+            while(eventType != XmlPullParser.START_TAG && eventType != XmlPullParser.END_DOCUMENT)
+                eventType = parser.next();
+            if (eventType != XmlPullParser.START_TAG)
+                throw new XmlPullParserException("No start tag found!");
+            String str = parser.getName();
+            if (parser.getName().equals("ChaOS-Theme"))
+                details.isCosTheme = true;
+            //parser.require(XmlPullParser.START_TAG, null, "MIUI-Theme");
+            while (parser.next() != XmlPullParser.END_DOCUMENT) {
                 if (parser.getEventType() != XmlPullParser.START_TAG) {
                     continue;
                 }
@@ -259,5 +313,6 @@ public class ThemeUtils {
         public String author;
         public String version;
         public String uiVersion;
+        public boolean isCosTheme;
     }
 }

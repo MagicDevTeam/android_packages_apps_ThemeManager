@@ -39,14 +39,15 @@ public class ElementPreviewManager {
         drawableMap = new WeakHashMap<String, BitmapDrawable>();
     }
 
-    public BitmapDrawable fetchDrawable(String themId, int elementType) {
-        if (drawableMap.containsKey(themId)) {
-            return drawableMap.get(themId);
+    public BitmapDrawable fetchDrawable(Theme theme, int elementType) {
+        String themeId = theme.getFileName();
+        if (drawableMap.containsKey(themeId)) {
+            return drawableMap.get(themeId);
         }
 
-        Log.d(this.getClass().getSimpleName(), "theme ID:" + themId);
+        Log.d(this.getClass().getSimpleName(), "theme ID:" + themeId);
         try {
-            InputStream is = fetch(themId, elementType);
+            InputStream is = fetch(theme, elementType);
             BitmapDrawable drawable = null;
             if (is != null) {
                 BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -59,7 +60,7 @@ public class ElementPreviewManager {
             }
 
             if (drawable != null) {
-                drawableMap.put(themId, drawable);
+                drawableMap.put(themeId, drawable);
                 Log.d(this.getClass().getSimpleName(), "got a thumbnail drawable: " + drawable.getBounds() + ", "
                         + drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "
                         + drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());
@@ -74,9 +75,10 @@ public class ElementPreviewManager {
         }
     }
 
-    public void fetchDrawableOnThread(final String themId, final int elementType, final ImageView imageView) {
-        if (drawableMap.containsKey(themId)) {
-            imageView.setImageDrawable(drawableMap.get(themId));
+    public void fetchDrawableOnThread(final Theme theme, final int elementType, final ImageView imageView) {
+        String themeId = theme.getFileName();
+        if (drawableMap.containsKey(themeId)) {
+            imageView.setImageDrawable(drawableMap.get(themeId));
         }
 
         final Handler handler = new Handler() {
@@ -93,7 +95,7 @@ public class ElementPreviewManager {
             @Override
             public void run() {
                 //TODO : set imageView to a "pending" image
-                BitmapDrawable drawable = fetchDrawable(themId, elementType);
+                BitmapDrawable drawable = fetchDrawable(theme, elementType);
                 Message message = handler.obtainMessage(1, drawable);
                 handler.sendMessage(message);
             }
@@ -101,10 +103,11 @@ public class ElementPreviewManager {
         thread.start();
     }
 
-    private InputStream fetch(String themeId, int elementType) throws IOException {
+    private InputStream fetch(Theme theme, int elementType) throws IOException {
 //        return ThemeUtils.getThemePreview(Environment.getExternalStorageDirectory() + "/" +
 //                Globals.THEME_PATH + "/" + themeId + ".mtz", "preview_launcher_0.png");
         String previewName = null;
+        String themeId = theme.getFileName();
         try{
             switch(elementType) {
                 case Theme.THEME_ELEMENT_TYPE_ICONS:

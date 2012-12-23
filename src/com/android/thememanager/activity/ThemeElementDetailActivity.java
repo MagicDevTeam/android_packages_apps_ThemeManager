@@ -51,9 +51,8 @@ public class ThemeElementDetailActivity extends Activity {
     private String[] mPreviewList = null;
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
-    private String mThemeName = "";
-    private ThemeUtils.ThemeDetails mDetails;
     private int mElementType = 0;
+    private Theme mTheme = null;
 
 
     @Override
@@ -62,46 +61,45 @@ public class ThemeElementDetailActivity extends Activity {
         setContentView(R.layout.activity_theme_detail);
 
 
-        mThemeName = getIntent().getStringExtra("theme_name");
+        mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);
+
+        if (mTheme == null)
+            finish();
+
         mElementType = getIntent().getIntExtra("type", 0);
+        String themeName = mTheme.getFileName();
         switch (mElementType) {
             case Theme.THEME_ELEMENT_TYPE_ICONS:
                 mPreviewList = PreviewHelper.getIconPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
                 mPreviewList = PreviewHelper.getLauncherPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                 mPreviewList = PreviewHelper.getStatusbarPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
                 mPreviewList = PreviewHelper.getLauncherPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
                 mPreviewList = PreviewHelper.getLockscreenPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                 mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
                 mPreviewList = PreviewHelper.getBootanimationPreviews(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName));
+                        ThemeUtils.stripExtension(themeName));
                 break;
         }
 
-        mDetails = ThemeUtils.getThemeDetails(Environment.getExternalStorageDirectory()
-                + "/" + Globals.THEME_PATH + "/" + mThemeName + ".mtz");
-
-        ((TextView)findViewById(R.id.theme_name)).setText(mDetails.title);
-
-        if (TextUtils.isEmpty(mThemeName))
-            finish();
+        ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
 
         setTitle(Theme.sElementLabels[mElementType]);
 
@@ -135,7 +133,7 @@ public class ThemeElementDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mThemeName + ".mtz");
+        new ApplyThemeTask().execute(mTheme.getThemePath());
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -173,7 +171,7 @@ public class ThemeElementDetailActivity extends Activity {
                 FileInputStream is = null;
                 try {
                     is = new FileInputStream(THEMES_PATH + "/.cache/" +
-                        ThemeUtils.stripExtension(mThemeName) + "/" + mPreviewList[position]);
+                        mTheme.getFileName() + "/" + mPreviewList[position]);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -235,7 +233,7 @@ public class ThemeElementDetailActivity extends Activity {
 
         protected Boolean doInBackground(String... theme) {
             try{
-                ThemeZipUtils.extractThemeElement(THEMES_PATH + "/" + theme[0], "/data/system/theme", mElementType);
+                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType);
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 try {
                     switch (mElementType) {

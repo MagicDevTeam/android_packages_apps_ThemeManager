@@ -186,11 +186,13 @@ public class ThemeChooserFragment extends Fragment {
         private PreviewManager mPreviewManager = new PreviewManager();
 
         private ImageView[] mImages;
+        private int mPreviewWidth;
         private int mPreviewHeight;
 
         public ImageAdapter(Context c) {
             mContext = c;
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
+            mPreviewWidth = dm.widthPixels / 3;
             mPreviewHeight = dm.heightPixels / 3;
         }
 
@@ -213,6 +215,7 @@ public class ThemeChooserFragment extends Fragment {
                 v = inflater.inflate(R.layout.theme_preview, null);
                 FrameLayout fl = (FrameLayout)v.findViewById(R.id.preview_layout);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
+                params.width = mPreviewWidth;
                 params.height = mPreviewHeight;
                 fl.setLayoutParams(params);
             }

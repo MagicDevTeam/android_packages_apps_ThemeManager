@@ -216,6 +216,7 @@ public class ThemeChooserFragment extends Fragment {
             }
             ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
             if (mImages[position] == null) {
+                i.setImageResource(R.drawable.preview);
                 mPreviewManager.fetchDrawableOnThread(mThemesList.get(position), i);
                 mImages[position] = i;
             } else
@@ -235,9 +236,10 @@ public class ThemeChooserFragment extends Fragment {
 
         public void destroyImages() {
             for (int i = 0; i < mImages.length; i++) {
-                if (mImages[i].getDrawable() != null)
+                if (mImages[i] != null && mImages[i].getDrawable() != null) {
                     mImages[i].getDrawable().setCallback(null);
-                mImages[i].setImageDrawable(null);
+                    mImages[i].setImageDrawable(null);
+                }
             }
 
             mPreviewManager = null;

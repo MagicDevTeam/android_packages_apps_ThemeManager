@@ -16,13 +16,19 @@
 
 package com.android.thememanager;
 
+import android.content.Context;
 import android.content.res.IThemeManagerService;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.ServiceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.nio.ByteBuffer;
+import java.util.zip.*;
 
 public class ThemeZipUtils {
     private static final String TAG = "ThemeZipUtils";
@@ -42,7 +48,7 @@ public class ThemeZipUtils {
         out.close();
     }
 
-    public static void extractTheme(String src, String dst) throws IOException {
+    public static void extractTheme(String src, String dst, Context context) throws IOException {
         ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
                 new FileInputStream(src)));
         ZipEntry ze = null;
@@ -61,8 +67,18 @@ public class ThemeZipUtils {
             }
 
             Log.d(TAG, "Creating file " + ze.getName());
-            copyInputStream(zip,
-                    new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
+            if (ze.getName().contains("bootanimation.zip")) {
+                File f = new File(dst + "/" + ze.getName());
+                if (f.exists())
+                    f.delete();
+                WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                DisplayMetrics dm = new DisplayMetrics();
+                wm.getDefaultDisplay().getRealMetrics(dm);
+                extractBootAnimation(zip, dst + "/" + ze.getName(),
+                        new Point(dm.widthPixels, dm.heightPixels));
+            } else
+                copyInputStream(zip,
+                        new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
             (new File(dst + "/" + ze.getName())).setReadable(true, false);
             zip.closeEntry();
         }
@@ -70,7 +86,7 @@ public class ThemeZipUtils {
         zip.close();
     }
 
-    public static void extractThemeElement(String src, String dst, int elementType) throws IOException {
+    public static void extractThemeElement(String src, String dst, int elementType, Context context) throws IOException {
         ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
                 new FileInputStream(src)));
         ZipEntry ze = null;
@@ -162,8 +178,16 @@ public class ThemeZipUtils {
                             zip.closeEntry();
                             continue;
                         } else {
-                            copyInputStream(zip,
-                                    new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
+                            File f = new File(dst + "/" + ze.getName());
+                            if (f.exists())
+                                f.delete();
+                            WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                            DisplayMetrics dm = new DisplayMetrics();
+                            wm.getDefaultDisplay().getRealMetrics(dm);
+                            extractBootAnimation(zip, dst + "/" + ze.getName(),
+                                    new Point(dm.widthPixels, dm.heightPixels));
+                            //copyInputStream(zip,
+                              //      new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
                             (new File(dst + "/" + ze.getName())).setReadable(true, false);
                         }
                     }
@@ -173,5 +197,84 @@ public class ThemeZipUtils {
         }
 
         zip.close();
+    }
+
+    public static void extractBootAnimation(InputStream input, String dst, Point screenDims)
+            throws IOException {
+        OutputStream os = new FileOutputStream(dst);
+        ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(os));
+        ZipInputStream bootAni = new ZipInputStream(input);
+        ZipEntry ze = null;
+
+        zos.setMethod(ZipOutputStream.STORED);
+        byte[] bytes = new byte[1024];
+        int len = 0;
+        CRC32 crc32 = new CRC32();
+        int scaledWidth = 0;
+        int scaledHeight = 0;
+        if (screenDims.x > screenDims.y) {
+            scaledWidth = screenDims.y;
+            scaledHeight = screenDims.x;
+        } else {
+            scaledWidth = screenDims.x;
+            scaledHeight = screenDims.y;
+        }
+        while ((ze = bootAni.getNextEntry()) != null) {
+            crc32.reset();
+            ZipEntry entry = new ZipEntry(ze.getName());
+            entry.setMethod(ZipEntry.STORED);
+            entry.setCrc(ze.getCrc());
+            entry.setSize(ze.getSize());
+            entry.setCompressedSize(ze.getSize());
+            if (!ze.getName().equals("desc.txt")) {
+                if (ze.getName().toLowerCase().endsWith(".png") || ze.getName().toLowerCase().endsWith(".jpg")) {
+                    Bitmap bmp = Bitmap.createScaledBitmap(BitmapFactory.decodeStream(bootAni, null, null),
+                            scaledWidth, scaledHeight, true);
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bmp.compress(ze.getName().toLowerCase().endsWith("png") ?
+                            Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG, 80, bos);
+                    byte[] bitmapdata = bos.toByteArray();
+                    crc32.reset();
+                    crc32.update(bitmapdata);
+                    entry.setSize(bitmapdata.length);
+                    entry.setCompressedSize(bitmapdata.length);
+                    entry.setCrc(crc32.getValue());
+                    zos.putNextEntry(entry);
+                    zos.write(bitmapdata);
+                    bos.close();
+                    bmp.recycle();
+                }
+            } else {
+                String line = "";
+                BufferedReader reader = new BufferedReader(new InputStreamReader(bootAni));
+                String[] info = reader.readLine().split(" ");
+                int width = Integer.parseInt(info[0]);
+                int height = Integer.parseInt(info[1]);
+
+                if (width == height)
+                    scaledHeight = scaledWidth;
+
+                crc32.reset();
+                int size = 0;
+                ByteBuffer buffer = ByteBuffer.wrap(bytes);
+                line = String.format("%d %d %s\n", scaledWidth, scaledHeight, info[2]);
+                buffer.put(line.getBytes());
+                size += line.getBytes().length;
+                crc32.update(line.getBytes());
+                while ((line = reader.readLine()) != null) {
+                    line = String.format("%s\n", line);
+                    buffer.put(line.getBytes());
+                    size += line.getBytes().length;
+                    crc32.update(line.getBytes());
+                }
+                entry.setCrc(crc32.getValue());
+                entry.setSize(size);
+                entry.setCompressedSize(size);
+                zos.putNextEntry(entry);
+                zos.write(buffer.array(), 0, size);
+            }
+            zos.closeEntry();
+        }
+        zos.close();
     }
 }

@@ -233,7 +233,8 @@ public class ThemeElementDetailActivity extends Activity {
 
         protected Boolean doInBackground(String... theme) {
             try{
-                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType);
+                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType,
+                        ThemeElementDetailActivity.this);
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 try {
                     switch (mElementType) {

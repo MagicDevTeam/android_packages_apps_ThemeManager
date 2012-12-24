@@ -136,7 +136,7 @@ public class ThemeBootanimationDetailActivity extends Activity {
         protected Boolean doInBackground(String... theme) {
             try{
                 ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme",
-                        Theme.THEME_ELEMENT_TYPE_BOOTANIMATION);
+                        Theme.THEME_ELEMENT_TYPE_BOOTANIMATION, ThemeBootanimationDetailActivity.this);
 
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 ts.applyThemeBootanimation();

@@ -210,7 +210,7 @@ public class ThemeDetailActivity extends Activity {
                     Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
 
-                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme");
+                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme", ThemeDetailActivity.this);
                 try {
                     ts.applyInstalledTheme();
                 } catch (Exception e) {

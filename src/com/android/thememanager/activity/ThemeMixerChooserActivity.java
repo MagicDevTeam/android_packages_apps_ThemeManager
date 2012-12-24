@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.IThemeManagerService;
 import android.os.*;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -75,8 +76,9 @@ public class ThemeMixerChooserActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdapter.destroyImages();
+        mAdapter.destroy();
         mAdapter = null;
+        mGridView = null;
         System.gc();
     }
 
@@ -124,12 +126,12 @@ public class ThemeMixerChooserActivity extends Activity {
         private ElementPreviewManager mPreviewManager = new ElementPreviewManager();
 
         private ImageView[] mImages;
+        private int mPreviewHeight;
 
         public ImageAdapter(Context c) {
             mContext = c;
-            if (mImages == null) {
-                mImages = new ImageView[mThemeList.size()];
-            }
+            DisplayMetrics dm = c.getResources().getDisplayMetrics();
+            mPreviewHeight = dm.heightPixels / 3;
         }
 
         public int getCount() {
@@ -149,15 +151,17 @@ public class ThemeMixerChooserActivity extends Activity {
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.theme_preview, null);
+                FrameLayout fl = (FrameLayout)v.findViewById(R.id.preview_layout);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
+                params.height = mPreviewHeight;
+                fl.setLayoutParams(params);
             }
             ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
-            if (mImages[position] == null) {
+            if (i.getDrawable() == null) {
                 i.setImageResource(R.drawable.preview);
-                mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, i);
-                mImages[position] = i;
-            } else
-                i.setImageDrawable(mImages[position].getDrawable());
-            i.setAdjustViewBounds(true);
+            }
+
+            mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, i);
 
             TextView tv = (TextView) v.findViewById(R.id.theme_name);
             tv.setText(mThemeList.get(position).getTitle());
@@ -170,15 +174,17 @@ public class ThemeMixerChooserActivity extends Activity {
             return v;
         }
 
-        public void destroyImages() {
+        public void destroy() {
+            /*
             for (int i = 0; i < mImages.length; i++) {
                 if (mImages[i] != null && mImages[i].getDrawable() != null) {
                     mImages[i].getDrawable().setCallback(null);
                     mImages[i].setImageDrawable(null);
                 }
             }
-
+            */
             mPreviewManager = null;
+            mContext = null;
         }
     }
 }

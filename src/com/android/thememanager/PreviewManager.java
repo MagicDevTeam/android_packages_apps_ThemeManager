@@ -19,11 +19,8 @@ package com.android.thememanager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -32,8 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.WeakHashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class PreviewManager {
     private final Map<String, BitmapDrawable> drawableMap;

@@ -16,20 +16,17 @@
 
 package com.android.thememanager.fragment;
 
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.IThemeManagerService;
 import android.os.*;
 import android.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.android.thememanager.*;
 import com.android.thememanager.activity.ThemeDetailActivity;
-import com.android.thememanager.activity.ThemeManagerTabActivity;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -147,8 +144,9 @@ public class ThemeChooserFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.destroyImages();
+        mAdapter.destroy();
         mAdapter = null;
+        mGridView = null;
         System.gc();
     }
 
@@ -188,12 +186,12 @@ public class ThemeChooserFragment extends Fragment {
         private PreviewManager mPreviewManager = new PreviewManager();
 
         private ImageView[] mImages;
+        private int mPreviewHeight;
 
         public ImageAdapter(Context c) {
             mContext = c;
-            if (mImages == null) {
-                mImages = new ImageView[mThemesList.size()];
-            }
+            DisplayMetrics dm = c.getResources().getDisplayMetrics();
+            mPreviewHeight = dm.heightPixels / 3;
         }
 
         public int getCount() {
@@ -213,15 +211,16 @@ public class ThemeChooserFragment extends Fragment {
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.theme_preview, null);
+                FrameLayout fl = (FrameLayout)v.findViewById(R.id.preview_layout);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
+                params.height = mPreviewHeight;
+                fl.setLayoutParams(params);
             }
             ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
-            if (mImages[position] == null) {
+            if (i.getDrawable() == null) {
                 i.setImageResource(R.drawable.preview);
-                mPreviewManager.fetchDrawableOnThread(mThemesList.get(position), i);
-                mImages[position] = i;
-            } else
-                i.setImageDrawable(mImages[position].getDrawable());
-            i.setAdjustViewBounds(true);
+            }
+            mPreviewManager.fetchDrawableOnThread(mThemesList.get(position), i);
 
             TextView tv = (TextView) v.findViewById(R.id.theme_name);
             tv.setText(mThemesList.get(position).getTitle());
@@ -234,15 +233,9 @@ public class ThemeChooserFragment extends Fragment {
             return v;
         }
 
-        public void destroyImages() {
-            for (int i = 0; i < mImages.length; i++) {
-                if (mImages[i] != null && mImages[i].getDrawable() != null) {
-                    mImages[i].getDrawable().setCallback(null);
-                    mImages[i].setImageDrawable(null);
-                }
-            }
-
+        public void destroy() {
             mPreviewManager = null;
+            mContext = null;
         }
     }
 

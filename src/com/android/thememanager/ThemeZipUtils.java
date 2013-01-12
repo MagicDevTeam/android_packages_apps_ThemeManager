@@ -192,6 +192,14 @@ public class ThemeZipUtils {
                         }
                     }
                     break;
+                case Theme.THEME_ELEMENT_TYPE_MMS:
+                    if (ze.getName().equals("com.android.mms")) {
+                        copyInputStream(zip,
+                                new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
+                        (new File(dst + "/" + ze.getName())).setReadable(true, false);
+                        done = true;
+                    }
+                    break;
             }
             zip.closeEntry();
         }

@@ -97,6 +97,10 @@ public class ThemeElementDetailActivity extends Activity {
                 mPreviewList = PreviewHelper.getBootanimationPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
+            case Theme.THEME_ELEMENT_TYPE_MMS:
+                mPreviewList = PreviewHelper.getMmsPreviews(THEMES_PATH + "/.cache/" +
+                        ThemeUtils.stripExtension(themeName));
+                break;
         }
 
         ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
@@ -258,6 +262,9 @@ public class ThemeElementDetailActivity extends Activity {
                             break;
                         case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
                             ts.applyThemeBootanimation();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_MMS:
+                            ts.applyThemeMms();
                             break;
                     }
                 } catch (Exception e) {

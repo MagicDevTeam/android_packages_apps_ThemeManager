@@ -131,6 +131,9 @@ public class ElementPreviewManager {
                 case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
                     previewName = PreviewHelper.getBootanimationPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
+                case Theme.THEME_ELEMENT_TYPE_MMS:
+                    previewName = PreviewHelper.getMmsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
             }
         } catch (Exception e) {
             previewName = null;

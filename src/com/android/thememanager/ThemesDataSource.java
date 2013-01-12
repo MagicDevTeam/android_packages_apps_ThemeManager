@@ -47,6 +47,7 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK,
             ThemeSQLiteHelper.COLUMN_HAS_RINGTONES,
             ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION,
+            ThemeSQLiteHelper.COLUMN_HAS_MMS,
             ThemeSQLiteHelper.COLUMN_LAST_MODIFIED };
 
     public ThemesDataSource(Context context) {
@@ -78,6 +79,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK, theme.getHasFramework());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONES, theme.getHasRingtones());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION, theme.getHasBootanimation());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_MMS, theme.getHasMms());
         values.put(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED, "" + theme.getLastModified());
         long insertId;
         if (entryExists(theme.getFileName()))
@@ -288,6 +290,24 @@ public class ThemesDataSource {
         return themes;
     }
 
+    public List<Theme> getMmsThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_MMS + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
     private Theme cursorToTheme(Cursor cursor) {
         Theme theme = new Theme();
         theme.setId(cursor.getLong(0));
@@ -306,7 +326,8 @@ public class ThemesDataSource {
         theme.setHasFramework(cursor.getInt(13) == 1);
         theme.setHasRingtones(cursor.getInt(14) == 1);
         theme.setHasBootanimation(cursor.getInt(15) == 1);
-        theme.setLastModified(Long.getLong(cursor.getString(16), 0));
+        theme.setHasBootanimation(cursor.getInt(16) == 1);
+        theme.setLastModified(Long.getLong(cursor.getString(17), 0));
         return theme;
     }
 }

@@ -113,6 +113,9 @@ public class ThemeMixerChooserActivity extends Activity {
             case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
                 list = dataSource.getBootanimationThemes();
                 break;
+            case Theme.THEME_ELEMENT_TYPE_MMS:
+                list = dataSource.getMmsThemes();
+                break;
         }
 
         dataSource.close();

@@ -23,4 +23,5 @@
     <string name="mixer_lockscreen_label">Lockscreen</string>
     <string name="mixer_ringtones_label">Ringtones</string>
     <string name="mixer_bootanimation_label">Boot animation</string>
+    <string name="mixer_mms_label">Messaging</string>
 </resources>

@@ -196,6 +196,7 @@ public class ThemeUtils {
             theme.setHasFramework(zip.getEntry("framework-res") != null);
             theme.setHasRingtones(zip.getEntry("ringtones") != null);
             theme.setHasBootanimation(zip.getEntry("boots") != null);
+            theme.setHasMms(zip.getEntry("com.android.mms") != null);
             theme.setLastModified(lastModified);
 
             try {

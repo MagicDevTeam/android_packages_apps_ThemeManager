@@ -30,6 +30,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.ServiceManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -133,6 +134,8 @@ public class ThemeDetailActivity extends Activity {
 
             if (mImages[position] == null) {
                 mImages[position] = new ImageView(mContext);
+                mImages[position].setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
                 FileInputStream is = null;
                 try {
                     is = new FileInputStream(THEMES_PATH + "/.cache/" +
@@ -143,12 +146,15 @@ public class ThemeDetailActivity extends Activity {
                 if (is != null) {
                     BitmapFactory.Options opts = new BitmapFactory.Options();
                     opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                    opts.inDensity = DisplayMetrics.DENSITY_HIGH;
+                    opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
+                    opts.inScaled = true;
                     Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
                     Drawable drawable = new BitmapDrawable(bmp);
                     mImages[position].setImageDrawable(drawable);
                 } else
                     mImages[position].setImageResource(R.drawable.no_preview);
-                mImages[position].setAdjustViewBounds(true);
+                mImages[position].setScaleType(ImageView.ScaleType.FIT_CENTER);
             }
 
             return mImages[position];

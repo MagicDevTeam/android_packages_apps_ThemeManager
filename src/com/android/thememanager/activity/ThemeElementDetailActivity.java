@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ServiceManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -171,6 +172,7 @@ public class ThemeElementDetailActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if (mImages[position] == null) {
+                int h = mPreviews.getHeight();
                 mImages[position] = new ImageView(mContext);
                 FileInputStream is = null;
                 try {
@@ -182,11 +184,15 @@ public class ThemeElementDetailActivity extends Activity {
                 if (is != null) {
                     BitmapFactory.Options opts = new BitmapFactory.Options();
                     opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                    opts.inDensity = DisplayMetrics.DENSITY_HIGH;
+                    opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
+                    opts.inScaled = true;
                     Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
                     Drawable drawable = new BitmapDrawable(bmp);
                     mImages[position].setImageDrawable(drawable);
                 } else
                     mImages[position].setImageResource(R.drawable.no_preview);
+                mImages[position].setScaleType(ImageView.ScaleType.FIT_XY);
                 mImages[position].setAdjustViewBounds(true);
             }
 

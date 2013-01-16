@@ -122,6 +122,55 @@ public class ThemeMixerChooserActivity extends Activity {
         return list;
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_theme_element, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.menu_reset:
+                String installedThemeDir = "/data/system/theme/";
+                try {
+                    IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+                    switch (mElementType) {
+                        case Theme.THEME_ELEMENT_TYPE_ICONS:
+                            ts.resetThemeIcons();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
+                            ts.resetThemeWallpaper();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
+                            ts.resetThemeSystemUI();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
+                            ts.resetThemeFramework();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
+                            ts.resetThemeLockscreen();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_RINGTONES:
+                            ts.resetThemeRingtones();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
+                            ts.resetThemeBootanimation();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_MMS:
+                            ts.resetThemeMms();
+                            break;
+                    }
+                } catch (Exception e) {
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public class ImageAdapter extends BaseAdapter {
         int mGalleryItemBackground;
         private Context mContext;

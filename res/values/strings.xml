@@ -8,6 +8,7 @@
     <string name="menu_reset_element">Reset</string>
 
     <string name="btn_apply_theme">Apply</string>
+    <string name="btn_ok">OK</string>
 
     <string name="loading_themes">Loading themes...</string>
     <string name="applying_theme">Applying theme...</string>
@@ -25,4 +26,16 @@
     <string name="mixer_ringtones_label">Ringtones</string>
     <string name="mixer_bootanimation_label">Boot animation</string>
     <string name="mixer_mms_label">Messaging</string>
+    <string name="mixer_font_label">Fonts</string>
+
+    <string name="dlg_apply_theme_with_font_title">Apply theme with font</string>
+    <string name="dlg_apply_theme_with_font_body">This theme contains fonts which would require a system reboot to be applied.</string>
+    <string name="dlg_apply_theme_with_font_without_reboot">Apply theme without font</string>
+    <string name="dlg_apply_theme_with_font_and_reboot">Apply theme with font and reboot</string>
+
+    <string name="dlg_apply_font_title">Apply font</string>
+    <string name="dlg_apply_font_body">Some parts of the system will retain the previous font until the system is restarted.</string>
+    <string name="dlg_apply_font_without_reboot">Apply font and reboot later</string>
+    <string name="dlg_apply_font_and_reboot">Apply font and reboot now</string>
+
 </resources>

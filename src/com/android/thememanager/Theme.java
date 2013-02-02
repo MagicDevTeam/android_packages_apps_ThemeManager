@@ -26,6 +26,7 @@ public class Theme {
     public static final int THEME_ELEMENT_TYPE_RINGTONES = 5;
     public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 6;
     public static final int THEME_ELEMENT_TYPE_MMS = 7;
+    public static final int THEME_ELEMENT_TYPE_FONT = 8;
 
     public static int[] sElementIcons = { android.R.drawable.ic_menu_view,
             android.R.drawable.ic_menu_gallery,
@@ -34,7 +35,8 @@ public class Theme {
             android.R.drawable.ic_menu_rotate,
             android.R.drawable.ic_menu_call,
             android.R.drawable.ic_menu_slideshow,
-            android.R.drawable.ic_menu_send };
+            android.R.drawable.ic_menu_send,
+            android.R.drawable.ic_menu_sort_alphabetically };
 
     public static int[] sElementLabels = { R.string.mixer_icons_label,
             R.string.mixer_walllpaper_label,
@@ -43,7 +45,8 @@ public class Theme {
             R.string.mixer_lockscreen_label,
             R.string.mixer_ringtones_label,
             R.string.mixer_bootanimation_label,
-            R.string.mixer_mms_label };
+            R.string.mixer_mms_label,
+            R.string.mixer_font_label };
 
     private long id;
     private String fileName;
@@ -51,7 +54,7 @@ public class Theme {
     private String author;
     private String designer;
     private String version;
-    private long uiVersion;
+    private String uiVersion;
     private String themePath;
     private boolean isCosTheme;
     private boolean hasWallpaper;
@@ -62,6 +65,7 @@ public class Theme {
     private boolean hasRingtones;
     private boolean hasBootanimation;
     private boolean hasMms;
+    private boolean hasFont;
     private long lastModified;
 
     public long getId() {
@@ -112,11 +116,11 @@ public class Theme {
         this.version = version;
     }
 
-    public long getUiVersion() {
+    public String getUiVersion() {
         return uiVersion;
     }
 
-    public void setUiVersion(long uiVersion) {
+    public void setUiVersion(String uiVersion) {
         this.uiVersion = uiVersion;
     }
 
@@ -198,6 +202,14 @@ public class Theme {
 
     public void setHasMms(boolean hasMms) {
         this.hasMms = hasMms;
+    }
+
+    public boolean getHasFont() {
+        return hasFont;
+    }
+
+    public void setHasFont(boolean hasFont) {
+        this.hasFont = hasFont;
     }
 
     public long getLastModified() {

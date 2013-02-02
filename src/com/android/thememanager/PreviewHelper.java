@@ -29,6 +29,7 @@ public class PreviewHelper {
     public static final String PREVIEW_CONTACTS_PREFIX = "preview_contact_";
     public static final String PREVIEW_BOOTANIMATION_PREFIX = "preview_animation_";
     public static final String PREVIEW_LOCKSCREEN_PREFIX = "preview_lockscreen_";
+    public static final String PREVIEW_FONTS_PREFIX = "preview_fonts_";
 
     static FilenameFilter mAllPreviewsFilter = new FilenameFilter() {
         @Override
@@ -100,6 +101,17 @@ public class PreviewHelper {
         @Override
         public boolean accept(File file, String s) {
             if (s.toLowerCase().contains(PREVIEW_BOOTANIMATION_PREFIX) &&
+                    s.toLowerCase().endsWith(".png"))
+                return true;
+            else
+                return false;
+        }
+    };
+
+    static FilenameFilter mFontsPreviewsFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String s) {
+            if (s.toLowerCase().contains(PREVIEW_FONTS_PREFIX) &&
                     s.toLowerCase().endsWith(".png"))
                 return true;
             else
@@ -204,6 +216,18 @@ public class PreviewHelper {
         String[] dirList = null;
         if (dir.exists() && dir.isDirectory())
             dirList = dir.list(mLockscreenPreviewsFilter);
+
+        if (dirList != null)
+            Arrays.sort(dirList);
+
+        return dirList;
+    }
+
+    public static String[] getFontsPreviews(String path) {
+        File dir = new File(path);
+        String[] dirList = null;
+        if (dir.exists() && dir.isDirectory())
+            dirList = dir.list(mFontsPreviewsFilter);
 
         if (dirList != null)
             Arrays.sort(dirList);

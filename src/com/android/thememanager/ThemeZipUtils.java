@@ -48,38 +48,47 @@ public class ThemeZipUtils {
         out.close();
     }
 
-    public static void extractTheme(String src, String dst, Context context) throws IOException {
+    public static void extractTheme(String src, String dst, Context context, boolean applyFont) throws IOException {
         ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
                 new FileInputStream(src)));
         ZipEntry ze = null;
 
         while ((ze = zip.getNextEntry()) != null) {
-            if (ze.isDirectory()) {
-                // Assume directories are stored parents first then children
-                Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
-                File dir = new File(dst + "/" + ze.getName());
-                dir.mkdir();
-                dir.setReadable(true, false);
-                dir.setWritable(true, false);
-                dir.setExecutable(true, false);
-                zip.closeEntry();
-                continue;
-            }
+            if (ze.getName().contains("fonts/")) {
+                if (ze.isDirectory()) {
+                } else if (applyFont) {
+                    copyInputStream(zip,
+                            new BufferedOutputStream(new FileOutputStream("/data/" + ze.getName())));
+                    (new File("/data/" + ze.getName())).setReadable(true, false);
+                }
+            } else {
+                if (ze.isDirectory()) {
+                    // Assume directories are stored parents first then children
+                    Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
+                    File dir = new File(dst + "/" + ze.getName());
+                    dir.mkdir();
+                    dir.setReadable(true, false);
+                    dir.setWritable(true, false);
+                    dir.setExecutable(true, false);
+                    zip.closeEntry();
+                    continue;
+                }
 
-            Log.d(TAG, "Creating file " + ze.getName());
-            if (ze.getName().contains("bootanimation.zip")) {
-                File f = new File(dst + "/" + ze.getName());
-                if (f.exists())
-                    f.delete();
-                WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                DisplayMetrics dm = new DisplayMetrics();
-                wm.getDefaultDisplay().getRealMetrics(dm);
-                extractBootAnimation(zip, dst + "/" + ze.getName(),
-                        new Point(dm.widthPixels, dm.heightPixels));
-            } else
-                copyInputStream(zip,
-                        new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-            (new File(dst + "/" + ze.getName())).setReadable(true, false);
+                Log.d(TAG, "Creating file " + ze.getName());
+                if (ze.getName().contains("bootanimation.zip")) {
+                    File f = new File(dst + "/" + ze.getName());
+                    if (f.exists())
+                        f.delete();
+                    WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                    DisplayMetrics dm = new DisplayMetrics();
+                    wm.getDefaultDisplay().getRealMetrics(dm);
+                    extractBootAnimation(zip, dst + "/" + ze.getName(),
+                            new Point(dm.widthPixels, dm.heightPixels));
+                } else
+                    copyInputStream(zip,
+                            new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
+                (new File(dst + "/" + ze.getName())).setReadable(true, false);
+            }
             zip.closeEntry();
         }
 
@@ -198,6 +207,16 @@ public class ThemeZipUtils {
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
                         (new File(dst + "/" + ze.getName())).setReadable(true, false);
                         done = true;
+                    }
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_FONT:
+                    if (ze.getName().contains("fonts/")) {
+                        if (ze.isDirectory()) {
+                        } else {
+                            copyInputStream(zip,
+                                    new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
+                            (new File(dst + "/" + ze.getName())).setReadable(true, false);
+                        }
                     }
                     break;
             }

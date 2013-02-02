@@ -54,6 +54,7 @@ public class ThemeElementDetailActivity extends Activity {
     private ProgressDialog mProgressDialog;
     private int mElementType = 0;
     private Theme mTheme = null;
+    private boolean mFontReboot = false;
 
 
     @Override
@@ -102,6 +103,10 @@ public class ThemeElementDetailActivity extends Activity {
                 mPreviewList = PreviewHelper.getMmsPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
+            case Theme.THEME_ELEMENT_TYPE_FONT:
+                mPreviewList = PreviewHelper.getFontsPreviews(THEMES_PATH + "/.cache/" +
+                        ThemeUtils.stripExtension(themeName));
+                break;
         }
 
         ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
@@ -138,7 +143,22 @@ public class ThemeElementDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mTheme.getThemePath());
+        if (mElementType == Theme.THEME_ELEMENT_TYPE_FONT) {
+            SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_apply_font_and_reboot),
+                    getString(R.string.dlg_apply_font_without_reboot),
+                    getString(R.string.dlg_apply_font_title),
+                    getString(R.string.dlg_apply_font_body),
+                    this,
+                    new SimpleDialogs.OnYesNoResponse() {
+                        @Override
+                        public void onYesNoResponse(boolean isYes) {
+                            mFontReboot = isYes;
+                            new ApplyThemeTask().execute(mTheme.getThemePath());
+                        }
+                    });
+        } else {
+            new ApplyThemeTask().execute(mTheme.getThemePath());
+        }
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -148,14 +168,14 @@ public class ThemeElementDetailActivity extends Activity {
 
         public ImageAdapter(Context c) {
             mContext = c;
-            if (mImages == null) {
+            if (mImages == null && mPreviewList != null) {
                 mImages = new ImageView[mPreviewList.length];
             }
         }
 
         @Override
         public int getCount() {
-            return mPreviewList.length;
+            return mPreviewList != null ? mPreviewList.length : 1;
         }
 
         @Override
@@ -170,6 +190,12 @@ public class ThemeElementDetailActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (mPreviewList == null) {
+                ImageView iv = new ImageView(mContext);
+                iv.setImageResource(R.drawable.no_preview);
+                return iv;
+            }
 
             if (mImages[position] == null) {
                 int h = mPreviews.getHeight();
@@ -243,9 +269,17 @@ public class ThemeElementDetailActivity extends Activity {
 
         protected Boolean doInBackground(String... theme) {
             try{
-                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType,
-                        ThemeElementDetailActivity.this);
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+                if (mElementType != Theme.THEME_ELEMENT_TYPE_FONT)
+                    ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType,
+                            ThemeElementDetailActivity.this);
+                else {
+                    try {
+                        ts.resetThemeFont();
+                        ThemeZipUtils.extractThemeElement(theme[0], "/data", mElementType,
+                                ThemeElementDetailActivity.this);
+                    } catch (Exception e) {}
+                }
                 try {
                     switch (mElementType) {
                         case Theme.THEME_ELEMENT_TYPE_ICONS:
@@ -271,6 +305,18 @@ public class ThemeElementDetailActivity extends Activity {
                             break;
                         case Theme.THEME_ELEMENT_TYPE_MMS:
                             ts.applyThemeMms();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_FONT:
+                            // go through and remove any invalid fonts to prevent system from hanging
+                            for (String s : (new File("/data/fonts")).list()) {
+                                if (!TTFHelper.isValidTtf("/data/fonts/" + s)) {
+                                    (new File("/data/fonts/" + s)).delete();
+                                }
+                            }
+                            if (mFontReboot)
+                                ts.applyThemeFontReboot();
+                            else
+                                ts.applyThemeFont();
                             break;
                     }
                 } catch (Exception e) {

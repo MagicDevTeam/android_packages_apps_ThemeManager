@@ -116,12 +116,14 @@ public class ThemeMixerChooserActivity extends Activity {
             case Theme.THEME_ELEMENT_TYPE_MMS:
                 list = dataSource.getMmsThemes();
                 break;
+            case Theme.THEME_ELEMENT_TYPE_FONT:
+                list = dataSource.getFontThemes();
+                break;
         }
 
         dataSource.close();
         return list;
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -161,6 +163,9 @@ public class ThemeMixerChooserActivity extends Activity {
                             break;
                         case Theme.THEME_ELEMENT_TYPE_MMS:
                             ts.resetThemeMms();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_FONT:
+                            ts.resetThemeFont();
                             break;
                     }
                 } catch (Exception e) {

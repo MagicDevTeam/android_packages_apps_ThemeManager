@@ -31,7 +31,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_THEME_AUTHOR = "author";
     public static final String COLUMN_THEME_DESIGNER = "designer";
     public static final String COLUMN_THEME_VERSION = "version";
-    public static final String COLUMN_THEME_UI_VERRSION = "ui_version";
+    public static final String COLUMN_THEME_UI_VERSION = "ui_version";
     public static final String COLUMN_THEME_PATH = "theme_path";
     public static final String COLUMN_IS_COS_THEME = "cos_theme";
     public static final String COLUMN_HAS_WALLPAPER = "has_wallpaper";
@@ -42,21 +42,23 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_RINGTONES = "has_ringtones";
     public static final String COLUMN_HAS_BOOTANIMATION = "has_bootanimation";
     public static final String COLUMN_HAS_MMS = "has_mms";
+    public static final String COLUMN_HAS_FONT = "has_font";
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
             + TABLE_THEMES + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_THEME_FILE_NAME + " text not null, "
+            + COLUMN_LAST_MODIFIED + " text, "
             + COLUMN_THEME_TITLE + " text, "
             + COLUMN_THEME_AUTHOR + " text, "
             + COLUMN_THEME_DESIGNER + " text, "
             + COLUMN_THEME_VERSION + " text, "
-            + COLUMN_THEME_UI_VERRSION + " text, "
+            + COLUMN_THEME_UI_VERSION + " text, "
             + COLUMN_THEME_PATH + " text not null, "
             + COLUMN_IS_COS_THEME + " integer, "
             + COLUMN_HAS_WALLPAPER + " integer, "
@@ -67,7 +69,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_HAS_RINGTONES + " integer, "
             + COLUMN_HAS_BOOTANIMATION + " integer, "
             + COLUMN_HAS_MMS + " integer, "
-            + COLUMN_LAST_MODIFIED + " text); ";
+            + COLUMN_HAS_FONT + " integer);";
 
 
     public ThemeSQLiteHelper(Context context) {

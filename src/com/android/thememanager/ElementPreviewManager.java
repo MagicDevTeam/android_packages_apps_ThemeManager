@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class ElementPreviewManager {
+    private static final boolean DEBUG = false;
     private final Map<String, BitmapDrawable> drawableMap;
 
     public ElementPreviewManager() {
@@ -45,7 +46,8 @@ public class ElementPreviewManager {
             return drawableMap.get(themeId);
         }
 
-        Log.d(this.getClass().getSimpleName(), "theme ID:" + themeId);
+        if (DEBUG)
+            Log.d(this.getClass().getSimpleName(), "theme ID:" + themeId);
         try {
             InputStream is = fetch(theme, elementType);
             BitmapDrawable drawable = null;
@@ -55,22 +57,24 @@ public class ElementPreviewManager {
                 opts.inSampleSize = 2;
                 Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
                 drawable = new BitmapDrawable(bmp);
-                //drawable = (BitmapDrawable)BitmapDrawable.createFromStream(is, "src");
                 is.close();
             }
 
             if (drawable != null) {
                 drawableMap.put(themeId, drawable);
-                Log.d(this.getClass().getSimpleName(), "got a thumbnail drawable: " + drawable.getBounds() + ", "
-                        + drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "
-                        + drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());
+                if (DEBUG)
+                    Log.d(this.getClass().getSimpleName(), "got a thumbnail drawable: " + drawable.getBounds() + ", "
+                            + drawable.getIntrinsicHeight() + "," + drawable.getIntrinsicWidth() + ", "
+                            + drawable.getMinimumHeight() + "," + drawable.getMinimumWidth());
             } else {
-                Log.w(this.getClass().getSimpleName(), "could not get thumbnail");
+                if (DEBUG)
+                    Log.w(this.getClass().getSimpleName(), "could not get thumbnail");
             }
 
             return drawable;
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);
+            if (DEBUG)
+                Log.e(this.getClass().getSimpleName(), "fetchDrawable failed", e);
             return null;
         }
     }
@@ -104,8 +108,6 @@ public class ElementPreviewManager {
     }
 
     private InputStream fetch(Theme theme, int elementType) throws IOException {
-//        return ThemeUtils.getThemePreview(Environment.getExternalStorageDirectory() + "/" +
-//                Globals.THEME_PATH + "/" + themeId + ".mtz", "preview_launcher_0.png");
         String previewName = null;
         String themeId = theme.getFileName();
         try{
@@ -133,6 +135,9 @@ public class ElementPreviewManager {
                     break;
                 case Theme.THEME_ELEMENT_TYPE_MMS:
                     previewName = PreviewHelper.getMmsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_FONT:
+                    previewName = PreviewHelper.getFontsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
             }
         } catch (Exception e) {

@@ -187,7 +187,7 @@ public class ThemeUtils {
             theme.setAuthor(details.author);
             theme.setDesigner(details.designer);
             theme.setVersion(details.version);
-            theme.setUiVersion(Long.parseLong(details.uiVersion));
+            theme.setUiVersion(details.uiVersion);
             theme.setIsCosTheme(details.isCosTheme);
             theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
@@ -197,6 +197,7 @@ public class ThemeUtils {
             theme.setHasRingtones(zip.getEntry("ringtones") != null);
             theme.setHasBootanimation(zip.getEntry("boots") != null);
             theme.setHasMms(zip.getEntry("com.android.mms") != null);
+            theme.setHasFont(zip.getEntry("fonts") != null);
             theme.setLastModified(lastModified);
 
             try {

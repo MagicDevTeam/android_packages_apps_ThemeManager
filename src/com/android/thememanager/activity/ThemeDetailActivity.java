@@ -52,6 +52,7 @@ public class ThemeDetailActivity extends Activity {
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
     private Theme mTheme = null;
+    private boolean mApplyFont = false;
 
 
     @Override
@@ -99,7 +100,23 @@ public class ThemeDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mTheme.getThemePath());
+        if (mTheme.getHasFont()) {
+            SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_apply_theme_with_font_and_reboot),
+                    getString(R.string.dlg_apply_theme_with_font_without_reboot),
+                    getString(R.string.dlg_apply_theme_with_font_title),
+                    getString(R.string.dlg_apply_theme_with_font_body),
+                    this,
+                    new SimpleDialogs.OnYesNoResponse() {
+                        @Override
+                        public void onYesNoResponse(boolean isYes) {
+                            mApplyFont = isYes;
+                            new ApplyThemeTask().execute(mTheme.getThemePath());
+                        }
+                    });
+
+        } else {
+            new ApplyThemeTask().execute(mTheme.getThemePath());
+        }
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -211,14 +228,23 @@ public class ThemeDetailActivity extends Activity {
                 // have the theme service remove the existing theme
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 try {
-                    ts.removeTheme();
+                    ts.removeTheme(mApplyFont);
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
 
-                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme", ThemeDetailActivity.this);
+                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme", ThemeDetailActivity.this, mApplyFont);
                 try {
-                    ts.applyInstalledTheme();
+                    if (mApplyFont) {
+                        // go through and remove any invalid fonts to prevent system from hanging
+                        for (String s : (new File("/data/fonts")).list()) {
+                            if (!TTFHelper.isValidTtf("/data/fonts/" + s)) {
+                                (new File("/data/fonts/" + s)).delete();
+                            }
+                        }
+                        ts.applyInstalledThemeReboot();
+                    } else
+                        ts.applyInstalledTheme();
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to call ThemeService.applyInstalledTheme", e);
                 }

@@ -131,7 +131,7 @@ public class ThemeChooserFragment extends Fragment {
                 // have the theme service remove the existing theme
                 IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 try {
-                    ts.removeThemeAndApply();
+                    ts.removeThemeAndApply(true);
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
@@ -276,7 +276,7 @@ public class ThemeChooserFragment extends Fragment {
                         THEMES_PATH + "/" + themeId,
                         getActivity());
             }
-            removeNonExistingThemes(availableThemes);
+            //removeNonExistingThemes(availableThemes);
             return Boolean.TRUE;
         }
 

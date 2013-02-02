@@ -6,6 +6,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_reset">Reset theme</string>
     <string name="menu_reset_element">Reset</string>
+    <string name="menu_delete_theme">Delete theme</string>
 
     <string name="btn_apply_theme">Apply</string>
     <string name="btn_ok">OK</string>

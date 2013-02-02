@@ -61,6 +61,7 @@ public class ThemeChooserFragment extends Fragment {
 
         mChameleon = (ImageView) v.findViewById(R.id.loadingIndicator);
         mGridView = (GridView) v.findViewById(R.id.coverflow);
+        registerForContextMenu(mGridView);
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -94,6 +95,29 @@ public class ThemeChooserFragment extends Fragment {
 
         while(pendingCallbakcs-- > 0)
             getActivity().runOnUiThread(mPendingCallbacks.remove(0));
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.context_menu_theme, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.menu_delete_theme:
+                Integer tag = (Integer)info.targetView.getTag();
+                Theme theme = mThemesList.get(tag);
+                ThemeUtils.deleteTheme(theme, getActivity());
+                ThemeUtils.deleteThemeCacheDir(theme.getFileName());
+                mViewUpdateHandler.sendEmptyMessage(0);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private Handler mViewUpdateHandler = new Handler() {
@@ -232,7 +256,7 @@ public class ThemeChooserFragment extends Fragment {
                 v.findViewById(R.id.miui_indicator).setVisibility(View.GONE);
             else
                 v.findViewById(R.id.miui_indicator).setVisibility(View.VISIBLE);
-
+            v.setTag(Integer.valueOf(position));
             return v;
         }
 

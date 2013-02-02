@@ -155,6 +155,7 @@ public class ThemeUtils {
         dataSource.open();
         dataSource.deleteTheme(theme);
         dataSource.close();
+        (new File(theme.getThemePath())).delete();
     }
 
     public static List<Theme> getAllThemes(Context context) {

@@ -30,11 +30,6 @@
         <activity android:name=".activity.ThemeElementDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeBootanimationDetailActivity" android:screenOrientation="portrait"/>
 
-        <provider
-            android:name="com.android.thememanager.provider.FileProvider"
-            android:authorities="com.android.thememanager"
-            android:exported="true" />
-
     </application>
 
 </manifest>

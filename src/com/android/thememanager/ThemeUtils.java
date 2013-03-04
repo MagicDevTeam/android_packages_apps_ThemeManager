@@ -99,6 +99,11 @@ public class ThemeUtils {
         return filename;
     }
 
+    public static boolean installedThemeHasFonts() {
+        File fontsDir = new File("/data/fonts");
+        return fontsDir.exists() && fontsDir.list().length > 0;
+    }
+
     /**
      * Simple copy routine given an input stream and an output stream
      */

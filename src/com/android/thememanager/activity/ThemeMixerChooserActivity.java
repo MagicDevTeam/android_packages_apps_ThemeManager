@@ -138,7 +138,8 @@ public class ThemeMixerChooserActivity extends Activity {
             case R.id.menu_reset:
                 String installedThemeDir = "/data/system/theme/";
                 try {
-                    IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+                    final IThemeManagerService ts = 
+                            IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                     switch (mElementType) {
                         case Theme.THEME_ELEMENT_TYPE_ICONS:
                             ts.resetThemeIcons();
@@ -165,7 +166,23 @@ public class ThemeMixerChooserActivity extends Activity {
                             ts.resetThemeMms();
                             break;
                         case Theme.THEME_ELEMENT_TYPE_FONT:
-                            ts.resetThemeFont();
+                            if (ThemeUtils.installedThemeHasFonts()) {
+                                SimpleDialogs.displayYesNoDialog(
+                                        getString(R.string.dlg_reset_font_and_reboot),
+                                        getString(R.string.dlg_reset_font_without_reboot),
+                                        getString(R.string.dlg_reset_font_title),
+                                        getString(R.string.dlg_reset_font_body),
+                                        this,
+                                        new SimpleDialogs.OnYesNoResponse() {
+                                            @Override
+                                            public void onYesNoResponse(boolean isYes) {
+                                                if (isYes)
+                                                    try {
+                                                        ts.resetThemeFontReboot();
+                                                    } catch(Exception e) {}
+                                            }
+                                        });
+                            }
                             break;
                     }
                 } catch (Exception e) {

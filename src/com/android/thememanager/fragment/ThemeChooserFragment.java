@@ -153,11 +153,28 @@ public class ThemeChooserFragment extends Fragment {
         switch (menuItem.getItemId()) {
             case R.id.menu_reset:
                 // have the theme service remove the existing theme
-                IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-                try {
-                    ts.removeThemeAndApply(true);
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
+                final IThemeManagerService ts = 
+                        IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+                if (ThemeUtils.installedThemeHasFonts()) {
+                    SimpleDialogs.displayYesNoDialog(
+                            getString(R.string.dlg_reset_theme_with_font_and_reboot),
+                            getString(R.string.dlg_reset_theme_with_font_without_reboot),
+                            getString(R.string.dlg_reset_theme_with_font_title),
+                            getString(R.string.dlg_reset_theme_with_font_body),
+                            getActivity(),
+                            new SimpleDialogs.OnYesNoResponse() {
+                                @Override
+                                public void onYesNoResponse(boolean isYes) {
+                                   try {
+                                      ts.removeThemeAndApply(isYes);
+                                   } catch(Exception e) {}
+                                }
+                            });
+                } else
+                    try {
+                        ts.removeThemeAndApply(false);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
                 }
                 return true;
             default:

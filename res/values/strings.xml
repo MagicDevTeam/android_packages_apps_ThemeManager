@@ -39,4 +39,13 @@
     <string name="dlg_apply_font_without_reboot">Apply font and reboot later</string>
     <string name="dlg_apply_font_and_reboot">Apply font and reboot now</string>
 
+    <string name="dlg_reset_theme_with_font_title">Remove theme with font</string>
+    <string name="dlg_reset_theme_with_font_body">This theme contains fonts which would require a system reboot to be revert to stock fonts.</string>
+    <string name="dlg_reset_theme_with_font_without_reboot">Remove theme and leave font</string>
+    <string name="dlg_reset_theme_with_font_and_reboot">Remove theme and font, and reboot</string>
+
+    <string name="dlg_reset_font_title">Remove font</string>
+    <string name="dlg_reset_font_body">Removing a custom font requires that the system be restarted.</string>
+    <string name="dlg_reset_font_without_reboot">Leave custom font installed</string>
+    <string name="dlg_reset_font_and_reboot">Remove font and reboot now</string>
 </resources>

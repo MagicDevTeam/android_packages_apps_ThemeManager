@@ -223,32 +223,36 @@ public class ThemeMixerChooserActivity extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            View v = convertView;
-            if (v == null) {
+            PreviewHolder holder = null;
+            if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = inflater.inflate(R.layout.theme_preview, null);
-                FrameLayout fl = (FrameLayout)v.findViewById(R.id.preview_layout);
+                convertView = inflater.inflate(R.layout.theme_preview, null);
+                FrameLayout fl = (FrameLayout)convertView.findViewById(R.id.preview_layout);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
                 params.width = mPreviewWidth;
                 params.height = mPreviewHeight;
                 fl.setLayoutParams(params);
+                holder = new PreviewHolder();
+                holder.preview = (ImageView) convertView.findViewById(R.id.preview_image);
+                holder.name = (TextView) convertView.findViewById(R.id.theme_name);
+                holder.osTag = (ImageView) convertView.findViewById(R.id.os_indicator);
+                convertView.setTag(holder);
+            } else {
+                holder = (PreviewHolder) convertView.getTag();
             }
-            ImageView i = (ImageView)v.findViewById(R.id.preview_image);//mImages[position];//new ImageView(mContext);
-            if (i.getDrawable() == null) {
-                i.setImageResource(R.drawable.preview);
+            if (holder.preview.getDrawable() == null) {
+                holder.preview.setImageResource(R.drawable.preview);
             }
 
-            mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, i);
-
-            TextView tv = (TextView) v.findViewById(R.id.theme_name);
-            tv.setText(mThemeList.get(position).getTitle());
+            mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, holder.preview);
+            holder.name.setText(mThemeList.get(position).getTitle());
 
             if (mThemeList.get(position).getIsCosTheme())
-                v.findViewById(R.id.miui_indicator).setVisibility(View.GONE);
+                holder.osTag.setImageResource(R.drawable.chaos);
             else
-                v.findViewById(R.id.miui_indicator).setVisibility(View.VISIBLE);
+                holder.osTag.setImageResource(R.drawable.miui);
 
-            return v;
+            return convertView;
         }
 
         public void destroy() {

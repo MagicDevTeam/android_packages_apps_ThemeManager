@@ -30,6 +30,7 @@ public class PreviewHelper {
     public static final String PREVIEW_BOOTANIMATION_PREFIX = "preview_animation_";
     public static final String PREVIEW_LOCKSCREEN_PREFIX = "preview_lockscreen_";
     public static final String PREVIEW_FONTS_PREFIX = "preview_fonts_";
+    public static final String PREVIEW_WALLPAPER_PREFIX = "default_wallpaper";
 
     static FilenameFilter mAllPreviewsFilter = new FilenameFilter() {
         @Override
@@ -124,6 +125,17 @@ public class PreviewHelper {
         public boolean accept(File file, String s) {
             if (s.toLowerCase().contains(PREVIEW_LOCKSCREEN_PREFIX) &&
                     s.toLowerCase().endsWith(".png"))
+                return true;
+            else
+                return false;
+        }
+    };
+
+    static FilenameFilter mWallpaperPreviewsFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String s) {
+            if (s.toLowerCase().contains(PREVIEW_WALLPAPER_PREFIX) &&
+                    s.toLowerCase().endsWith(".jpg"))
                 return true;
             else
                 return false;
@@ -228,6 +240,18 @@ public class PreviewHelper {
         String[] dirList = null;
         if (dir.exists() && dir.isDirectory())
             dirList = dir.list(mFontsPreviewsFilter);
+
+        if (dirList != null)
+            Arrays.sort(dirList);
+
+        return dirList;
+    }
+
+    public static String[] getWallpaperPreviews(String path) {
+        File dir = new File(path);
+        String[] dirList = null;
+        if (dir.exists() && dir.isDirectory())
+            dirList = dir.list(mWallpaperPreviewsFilter);
 
         if (dirList != null)
             Arrays.sort(dirList);

@@ -76,7 +76,11 @@ public class ThemeElementDetailActivity extends Activity {
                         ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                mPreviewList = PreviewHelper.getLauncherPreviews(THEMES_PATH + "/.cache/" +
+                if (!(new File(THEMES_PATH + "/.cache/" +
+                        ThemeUtils.stripExtension(themeName) + "/default_wallpaper.jpg")).exists()) {
+                    ThemeUtils.extractThemeWallpaper(ThemeUtils.stripExtension(themeName), mTheme.getThemePath());
+                }
+                mPreviewList = PreviewHelper.getWallpaperPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:

@@ -17,15 +17,14 @@
 package com.android.thememanager;
 
 import android.content.Context;
-import android.os.Environment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -137,6 +136,35 @@ public class ThemeUtils {
                 }
             }
             zis.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean extractThemeWallpaper(String themeId, String themePath) {
+        try {
+            FileInputStream fis = new FileInputStream(themePath);
+            ZipInputStream zis = new ZipInputStream(fis);
+            ZipFile zip = new ZipFile(themePath);
+            ZipEntry ze = null;
+
+            if (!themeCacheDirExists(themeId))
+                createThemeCacheDir(themeId);
+
+            ze = zip.getEntry("wallpaper/default_wallpaper.jpg");
+            if (ze == null)
+                ze = zip.getEntry("wallpaper/default_wallpaper.png");
+
+            if (ze != null) {
+                InputStream is = zip.getInputStream(ze);
+                FileOutputStream  out = new FileOutputStream(Globals.CACHE_DIR + "/" +
+                        themeId + "/default_wallpaper.jpg");
+                BitmapFactory.decodeStream(is).compress(Bitmap.CompressFormat.JPEG,
+                        50, out);
+            }
+            zip.close();
         } catch (Exception e) {
             return false;
         }

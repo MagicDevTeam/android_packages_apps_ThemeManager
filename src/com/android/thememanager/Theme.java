@@ -62,7 +62,8 @@ public class Theme {
     private boolean hasLockscreen;
     private boolean hasSystemUI;
     private boolean hasFramework;
-    private boolean hasRingtones;
+    private boolean hasRingtone;
+    private boolean hasNotification;
     private boolean hasBootanimation;
     private boolean hasMms;
     private boolean hasFont;
@@ -180,12 +181,20 @@ public class Theme {
         this.hasFramework = hasFramework;
     }
 
-    public boolean getHasRingtones() {
-        return hasRingtones;
+    public boolean getHasRingtone() {
+        return hasRingtone;
     }
 
-    public void setHasRingtones(boolean hasRingtones) {
-        this.hasRingtones = hasRingtones;
+    public void setHasRingtone(boolean hasRingtone) {
+        this.hasRingtone = hasRingtone;
+    }
+
+    public boolean getHasNotification() {
+        return hasNotification;
+    }
+
+    public void setHasNotification(boolean hasNotification) {
+        this.hasNotification = hasNotification;
     }
 
     public boolean getHasBootanimation() {

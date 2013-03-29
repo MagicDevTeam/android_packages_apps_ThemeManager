@@ -59,10 +59,12 @@ public class ThemeMixerChooserActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent;
-                if (mElementType != Theme.THEME_ELEMENT_TYPE_BOOTANIMATION) {
-                    intent = new Intent(ThemeMixerChooserActivity.this, ThemeElementDetailActivity.class);
-                } else {
+                if (mElementType == Theme.THEME_ELEMENT_TYPE_BOOTANIMATION) {
                     intent = new Intent(ThemeMixerChooserActivity.this, ThemeBootanimationDetailActivity.class);
+                } else if (mElementType == Theme.THEME_ELEMENT_TYPE_RINGTONES) {
+                    intent = new Intent(ThemeMixerChooserActivity.this, ThemeRingtoneDetailActivity.class);
+                } else {
+                    intent = new Intent(ThemeMixerChooserActivity.this, ThemeElementDetailActivity.class);
                 }
                 intent.putExtra("type", mElementType);
                 intent.putExtra("theme_id", mThemeList.get(i).getId());

@@ -46,7 +46,8 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
             ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI,
             ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK,
-            ThemeSQLiteHelper.COLUMN_HAS_RINGTONES,
+            ThemeSQLiteHelper.COLUMN_HAS_RINGTONE,
+            ThemeSQLiteHelper.COLUMN_HAS_NOTIFICATION,
             ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION,
             ThemeSQLiteHelper.COLUMN_HAS_MMS,
             ThemeSQLiteHelper.COLUMN_HAS_FONT };
@@ -79,7 +80,8 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI, theme.getHasSystemUI());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK, theme.getHasFramework());
-        values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONES, theme.getHasRingtones());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONE, theme.getHasRingtone());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_NOTIFICATION, theme.getHasNotification());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION, theme.getHasBootanimation());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_MMS, theme.getHasMms());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FONT, theme.getHasFont());
@@ -260,7 +262,8 @@ public class ThemesDataSource {
         List<Theme> themes = new ArrayList<Theme>();
 
         Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
-                allColumns, ThemeSQLiteHelper.COLUMN_HAS_RINGTONES + "='1'",
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_RINGTONE + "='1' OR " +
+                ThemeSQLiteHelper.COLUMN_HAS_NOTIFICATION + "='1'",
                 null, null, null, null);
 
         cursor.moveToFirst();
@@ -345,10 +348,11 @@ public class ThemesDataSource {
         theme.setHasLockscreen(cursor.getInt(12) == 1);
         theme.setHasSystemUI(cursor.getInt(13) == 1);
         theme.setHasFramework(cursor.getInt(14) == 1);
-        theme.setHasRingtones(cursor.getInt(15) == 1);
-        theme.setHasBootanimation(cursor.getInt(16) == 1);
-        theme.setHasMms(cursor.getInt(17) == 1);
-        theme.setHasFont(cursor.getInt(18) == 1);
+        theme.setHasRingtone(cursor.getInt(15) == 1);
+        theme.setHasNotification(cursor.getInt(16) == 1);
+        theme.setHasBootanimation(cursor.getInt(17) == 1);
+        theme.setHasMms(cursor.getInt(18) == 1);
+        theme.setHasFont(cursor.getInt(19) == 1);
         return theme;
     }
 }

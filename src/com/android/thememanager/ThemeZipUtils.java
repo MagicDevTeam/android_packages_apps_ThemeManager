@@ -33,51 +33,6 @@ import java.util.zip.*;
 public class ThemeZipUtils {
     private static final String TAG = "ThemeZipUtils";
 
-    /**
-     * Simple copy routine given an input stream and an output stream
-     */
-    private static void copyInputStream(InputStream in, OutputStream out)
-            throws IOException {
-        byte[] buffer = new byte[1024];
-        int len;
-
-        while ((len = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, len);
-        }
-
-        out.close();
-    }
-
-    private static boolean isSymbolicLink(File f) throws IOException {
-        return !f.getAbsolutePath().equals(f.getCanonicalPath());
-    }
-
-    private static void setDirPerms(File f) {
-        try {
-            if (isSymbolicLink(f))
-                return;
-        } catch (IOException e) {
-            return;
-        }
-
-        if (!f.isDirectory())
-            return;
-        f.setReadable(true, false);
-        f.setWritable(true, false);
-        f.setExecutable(true, false);
-    }
-
-    private static void setFilePerms(File f) {
-        try {
-            if (isSymbolicLink(f))
-                return;
-        } catch (IOException e) {
-            return;
-        }
-        f.setReadable(true, false);
-        f.setWritable(true, false);
-    }
-
     public static void extractTheme(String src, String dst, Context context, boolean applyFont) throws IOException {
         ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
                 new FileInputStream(src)));
@@ -87,9 +42,9 @@ public class ThemeZipUtils {
             if (ze.getName().contains("fonts/")) {
                 if (ze.isDirectory()) {
                 } else if (applyFont) {
-                    copyInputStream(zip,
+                    ThemeUtils.copyInputStream(zip,
                             new BufferedOutputStream(new FileOutputStream("/data/" + ze.getName())));
-                    setFilePerms(new File("/data/" + ze.getName()));
+                    ThemeUtils.setFilePerms(new File("/data/" + ze.getName()));
                 }
             } else {
                 if (ze.isDirectory()) {
@@ -97,7 +52,7 @@ public class ThemeZipUtils {
                     Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
                     File dir = new File(dst + "/" + ze.getName());
                     dir.mkdir();
-                    setDirPerms(dir);
+                    ThemeUtils.setDirPerms(dir);
                     zip.closeEntry();
                     continue;
                 }
@@ -113,9 +68,9 @@ public class ThemeZipUtils {
                     extractBootAnimation(zip, dst + "/" + ze.getName(),
                             new Point(dm.widthPixels, dm.heightPixels));
                 } else
-                    copyInputStream(zip,
+                    ThemeUtils.copyInputStream(zip,
                             new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                setFilePerms(new File(dst + "/" + ze.getName()));
+                ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
             }
 
             zip.closeEntry();
@@ -135,9 +90,9 @@ public class ThemeZipUtils {
             switch (elementType) {
                 case Theme.THEME_ELEMENT_TYPE_ICONS:
                     if (ze.getName().equals("icons")) {
-                        copyInputStream(zip,
+                        ThemeUtils.copyInputStream(zip,
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                        setFilePerms(new File(dst + "/" + ze.getName()));
+                        ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         done = true;
                     }
                     break;
@@ -148,37 +103,37 @@ public class ThemeZipUtils {
                             Log.d(TAG, "Creating directory " + dst + "/" + ze.getName());
                             File dir = new File(dst + "/" + ze.getName());
                             dir.mkdir();
-                            setDirPerms(dir);
+                            ThemeUtils.setDirPerms(dir);
                             zip.closeEntry();
                             continue;
                         } else {
-                            copyInputStream(zip,
+                            ThemeUtils.copyInputStream(zip,
                                     new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                            setFilePerms(new File(dst + "/" + ze.getName()));
+                            ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         }
                     }
                     break;
                 case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                     if (ze.getName().equals("com.android.systemui")) {
-                        copyInputStream(zip,
+                        ThemeUtils.copyInputStream(zip,
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                        setFilePerms(new File(dst + "/" + ze.getName()));
+                        ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         done = true;
                     }
                     break;
                 case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
                     if (ze.getName().equals("framework-res")) {
-                        copyInputStream(zip,
+                        ThemeUtils.copyInputStream(zip,
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                        setFilePerms(new File(dst + "/" + ze.getName()));
+                        ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         done = true;
                     }
                     break;
                 case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
                     if (ze.getName().equals("lockscreen")) {
-                        copyInputStream(zip,
+                        ThemeUtils.copyInputStream(zip,
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                        setFilePerms(new File(dst + "/" + ze.getName()));
+                        ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         done = true;
                     }
                     break;
@@ -189,13 +144,13 @@ public class ThemeZipUtils {
                             Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
                             File dir = new File(dst + "/" + ze.getName());
                             dir.mkdir();
-                            setDirPerms(dir);
+                            ThemeUtils.setDirPerms(dir);
                             zip.closeEntry();
                             continue;
                         } else {
-                            copyInputStream(zip,
+                            ThemeUtils.copyInputStream(zip,
                                     new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                            setFilePerms(new File(dst + "/" + ze.getName()));
+                            ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         }
                     }
                     break;
@@ -206,7 +161,7 @@ public class ThemeZipUtils {
                             Log.d(TAG, "Creating directory /data/system/theme/" + ze.getName());
                             File dir = new File(dst + "/" + ze.getName());
                             dir.mkdir();
-                            setDirPerms(dir);
+                            ThemeUtils.setDirPerms(dir);
                             zip.closeEntry();
                             continue;
                         } else {
@@ -218,15 +173,15 @@ public class ThemeZipUtils {
                             wm.getDefaultDisplay().getRealMetrics(dm);
                             extractBootAnimation(zip, dst + "/" + ze.getName(),
                                     new Point(dm.widthPixels, dm.heightPixels));
-                            setFilePerms(new File(dst + "/" + ze.getName()));
+                            ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         }
                     }
                     break;
                 case Theme.THEME_ELEMENT_TYPE_MMS:
                     if (ze.getName().equals("com.android.mms")) {
-                        copyInputStream(zip,
+                        ThemeUtils.copyInputStream(zip,
                                 new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                        setFilePerms(new File(dst + "/" + ze.getName()));
+                        ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         done = true;
                     }
                     break;
@@ -235,13 +190,13 @@ public class ThemeZipUtils {
                         if (ze.isDirectory()) {
                             File dir = new File(dst + "/" + ze.getName());
                             dir.mkdir();
-                            setDirPerms(dir);
+                            ThemeUtils.setDirPerms(dir);
                             zip.closeEntry();
                             continue;
                         } else {
-                            copyInputStream(zip,
+                            ThemeUtils.copyInputStream(zip,
                                     new BufferedOutputStream(new FileOutputStream(dst + "/" + ze.getName())));
-                            setFilePerms(new File(dst + "/" + ze.getName()));
+                            ThemeUtils.setFilePerms(new File(dst + "/" + ze.getName()));
                         }
                     }
                     break;

@@ -39,14 +39,15 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_LOCKSCREEN = "has_lockscreen";
     public static final String COLUMN_HAS_SYSTEMUI = "has_systemui";
     public static final String COLUMN_HAS_FRAMEWORK = "has_framework";
-    public static final String COLUMN_HAS_RINGTONES = "has_ringtones";
+    public static final String COLUMN_HAS_RINGTONE = "has_ringtone";
+    public static final String COLUMN_HAS_NOTIFICATION = "has_notification";
     public static final String COLUMN_HAS_BOOTANIMATION = "has_bootanimation";
     public static final String COLUMN_HAS_MMS = "has_mms";
     public static final String COLUMN_HAS_FONT = "has_font";
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -66,7 +67,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_HAS_LOCKSCREEN + " integer, "
             + COLUMN_HAS_SYSTEMUI + " integer, "
             + COLUMN_HAS_FRAMEWORK + " integer, "
-            + COLUMN_HAS_RINGTONES + " integer, "
+            + COLUMN_HAS_RINGTONE + " integer, "
+            + COLUMN_HAS_NOTIFICATION + " integer, "
             + COLUMN_HAS_BOOTANIMATION + " integer, "
             + COLUMN_HAS_MMS + " integer, "
             + COLUMN_HAS_FONT + " integer);";

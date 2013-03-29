@@ -118,6 +118,36 @@ public class ThemeUtils {
         out.close();
     }
 
+    public static boolean isSymbolicLink(File f) throws IOException {
+        return !f.getAbsolutePath().equals(f.getCanonicalPath());
+    }
+
+    public static void setDirPerms(File f) {
+        try {
+            if (isSymbolicLink(f))
+                return;
+        } catch (IOException e) {
+            return;
+        }
+
+        if (!f.isDirectory())
+            return;
+        f.setReadable(true, false);
+        f.setWritable(true, false);
+        f.setExecutable(true, false);
+    }
+
+    public static void setFilePerms(File f) {
+        try {
+            if (isSymbolicLink(f))
+                return;
+        } catch (IOException e) {
+            return;
+        }
+        f.setReadable(true, false);
+        f.setWritable(true, false);
+    }
+
     public static boolean extractThemePreviews(String themeId, String themePath) {
         try {
             FileInputStream fis = new FileInputStream(themePath);
@@ -145,8 +175,6 @@ public class ThemeUtils {
 
     public static boolean extractThemeWallpaper(String themeId, String themePath) {
         try {
-            FileInputStream fis = new FileInputStream(themePath);
-            ZipInputStream zis = new ZipInputStream(fis);
             ZipFile zip = new ZipFile(themePath);
             ZipEntry ze = null;
 
@@ -165,6 +193,35 @@ public class ThemeUtils {
                         50, out);
             }
             zip.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean extractThemRingtones(String themeId, String themePath) {
+        try {
+            ZipFile zip = new ZipFile(themePath);
+            ZipEntry ze = null;
+
+            if(!cacheDirExists())
+                createCacheDir();
+
+            InputStream is = null;
+            FileOutputStream out = null;
+            ze = zip.getEntry("ringtones/ringtone.mp3");
+            if (ze != null) {
+                is = zip.getInputStream(ze);
+                out = new FileOutputStream(Globals.CACHE_DIR + "/ringtone.mp3");
+                copyInputStream(is, out);
+            }
+            ze = zip.getEntry("ringtones/notification.mp3");
+            if (ze != null) {
+                is = zip.getInputStream(ze);
+                out = new FileOutputStream(Globals.CACHE_DIR + "/notification.mp3");
+                copyInputStream(is, out);
+            }
         } catch (Exception e) {
             return false;
         }
@@ -228,7 +285,8 @@ public class ThemeUtils {
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
             theme.setHasSystemUI(zip.getEntry("com.android.systemui") != null);
             theme.setHasFramework(zip.getEntry("framework-res") != null);
-            theme.setHasRingtones(zip.getEntry("ringtones") != null);
+            theme.setHasRingtone(zip.getEntry("ringtones/ringtone.mp3") != null);
+            theme.setHasNotification(zip.getEntry("ringtones/notification.mp3") != null);
             theme.setHasBootanimation(zip.getEntry("boots") != null);
             theme.setHasMms(zip.getEntry("com.android.mms") != null);
             theme.setHasFont(zip.getEntry("fonts") != null);

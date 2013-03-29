@@ -29,6 +29,7 @@
         <activity android:name=".activity.ThemeMixerChooserActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeElementDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeBootanimationDetailActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ThemeRingtoneDetailActivity" android:screenOrientation="portrait"/>
 
     </application>
 

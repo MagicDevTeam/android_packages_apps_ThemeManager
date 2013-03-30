@@ -102,7 +102,7 @@ public class ThemeMixerChooserActivity extends Activity {
                 list = dataSource.getFrameworkThemes();
                 break;
             case Theme.THEME_ELEMENT_TYPE_CONTACTS:
-                list = dataSource.getLockscreenThemes();
+                list = dataSource.getContactsThemes();
                 break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                 list = dataSource.getRingtoneThemes();

@@ -132,7 +132,6 @@ public class ThemeChooserFragment extends Fragment {
             mGridView.setAdapter(mAdapter);
             mChameleon.setVisibility(View.GONE);
             mGridView.setVisibility(View.VISIBLE);
-            //getActivity().dismissDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
         }
     };
 

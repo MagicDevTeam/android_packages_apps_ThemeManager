@@ -170,6 +170,25 @@ public class ThemesDataSource {
         return themes;
     }
 
+    public List<Theme> getCompleteThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI + "=1 AND "
+                + ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK + "=1",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
     public List<Theme> getIconThemes() {
         List<Theme> themes = new ArrayList<Theme>();
 

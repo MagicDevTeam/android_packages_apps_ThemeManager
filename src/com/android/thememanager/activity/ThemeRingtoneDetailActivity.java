@@ -30,10 +30,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.android.thememanager.Globals;
-import com.android.thememanager.R;
-import com.android.thememanager.Theme;
-import com.android.thememanager.ThemeUtils;
+import com.android.thememanager.*;
 import com.android.thememanager.provider.FileProvider;
 
 import java.io.File;
@@ -53,7 +50,6 @@ public class ThemeRingtoneDetailActivity extends Activity
     private Button mSetRingtone;
     private Button mSetNotification;
     private MediaPlayer mMediaPlayer;
-    private boolean mIsRingtone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +97,8 @@ public class ThemeRingtoneDetailActivity extends Activity
             String action = intent.getAction();
             if (Globals.ACTION_THEME_APPLIED.equals(action)) {
             } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
+                SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
+                        ThemeRingtoneDetailActivity.this);
             }
         }
     };
@@ -134,6 +132,8 @@ public class ThemeRingtoneDetailActivity extends Activity
                 ts.applyThemeRingtone(FileProvider.CONTENT + RINGTONE_NAME);
                 setRingtone(false);
             } catch (RemoteException re) {
+                SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
+                        ThemeRingtoneDetailActivity.this);
             }
         } else if (v == mSetNotification) {
             ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
@@ -141,6 +141,8 @@ public class ThemeRingtoneDetailActivity extends Activity
                 ts.applyThemeRingtone(FileProvider.CONTENT + NOTIFICATION_NAME);
                 setRingtone(false);
             } catch (RemoteException re) {
+                SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
+                        ThemeRingtoneDetailActivity.this);
             }
             setRingtone(true);
         }

@@ -60,4 +60,7 @@
     <string name="dlg_scale_boot_body">Scaling the boot animation will allow it to be resized to fit your device better.\n\nIf you encounter a blank animation, you should try re-applying this animation without scaling.</string>
     <string name="dlg_scale_boot_no_scaling">Apply without scaling</string>
     <string name="dlg_scale_boot_with_scaling">Apply with scaling</string>
+
+    <string name="dlg_theme_failed_title">Oooooops!</string>
+    <string name="dlg_theme_failed_body">Something went horribly wrong and the theme did not apply.\n\nYou may want to try re-applying the theme or try a different theme.</string>
 </resources>

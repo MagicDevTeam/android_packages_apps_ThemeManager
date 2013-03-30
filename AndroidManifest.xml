@@ -5,6 +5,7 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_THEME_SERVICE" />
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -30,6 +31,11 @@
         <activity android:name=".activity.ThemeElementDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeBootanimationDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeRingtoneDetailActivity" android:screenOrientation="portrait"/>
+
+        <provider
+            android:name="com.android.thememanager.provider.FileProvider"
+            android:authorities="com.android.thememanager"
+            android:exported="true" />
 
     </application>
 

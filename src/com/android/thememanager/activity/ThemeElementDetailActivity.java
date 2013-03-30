@@ -19,26 +19,24 @@ package com.android.thememanager.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ServiceManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.android.thememanager.*;
+import com.android.thememanager.provider.FileProvider;
 
 import java.io.*;
 
@@ -91,8 +89,8 @@ public class ThemeElementDetailActivity extends Activity {
                 mPreviewList = PreviewHelper.getLauncherPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
-            case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
-                mPreviewList = PreviewHelper.getLockscreenPreviews(THEMES_PATH + "/.cache/" +
+            case Theme.THEME_ELEMENT_TYPE_CONTACTS:
+                mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
@@ -122,8 +120,19 @@ public class ThemeElementDetailActivity extends Activity {
         mPreviews.setAdapter(mAdapter);
         mPreviews.setSpacing(20);
         mPreviews.setAnimationDuration(1000);
-
     }
+
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Globals.ACTION_THEME_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
@@ -144,6 +153,17 @@ public class ThemeElementDetailActivity extends Activity {
         } catch (Exception e) {}
 
         mAdapter.notifyDataSetChanged();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Globals.ACTION_THEME_APPLIED);
+        filter.addAction(Globals.ACTION_THEME_NOT_APPLIED);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mBroadcastReceiver);
     }
 
     public void applyTheme(View view) {
@@ -157,11 +177,11 @@ public class ThemeElementDetailActivity extends Activity {
                         @Override
                         public void onYesNoResponse(boolean isYes) {
                             mFontReboot = isYes;
-                            new ApplyThemeTask().execute(mTheme.getThemePath());
+                            applyTheme(mTheme.getThemePath());
                         }
                     });
         } else {
-            new ApplyThemeTask().execute(mTheme.getThemePath());
+            applyTheme(mTheme.getThemePath());
         }
     }
 
@@ -264,85 +284,45 @@ public class ThemeElementDetailActivity extends Activity {
         }
     }
 
-    private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog( DIALOG_PROGRESS );
-        }
-
-        protected Boolean doInBackground(String... theme) {
-            try{
-                IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-                if (mElementType != Theme.THEME_ELEMENT_TYPE_FONT)
-                    ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme", mElementType,
-                            ThemeElementDetailActivity.this);
-                else {
-                    try {
-                        ts.resetThemeFont();
-                        ThemeZipUtils.extractThemeElement(theme[0], "/data", mElementType,
-                                ThemeElementDetailActivity.this);
-                    } catch (Exception e) {}
-                }
-                try {
-                    switch (mElementType) {
-                        case Theme.THEME_ELEMENT_TYPE_ICONS:
-                            ts.applyThemeIcons();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                            ts.applyThemeWallpaper();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
-                            ts.applyThemeSystemUI();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
-                            ts.applyThemeFramework();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
-                            ts.applyThemeLockscreen();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_RINGTONES:
-                            ts.applyThemeRingtones();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
-                            ts.applyThemeBootanimation();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_MMS:
-                            ts.applyThemeMms();
-                            break;
-                        case Theme.THEME_ELEMENT_TYPE_FONT:
-                            // go through and remove any invalid fonts to prevent system from hanging
-                            for (String s : (new File("/data/fonts")).list()) {
-                                if (!TTFHelper.isValidTtf("/data/fonts/" + s)) {
-                                    (new File("/data/fonts/" + s)).delete();
-                                }
-                            }
-                            if (mFontReboot)
-                                ts.applyThemeFontReboot();
-                            else
-                                ts.applyThemeFont();
-                            break;
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to call ThemeService.applyInstalledTheme", e);
-                }
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "ApplyThemeTask FileNotFoundException", e);
-                return Boolean.FALSE;
-            } catch (IOException e) {
-                Log.e(TAG, "ApplyThemeTask IOException", e);
-                return Boolean.FALSE;
+    private void applyTheme(String theme) {
+        String themeFileName = ThemeUtils.stripPath(theme);
+        IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+        try {
+            switch (mElementType) {
+                case Theme.THEME_ELEMENT_TYPE_ICONS:
+                    ts.applyThemeIcons(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
+                    ts.applyThemeWallpaper(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
+                    ts.applyThemeSystemUI(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
+                    ts.applyThemeFramework(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_CONTACTS:
+                    ts.applyThemeContacts(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_RINGTONES:
+                    ts.applyThemeRingtone(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
+                    ts.applyThemeBootanimation(FileProvider.CONTENT + themeFileName, false);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_MMS:
+                    ts.applyThemeMms(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_FONT:
+                    if (mFontReboot)
+                        ts.applyThemeFontReboot(FileProvider.CONTENT + themeFileName);
+                    else
+                        ts.applyThemeFont(FileProvider.CONTENT + themeFileName);
+                    break;
             }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Boolean result) {
-            dismissDialog(DIALOG_PROGRESS);
-            if (result.equals(Boolean.TRUE)) {
-            }
+            showDialog(DIALOG_PROGRESS);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to call ThemeService.applyInstalledTheme", e);
         }
     }
 }

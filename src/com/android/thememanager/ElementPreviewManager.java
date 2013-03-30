@@ -19,12 +19,10 @@ package com.android.thememanager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
-import com.android.thememanager.activity.ThemeMixerChooserActivity;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -124,8 +122,8 @@ public class ElementPreviewManager {
                 case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
                     previewName = PreviewHelper.getLauncherPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
-                case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
-                    previewName = PreviewHelper.getLockscreenPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                case Theme.THEME_ELEMENT_TYPE_CONTACTS:
+                    previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                     previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];

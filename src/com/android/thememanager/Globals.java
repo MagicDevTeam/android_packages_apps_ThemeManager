@@ -22,4 +22,7 @@ public class Globals {
     public static final String THEME_PATH = "/ChaOS/theme";
     public static final String DEFAULT_THEME_PATH = Environment.getExternalStorageDirectory() + THEME_PATH;
     public static final String CACHE_DIR = DEFAULT_THEME_PATH + "/.cache";
+
+    public static final String ACTION_THEME_APPLIED = "com.android.server.ThemeManager.action.THEME_APPLIED";
+    public static final String ACTION_THEME_NOT_APPLIED = "com.android.server.ThemeManager.action.THEME_NOT_APPLIED";
 }

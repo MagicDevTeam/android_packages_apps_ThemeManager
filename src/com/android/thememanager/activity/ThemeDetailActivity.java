@@ -16,7 +16,10 @@
 
 package com.android.thememanager.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,20 +29,16 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.ServiceManager;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.android.thememanager.*;
+import com.android.thememanager.provider.FileProvider;
 
 import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class ThemeDetailActivity extends Activity {
     private static final String TAG = "ThemeManager";
@@ -52,8 +51,6 @@ public class ThemeDetailActivity extends Activity {
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
     private Theme mTheme = null;
-    private boolean mApplyFont = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +75,18 @@ public class ThemeDetailActivity extends Activity {
 
     }
 
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Globals.ACTION_THEME_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -97,26 +106,58 @@ public class ThemeDetailActivity extends Activity {
         } catch (Exception e) {}
 
         mAdapter.notifyDataSetChanged();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Globals.ACTION_THEME_APPLIED);
+        filter.addAction(Globals.ACTION_THEME_NOT_APPLIED);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mBroadcastReceiver);
     }
 
     public void applyTheme(View view) {
         if (mTheme.getHasFont()) {
-            SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_apply_theme_with_font_and_reboot),
-                    getString(R.string.dlg_apply_theme_with_font_without_reboot),
-                    getString(R.string.dlg_apply_theme_with_font_title),
-                    getString(R.string.dlg_apply_theme_with_font_body),
-                    this,
-                    new SimpleDialogs.OnYesNoResponse() {
-                        @Override
-                        public void onYesNoResponse(boolean isYes) {
-                            mApplyFont = isYes;
-                            new ApplyThemeTask().execute(mTheme.getThemePath());
-                        }
-                    });
-
+            displayThemeFontDialog();
+        } else if (mTheme.getHasBootanimation()) {
+            displayBootAnimationFontDialog(false);
         } else {
-            new ApplyThemeTask().execute(mTheme.getThemePath());
+            applyTheme(mTheme.getThemePath(), false, false);
         }
+    }
+
+    private void displayThemeFontDialog() {
+        SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_apply_theme_with_font_and_reboot),
+                getString(R.string.dlg_apply_theme_with_font_without_reboot),
+                getString(R.string.dlg_apply_theme_with_font_title),
+                getString(R.string.dlg_apply_theme_with_font_body),
+                this,
+                new SimpleDialogs.OnYesNoResponse() {
+                    @Override
+                    public void onYesNoResponse(boolean isYes) {
+                        if (mTheme.getHasBootanimation())
+                            displayBootAnimationFontDialog(isYes);
+                        else
+                            applyTheme(mTheme.getThemePath(), false, isYes);
+                    }
+                });
+    }
+
+    private void displayBootAnimationFontDialog(final boolean applyFont) {
+        SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_scale_boot_with_scaling),
+                getString(R.string.dlg_scale_boot_no_scaling),
+                getString(R.string.dlg_scale_boot_title),
+                getString(R.string.dlg_scale_boot_body),
+                this,
+                new SimpleDialogs.OnYesNoResponse() {
+                    @Override
+                    public void onYesNoResponse(boolean isYes) {
+                        applyTheme(mTheme.getThemePath(), applyFont, isYes);
+                    }
+                });
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -212,59 +253,12 @@ public class ThemeDetailActivity extends Activity {
         }
     }
 
-    private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog( DIALOG_PROGRESS );
-        }
-
-        protected Boolean doInBackground(String... theme) {
-            try{
-                ZipInputStream zip = new ZipInputStream(new BufferedInputStream(
-                        new FileInputStream(theme[0])));
-                ZipEntry ze = null;
-
-                // have the theme service remove the existing theme
-                IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-                try {
-                    ts.removeTheme(mApplyFont);
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to call ThemeService.removeTheme", e);
-                }
-
-                ThemeZipUtils.extractTheme(theme[0], "/data/system/theme", ThemeDetailActivity.this, mApplyFont);
-                try {
-                    if (mApplyFont) {
-                        // go through and remove any invalid fonts to prevent system from hanging
-                        for (String s : (new File("/data/fonts")).list()) {
-                            if (!TTFHelper.isValidTtf("/data/fonts/" + s)) {
-                                (new File("/data/fonts/" + s)).delete();
-                            }
-                        }
-                        ts.applyInstalledThemeReboot();
-                    } else
-                        ts.applyInstalledTheme();
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to call ThemeService.applyInstalledTheme", e);
-                }
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "ApplyThemeTask FileNotFoundException", e);
-                return Boolean.FALSE;
-            } catch (IOException e) {
-                Log.e(TAG, "ApplyThemeTask IOException", e);
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Boolean result) {
-            //dismissDialog(DIALOG_PROGRESS);
-            if (result.equals(Boolean.TRUE)) {
-            }
+    private void applyTheme(String theme, boolean applyFont, boolean scaleBoot) {
+        IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+        try {
+            ts.applyTheme(FileProvider.CONTENT + ThemeUtils.stripPath(theme), applyFont, scaleBoot);
+            showDialog(DIALOG_PROGRESS);
+        } catch (Exception e) {
         }
     }
 }

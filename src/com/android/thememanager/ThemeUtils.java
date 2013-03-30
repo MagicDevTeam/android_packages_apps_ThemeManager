@@ -98,6 +98,20 @@ public class ThemeUtils {
         return filename;
     }
 
+    /**
+     * Strips all path information and returns just the filename
+     * @param filename complete path and filename
+     * @return filename without any path information
+     */
+    public static String stripPath(String filename) {
+        int index = filename.lastIndexOf('/');
+        if (index > -1) {
+            filename = filename.substring(index + 1);
+        }
+
+        return filename;
+    }
+
     public static boolean installedThemeHasFonts() {
         File fontsDir = new File("/data/fonts");
         return fontsDir.exists() && fontsDir.list().length > 0;
@@ -283,6 +297,7 @@ public class ThemeUtils {
             theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
+            theme.setHasContacts(zip.getEntry("com.android.contacts") != null);
             theme.setHasSystemUI(zip.getEntry("com.android.systemui") != null);
             theme.setHasFramework(zip.getEntry("framework-res") != null);
             theme.setHasRingtone(zip.getEntry("ringtones/ringtone.mp3") != null);
@@ -303,19 +318,6 @@ public class ThemeUtils {
         return true;
     }
 
-    public static void extractThemePreviews(ZipFile themeZip) {
-
-    }
-
-    public static InputStream getThemePreview(String themePath, String previewName) throws IOException {
-        ZipFile zip = new ZipFile(themePath);
-        ZipEntry entry = zip.getEntry("preview/" + previewName);
-        if (entry == null)
-            return null;
-
-        return zip.getInputStream(entry);
-    }
-
     public static ThemeDetails getThemeDetails(InputStream descriptionEntry) {
         ThemeDetails details = new ThemeDetails();
         XmlPullParser parser = Xml.newPullParser();
@@ -326,7 +328,6 @@ public class ThemeUtils {
                 return details;
 
             parser.setInput(descriptionEntry, null);
-            //parser.nextTag();
 
             int eventType = parser.next();
             while(eventType != XmlPullParser.START_TAG && eventType != XmlPullParser.END_DOCUMENT)
@@ -336,7 +337,6 @@ public class ThemeUtils {
             String str = parser.getName();
             if (parser.getName().equals("ChaOS-Theme"))
                 details.isCosTheme = true;
-            //parser.require(XmlPullParser.START_TAG, null, "MIUI-Theme");
             while (parser.next() != XmlPullParser.END_DOCUMENT) {
                 if (parser.getEventType() != XmlPullParser.START_TAG) {
                     continue;

@@ -19,12 +19,16 @@ package com.android.thememanager.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
 import android.os.*;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.android.thememanager.*;
+import com.android.thememanager.provider.FileProvider;
 import com.android.thememanager.widget.BootanimationImageView;
 
 import java.io.*;
@@ -76,6 +80,18 @@ public class ThemeBootanimationDetailActivity extends Activity {
         zip.close();
     }
 
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Globals.ACTION_THEME_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
+                dismissDialog(DIALOG_PROGRESS);
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -89,10 +105,42 @@ public class ThemeBootanimationDetailActivity extends Activity {
         try {
             dismissDialog(DIALOG_PROGRESS);
         } catch (Exception e) {}
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Globals.ACTION_THEME_APPLIED);
+        filter.addAction(Globals.ACTION_THEME_NOT_APPLIED);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mBroadcastReceiver);
     }
 
     public void applyTheme(View view) {
-        new ApplyThemeTask().execute(mTheme.getThemePath());
+        displayBootAnimationFontDialog();
+    }
+
+    private void displayBootAnimationFontDialog() {
+        SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_scale_boot_with_scaling),
+                getString(R.string.dlg_scale_boot_no_scaling),
+                getString(R.string.dlg_scale_boot_title),
+                getString(R.string.dlg_scale_boot_body),
+                this,
+                new SimpleDialogs.OnYesNoResponse() {
+                    @Override
+                    public void onYesNoResponse(boolean isYes) {
+                        try{
+                            IThemeManagerService ts = IThemeManagerService.Stub.asInterface(
+                                    ServiceManager.getService("ThemeService"));
+                            ts.applyThemeBootanimation(FileProvider.CONTENT +
+                                    ThemeUtils.stripPath(mTheme.getThemePath()), isYes);
+                            showDialog(DIALOG_PROGRESS);
+                        } catch (Exception e) {
+                        }
+                    }
+                });
     }
 
     @Override
@@ -124,41 +172,5 @@ public class ThemeBootanimationDetailActivity extends Activity {
         }
 
         out.close();
-    }
-
-    private class ApplyThemeTask extends AsyncTask<String, Integer, Boolean> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showDialog( DIALOG_PROGRESS );
-        }
-
-        protected Boolean doInBackground(String... theme) {
-            try{
-                ThemeZipUtils.extractThemeElement(theme[0], "/data/system/theme",
-                        Theme.THEME_ELEMENT_TYPE_BOOTANIMATION, ThemeBootanimationDetailActivity.this);
-
-                IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
-                ts.applyThemeBootanimation();
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "ApplyThemeTask FileNotFoundException", e);
-                return Boolean.FALSE;
-            } catch (IOException e) {
-                Log.e(TAG, "ApplyThemeTask IOException", e);
-                return Boolean.FALSE;
-            } catch (RemoteException e) {
-                Log.e(TAG, "Failed to call ThemeService.applyInstalledTheme", e);
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Boolean result) {
-            dismissDialog(DIALOG_PROGRESS);
-            if (result.equals(Boolean.TRUE)) {
-            }
-        }
     }
 }

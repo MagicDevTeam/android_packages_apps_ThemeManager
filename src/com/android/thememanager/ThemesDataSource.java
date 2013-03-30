@@ -44,6 +44,7 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER,
             ThemeSQLiteHelper.COLUMN_HAS_ICONS,
             ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
+            ThemeSQLiteHelper.COLUMN_HAS_CONTACTS,
             ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI,
             ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK,
             ThemeSQLiteHelper.COLUMN_HAS_RINGTONE,
@@ -78,6 +79,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER, theme.getHasWallpaper());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_ICONS, theme.getHasIcons());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS, theme.getHasContacts());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI, theme.getHasSystemUI());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK, theme.getHasFramework());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONE, theme.getHasRingtone());
@@ -346,13 +348,14 @@ public class ThemesDataSource {
         theme.setHasWallpaper(cursor.getInt(10) == 1);
         theme.setHasIcons(cursor.getInt(11) == 1);
         theme.setHasLockscreen(cursor.getInt(12) == 1);
-        theme.setHasSystemUI(cursor.getInt(13) == 1);
-        theme.setHasFramework(cursor.getInt(14) == 1);
-        theme.setHasRingtone(cursor.getInt(15) == 1);
-        theme.setHasNotification(cursor.getInt(16) == 1);
-        theme.setHasBootanimation(cursor.getInt(17) == 1);
-        theme.setHasMms(cursor.getInt(18) == 1);
-        theme.setHasFont(cursor.getInt(19) == 1);
+        theme.setHasContacts(cursor.getInt(13) == 1);
+        theme.setHasSystemUI(cursor.getInt(14) == 1);
+        theme.setHasFramework(cursor.getInt(15) == 1);
+        theme.setHasRingtone(cursor.getInt(16) == 1);
+        theme.setHasNotification(cursor.getInt(17) == 1);
+        theme.setHasBootanimation(cursor.getInt(18) == 1);
+        theme.setHasMms(cursor.getInt(19) == 1);
+        theme.setHasFont(cursor.getInt(20) == 1);
         return theme;
     }
 }

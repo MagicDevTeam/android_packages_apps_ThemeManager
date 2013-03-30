@@ -30,6 +30,7 @@
     <string name="mixer_systemui_label">Status bar</string>
     <string name="mixer_framework_label">Framework</string>
     <string name="mixer_lockscreen_label">Lockscreen</string>
+    <string name="mixer_contacts_label">Contacts/Dialer</string>
     <string name="mixer_ringtones_label">Ringtones</string>
     <string name="mixer_bootanimation_label">Boot animation</string>
     <string name="mixer_mms_label">Messaging</string>
@@ -54,4 +55,9 @@
     <string name="dlg_reset_font_body">Removing a custom font requires that the system be restarted.</string>
     <string name="dlg_reset_font_without_reboot">Leave custom font installed</string>
     <string name="dlg_reset_font_and_reboot">Remove font and reboot now</string>
+
+    <string name="dlg_scale_boot_title">Scale boot animation</string>
+    <string name="dlg_scale_boot_body">Scaling the boot animation will allow it to be resized to fit your device better.\n\nIf you encounter a blank animation, you should try re-applying this animation without scaling.</string>
+    <string name="dlg_scale_boot_no_scaling">Apply without scaling</string>
+    <string name="dlg_scale_boot_with_scaling">Apply with scaling</string>
 </resources>

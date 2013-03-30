@@ -16,13 +16,16 @@
 package com.android.thememanager.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
+import android.content.*;
+import android.content.res.IThemeManagerService;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -31,14 +34,16 @@ import com.android.thememanager.Globals;
 import com.android.thememanager.R;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
+import com.android.thememanager.provider.FileProvider;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ThemeRingtoneDetailActivity extends Activity
         implements MediaPlayer.OnPreparedListener {
+    private static final String RINGTONE_NAME = "ringtone.mp3";
+    private static final String NOTIFICATION_NAME = "notification.mp3";
+
     private int mElementType = 0;
     private Theme mTheme = null;
     private LinearLayout mRingtoneLayout;
@@ -48,6 +53,7 @@ public class ThemeRingtoneDetailActivity extends Activity
     private Button mSetRingtone;
     private Button mSetNotification;
     private MediaPlayer mMediaPlayer;
+    private boolean mIsRingtone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,8 @@ public class ThemeRingtoneDetailActivity extends Activity
         if (mTheme == null)
             finish();
         mElementType = getIntent().getIntExtra("type", 0);
+        if (mElementType != Theme.THEME_ELEMENT_TYPE_RINGTONES)
+            finish();
         setTitle(mTheme.getTitle());
 
         mRingtoneLayout = (LinearLayout) findViewById(R.id.ringtone_layout);
@@ -87,15 +95,54 @@ public class ThemeRingtoneDetailActivity extends Activity
         mMediaPlayer.setOnPreparedListener(this);
     }
 
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Globals.ACTION_THEME_APPLIED.equals(action)) {
+            } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
+            }
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Globals.ACTION_THEME_APPLIED);
+        filter.addAction(Globals.ACTION_THEME_NOT_APPLIED);
+        registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mMediaPlayer.isPlaying())
+            mMediaPlayer.stop();
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
     public void onClick(View v) {
+        IThemeManagerService ts = null;
         if (v == mPlayRingtone) {
-            playRingtone(Globals.CACHE_DIR + "/ringtone.mp3");
+            playRingtone(Globals.CACHE_DIR + "/" + RINGTONE_NAME);
         } else if (v == mPlayNotification) {
-            playRingtone(Globals.CACHE_DIR + "/notification.mp3");
+            playRingtone(Globals.CACHE_DIR + "/" + NOTIFICATION_NAME);
         } else if (v == mSetRingtone) {
-            setRingtone(Globals.CACHE_DIR + "/ringtone.mp3", false);
+            ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+            try {
+                ts.applyThemeRingtone(FileProvider.CONTENT + RINGTONE_NAME);
+                setRingtone(false);
+            } catch (RemoteException re) {
+            }
         } else if (v == mSetNotification) {
-            setRingtone(Globals.CACHE_DIR + "/ringtone.mp3", true);
+            ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
+            try {
+                ts.applyThemeRingtone(FileProvider.CONTENT + NOTIFICATION_NAME);
+                setRingtone(false);
+            } catch (RemoteException re) {
+            }
+            setRingtone(true);
         }
     }
 
@@ -110,8 +157,12 @@ public class ThemeRingtoneDetailActivity extends Activity
         }
     }
 
-    private void setRingtone(String path, boolean isNotification) {
-        String dstFilePath = copyFileToThemeDir(path);
+    private void setRingtone(boolean isNotification) {
+        String dstFilePath;
+        if (isNotification)
+            dstFilePath = "/data/system/theme/" + NOTIFICATION_NAME;
+        else
+            dstFilePath = "/data/system/theme/" + RINGTONE_NAME;
         if (dstFilePath != null) {
             File f = new File(dstFilePath);
             ContentValues values = new ContentValues();
@@ -146,33 +197,6 @@ public class ThemeRingtoneDetailActivity extends Activity
             } catch (Exception e) {
             }
         }
-    }
-
-    private String copyFileToThemeDir(String path) {
-        String dstFile;
-        try {
-            FileInputStream in = new FileInputStream(path);
-            dstFile = "/data/system/theme/" + path.substring(path.lastIndexOf('/') + 1);
-            FileOutputStream out = new FileOutputStream(dstFile);
-            ThemeUtils.copyInputStream(in, out);
-            ThemeUtils.setFilePerms(new File(dstFile));
-        } catch (Exception e) {
-            return null;
-        }
-
-        return dstFile;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mMediaPlayer.isPlaying())
-            mMediaPlayer.stop();
     }
 
     @Override

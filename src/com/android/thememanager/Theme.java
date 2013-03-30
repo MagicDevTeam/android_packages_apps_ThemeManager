@@ -22,7 +22,7 @@ public class Theme {
     public static final int THEME_ELEMENT_TYPE_WALLPAPER = 1;
     public static final int THEME_ELEMENT_TYPE_SYSTEMUI = 2;
     public static final int THEME_ELEMENT_TYPE_FRAMEWORK = 3;
-    public static final int THEME_ELEMENT_TYPE_LOCKSCREEN = 4;
+    public static final int THEME_ELEMENT_TYPE_CONTACTS = 4;
     public static final int THEME_ELEMENT_TYPE_RINGTONES = 5;
     public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 6;
     public static final int THEME_ELEMENT_TYPE_MMS = 7;
@@ -32,7 +32,7 @@ public class Theme {
             android.R.drawable.ic_menu_gallery,
             android.R.drawable.ic_menu_sort_by_size,
             android.R.drawable.ic_menu_today,
-            android.R.drawable.ic_menu_rotate,
+            android.R.drawable.ic_menu_call,
             android.R.drawable.ic_menu_call,
             android.R.drawable.ic_menu_slideshow,
             android.R.drawable.ic_menu_send,
@@ -42,7 +42,7 @@ public class Theme {
             R.string.mixer_walllpaper_label,
             R.string.mixer_systemui_label,
             R.string.mixer_framework_label,
-            R.string.mixer_lockscreen_label,
+            R.string.mixer_contacts_label,
             R.string.mixer_ringtones_label,
             R.string.mixer_bootanimation_label,
             R.string.mixer_mms_label,
@@ -60,6 +60,7 @@ public class Theme {
     private boolean hasWallpaper;
     private boolean hasIcons;
     private boolean hasLockscreen;
+    private boolean hasContacts;
     private boolean hasSystemUI;
     private boolean hasFramework;
     private boolean hasRingtone;
@@ -163,6 +164,14 @@ public class Theme {
 
     public void setHasLockscreen(boolean hasLockscreen) {
         this.hasLockscreen = hasLockscreen;
+    }
+
+    public boolean getHasContacts() {
+        return hasContacts;
+    }
+
+    public void setHasContacts(boolean hasContacts) {
+        this.hasContacts = hasContacts;
     }
 
     public boolean getHasSystemUI() {

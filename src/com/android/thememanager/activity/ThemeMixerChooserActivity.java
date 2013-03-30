@@ -17,21 +17,16 @@
 package com.android.thememanager.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.IThemeManagerService;
 import android.os.*;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.android.thememanager.*;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.List;
 
 public class ThemeMixerChooserActivity extends Activity {
@@ -106,7 +101,7 @@ public class ThemeMixerChooserActivity extends Activity {
             case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
                 list = dataSource.getFrameworkThemes();
                 break;
-            case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
+            case Theme.THEME_ELEMENT_TYPE_CONTACTS:
                 list = dataSource.getLockscreenThemes();
                 break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
@@ -155,11 +150,8 @@ public class ThemeMixerChooserActivity extends Activity {
                         case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
                             ts.resetThemeFramework();
                             break;
-                        case Theme.THEME_ELEMENT_TYPE_LOCKSCREEN:
-                            ts.resetThemeLockscreen();
-                            break;
                         case Theme.THEME_ELEMENT_TYPE_RINGTONES:
-                            ts.resetThemeRingtones();
+                            ts.resetThemeRingtone();
                             break;
                         case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
                             ts.resetThemeBootanimation();

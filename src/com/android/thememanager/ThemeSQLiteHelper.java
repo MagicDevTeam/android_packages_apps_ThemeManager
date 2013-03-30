@@ -17,10 +17,8 @@
 package com.android.thememanager;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class ThemeSQLiteHelper extends SQLiteOpenHelper {
 
@@ -37,6 +35,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_WALLPAPER = "has_wallpaper";
     public static final String COLUMN_HAS_ICONS = "has_icons";
     public static final String COLUMN_HAS_LOCKSCREEN = "has_lockscreen";
+    public static final String COLUMN_HAS_CONTACTS = "has_contacts";
     public static final String COLUMN_HAS_SYSTEMUI = "has_systemui";
     public static final String COLUMN_HAS_FRAMEWORK = "has_framework";
     public static final String COLUMN_HAS_RINGTONE = "has_ringtone";
@@ -47,7 +46,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -65,6 +64,7 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_HAS_WALLPAPER + " integer, "
             + COLUMN_HAS_ICONS + " integer, "
             + COLUMN_HAS_LOCKSCREEN + " integer, "
+            + COLUMN_HAS_CONTACTS + " integer, "
             + COLUMN_HAS_SYSTEMUI + " integer, "
             + COLUMN_HAS_FRAMEWORK + " integer, "
             + COLUMN_HAS_RINGTONE + " integer, "

@@ -83,6 +83,8 @@ public class ThemeDetailActivity extends Activity {
                 dismissDialog(DIALOG_PROGRESS);
             } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
                 dismissDialog(DIALOG_PROGRESS);
+                SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
+                        ThemeDetailActivity.this);
             }
         }
     };
@@ -259,6 +261,8 @@ public class ThemeDetailActivity extends Activity {
             ts.applyTheme(FileProvider.CONTENT + ThemeUtils.stripPath(theme), applyFont, scaleBoot);
             showDialog(DIALOG_PROGRESS);
         } catch (Exception e) {
+            SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
+                    ThemeDetailActivity.this);
         }
     }
 }

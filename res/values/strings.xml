@@ -19,6 +19,7 @@
 
     <string name="loading_themes">Loading themes...</string>
     <string name="applying_theme">Applying theme...</string>
+    <string name="installing_theme">Installing theme...</string>
 
     <string name="tab_themes">Complete Themes</string>
     <string name="tab_mixer">Theme Mixer</string>

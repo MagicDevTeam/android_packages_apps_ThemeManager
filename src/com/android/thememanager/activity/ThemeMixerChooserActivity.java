@@ -21,11 +21,31 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.IThemeManagerService;
-import android.os.*;
+import android.os.Bundle;
+import android.os.ServiceManager;
 import android.util.DisplayMetrics;
-import android.view.*;
-import android.widget.*;
-import com.android.thememanager.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.android.thememanager.ElementPreviewManager;
+import com.android.thememanager.Globals;
+import com.android.thememanager.PreviewHolder;
+import com.android.thememanager.R;
+import com.android.thememanager.SimpleDialogs;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemesDataSource;
+import com.android.thememanager.ThemeUtils;
 
 import java.util.List;
 
@@ -250,14 +270,6 @@ public class ThemeMixerChooserActivity extends Activity {
         }
 
         public void destroy() {
-            /*
-            for (int i = 0; i < mImages.length; i++) {
-                if (mImages[i] != null && mImages[i].getDrawable() != null) {
-                    mImages[i].getDrawable().setCallback(null);
-                    mImages[i].setImageDrawable(null);
-                }
-            }
-            */
             mPreviewManager = null;
             mContext = null;
         }

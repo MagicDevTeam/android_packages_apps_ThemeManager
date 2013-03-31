@@ -34,8 +34,18 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import com.android.thememanager.*;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.android.thememanager.Globals;
+import com.android.thememanager.PreviewHelper;
+import com.android.thememanager.R;
+import com.android.thememanager.SimpleDialogs;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemeUtils;
+
 import com.android.thememanager.provider.FileProvider;
 
 import java.io.*;

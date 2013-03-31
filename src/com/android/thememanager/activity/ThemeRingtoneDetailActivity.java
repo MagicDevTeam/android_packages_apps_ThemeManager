@@ -16,7 +16,11 @@
 package com.android.thememanager.activity;
 
 import android.app.Activity;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -30,7 +34,12 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import com.android.thememanager.*;
+
+import com.android.thememanager.Globals;
+import com.android.thememanager.R;
+import com.android.thememanager.SimpleDialogs;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
 
 import java.io.File;

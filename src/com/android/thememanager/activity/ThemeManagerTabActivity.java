@@ -26,11 +26,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.HorizontalScrollView;
+import android.widget.TabHost;
+import android.widget.TabWidget;
+
 import com.android.thememanager.R;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
-import com.android.thememanager.fragment.*;
+import com.android.thememanager.fragment.GetThemesFragment;
+import com.android.thememanager.fragment.MixThemesFragment;
+import com.android.thememanager.fragment.ThemeChooserFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +53,6 @@ public class ThemeManagerTabActivity extends FragmentActivity {
     ViewPager  mViewPager;
     TabsAdapter mTabsAdapter;
     HorizontalScrollView mTabScroller;
-    ImageView mLeftSwipe;
-    ImageView mRightSwipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -24,14 +24,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
-import android.os.*;
+import android.os.Bundle;
+import android.os.ServiceManager;
 import android.view.View;
 import android.widget.TextView;
-import com.android.thememanager.*;
+
+import com.android.thememanager.Globals;
+import com.android.thememanager.R;
+import com.android.thememanager.SimpleDialogs;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
 import com.android.thememanager.widget.BootanimationImageView;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -66,7 +75,6 @@ public class ThemeBootanimationDetailActivity extends Activity {
             extractAnimation(mTheme.getThemePath());
             mPreview.LoadAnimation(Globals.CACHE_DIR + "/bootanimation.zip");
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 

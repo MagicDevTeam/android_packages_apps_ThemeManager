@@ -81,7 +81,9 @@ public class ElementPreviewManager {
         String themeId = theme.getFileName();
         if (drawableMap.containsKey(themeId)) {
             imageView.setImageDrawable(drawableMap.get(themeId));
-        }
+            return;
+        } else
+            imageView.setImageResource(R.drawable.preview);
 
         final Handler handler = new Handler() {
             @Override

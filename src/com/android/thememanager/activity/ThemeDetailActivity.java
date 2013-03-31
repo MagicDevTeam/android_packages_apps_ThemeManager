@@ -34,11 +34,21 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import com.android.thememanager.*;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.android.thememanager.Globals;
+import com.android.thememanager.PreviewHelper;
+import com.android.thememanager.R;
+import com.android.thememanager.SimpleDialogs;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class ThemeDetailActivity extends Activity {
     private static final String TAG = "ThemeManager";
@@ -201,7 +211,6 @@ public class ThemeDetailActivity extends Activity {
                     is = new FileInputStream(THEMES_PATH + "/.cache/" +
                         mTheme.getFileName() + "/" + mPreviewList[position]);
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
                 if (is != null) {
                     BitmapFactory.Options opts = new BitmapFactory.Options();

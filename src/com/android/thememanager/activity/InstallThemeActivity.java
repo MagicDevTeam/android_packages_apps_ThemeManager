@@ -16,7 +16,11 @@
 
 package com.android.thememanager.activity;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.LoaderManager;
+import android.app.ProgressDialog;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
@@ -25,11 +29,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import com.android.thememanager.Globals;
 import com.android.thememanager.R;
 import com.android.thememanager.SimpleDialogs;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class InstallThemeActivity extends Activity implements LoaderManager.LoaderCallbacks {
     private static final int DIALOG_PROGRESS = 0;

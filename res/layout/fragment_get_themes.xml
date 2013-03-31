@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_light"
+        android:text="@string/get_themes_getting_started"
+        android:gravity="center" />
+
+    <TextView
+        style="@style/ThemeSection"
+        android:text="@string/get_themes_chameleonos" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@android:color/holo_green_light" />
+    <TextView
+        android:id="@+id/goo"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_goo_title" />
+    <TextView
+        android:id="@+id/chaos_forums"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_chaos_forums_title" />
+
+    <TextView
+        style="@style/ThemeSection"
+        android:text="@string/get_themes_miui" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@android:color/holo_orange_light" />
+    <TextView
+        android:id="@+id/pimpmymiui"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_pimpmymiui_title" />
+    <TextView
+        android:id="@+id/droidviews"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_droidviews_title" />
+    <TextView
+        android:id="@+id/miui_forums"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_miui_title" />
+
+</LinearLayout>

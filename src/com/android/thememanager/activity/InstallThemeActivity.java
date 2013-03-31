@@ -17,20 +17,35 @@
 package com.android.thememanager.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.LoaderManager;
+import android.app.ProgressDialog;
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import com.android.thememanager.Globals;
 import com.android.thememanager.R;
 import com.android.thememanager.SimpleDialogs;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-public class InstallThemeActivity extends Activity {
+public class InstallThemeActivity extends Activity implements LoaderManager.LoaderCallbacks {
+    private static final int DIALOG_PROGRESS = 0;
+
+    private ProgressDialog mProgressDialog;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Uri themeUri = getIntent().getData();
@@ -67,20 +82,11 @@ public class InstallThemeActivity extends Activity {
                         new SimpleDialogs.OnYesNoResponse() {
                             @Override
                             public void onYesNoResponse(boolean isYes) {
-                                try {
-                                    if (isYes) {
-                                        (new File(dst)).delete();
-                                        copyFile(src, dst);
-                                        (new File(src)).delete();
-                                        Intent intent = new Intent(InstallThemeActivity.this, ThemeManagerTabActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else
-                                        finish();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if (isYes) {
+                                    (new File(dst)).delete();
+                                    useLoader(src);
+                                } else
                                     finish();
-                                }
                             }
                         });
             } else {
@@ -92,19 +98,10 @@ public class InstallThemeActivity extends Activity {
                         new SimpleDialogs.OnYesNoResponse() {
                             @Override
                             public void onYesNoResponse(boolean isYes) {
-                                try {
-                                    if (isYes) {
-                                        copyFile(src, dst);
-                                        (new File(src)).delete();
-                                        Intent intent = new Intent(InstallThemeActivity.this, ThemeManagerTabActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else
-                                        finish();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if (isYes) {
+                                    useLoader(src);
+                                } else
                                     finish();
-                                }
                             }
                         });
             }
@@ -112,15 +109,82 @@ public class InstallThemeActivity extends Activity {
             finish();
     }
 
-    private void copyFile(String src, String dst) throws IOException {
-        BufferedInputStream in = new BufferedInputStream(new FileInputStream(src));
-        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dst));
-        byte[] buf = new byte[1024];
-        int len = 0;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_PROGRESS:
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setMessage(getResources().getText(R.string.installing_theme));
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                mProgressDialog.setCancelable(false );
+                mProgressDialog.setProgress(0);
+                mProgressDialog.show();
+                return mProgressDialog;
+            default:
+                return null;
         }
-        out.close();
-        in.close();
+    }
+
+    private void useLoader(String src) {
+        Bundle args = new Bundle();
+        args.putString("themeSource", src);
+        Loader loader = getLoaderManager().initLoader(0, args, this);
+        loader.forceLoad();
+        showDialog(DIALOG_PROGRESS);
+    }
+
+    @Override
+    public Loader onCreateLoader(int i, Bundle args) {
+        return new InstallThemeLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object o) {
+        dismissDialog(DIALOG_PROGRESS);
+        boolean result = ((Boolean)o).booleanValue();
+        if (result == true) {
+            Intent intent = new Intent(InstallThemeActivity.this, ThemeManagerTabActivity.class);
+            startActivity(intent);
+        }
+        finish();
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+    }
+
+    private static class InstallThemeLoader extends AsyncTaskLoader {
+        private String mThemeSource;
+        private String mThemeDestination;
+
+        public InstallThemeLoader(Context context, Bundle args) {
+            super(context);
+            mThemeSource = args.getString("themeSource");
+            mThemeDestination = Globals.DEFAULT_THEME_PATH + "/" +
+                    mThemeSource.substring(mThemeSource.lastIndexOf('/') + 1);
+        }
+
+        @Override
+        public Object loadInBackground() {
+            try {
+                copyFile(mThemeSource, mThemeDestination);
+            } catch (IOException e) {
+                return Boolean.FALSE;
+            }
+            (new File(mThemeSource)).delete();
+            return Boolean.TRUE;
+        }
+
+        private void copyFile(String src, String dst) throws IOException {
+            BufferedInputStream in = new BufferedInputStream(new FileInputStream(src));
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(dst));
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
+        }
     }
 }

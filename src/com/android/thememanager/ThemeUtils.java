@@ -24,7 +24,13 @@ import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -286,7 +292,12 @@ public class ThemeUtils {
 
             ZipFile zip = new ZipFile(themePath);
             ZipEntry entry = zip.getEntry("description.xml");
-            ThemeDetails details = getThemeDetails(zip.getInputStream(entry));
+            ThemeDetails details = null;
+            try {
+                details = getThemeDetails(zip.getInputStream(entry));
+            } catch (Exception e) {
+                return false;
+            }
 
             Theme theme = new Theme();
             theme.setFileName(themeId);
@@ -321,64 +332,57 @@ public class ThemeUtils {
         return true;
     }
 
-    public static ThemeDetails getThemeDetails(InputStream descriptionEntry) {
+    public static ThemeDetails getThemeDetails(InputStream descriptionEntry)
+            throws XmlPullParserException, IOException {
         ThemeDetails details = new ThemeDetails();
         XmlPullParser parser = Xml.newPullParser();
 
-        try {
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            if (descriptionEntry == null)
-                return details;
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        if (descriptionEntry == null)
+            return details;
 
-            parser.setInput(descriptionEntry, null);
+        parser.setInput(descriptionEntry, null);
 
-            int eventType = parser.next();
-            while(eventType != XmlPullParser.START_TAG && eventType != XmlPullParser.END_DOCUMENT)
-                eventType = parser.next();
-            if (eventType != XmlPullParser.START_TAG)
-                throw new XmlPullParserException("No start tag found!");
-            String str = parser.getName();
-            if (parser.getName().equals("ChaOS-Theme"))
-                details.isCosTheme = true;
-            while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                if (parser.getEventType() != XmlPullParser.START_TAG) {
-                    continue;
+        int eventType = parser.next();
+        while(eventType != XmlPullParser.START_TAG && eventType != XmlPullParser.END_DOCUMENT)
+            eventType = parser.next();
+        if (eventType != XmlPullParser.START_TAG)
+            throw new XmlPullParserException("No start tag found!");
+        String str = parser.getName();
+        if (parser.getName().equals("ChaOS-Theme"))
+            details.isCosTheme = true;
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            String name = parser.getName();
+            if ("title".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    details.title = parser.getText();
+                    parser.nextTag();
                 }
-
-                String name = parser.getName();
-                if ("title".equals(name)) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        details.title = parser.getText();
-                        parser.nextTag();
-                    }
-                } else if ("designer".equals(name)) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        details.designer = parser.getText();
-                        parser.nextTag();
-                    }
-                } else if ("author".equals(name)) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        details.author = parser.getText();
-                        parser.nextTag();
-                    }
-                } else if ("version".equals(name)) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        details.version = parser.getText();
-                        parser.nextTag();
-                    }
-                } else if ("uiVersion".equals(name)) {
-                    if (parser.next() == XmlPullParser.TEXT) {
-                        details.uiVersion = parser.getText();
-                        parser.nextTag();
-                    }
+            } else if ("designer".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    details.designer = parser.getText();
+                    parser.nextTag();
+                }
+            } else if ("author".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    details.author = parser.getText();
+                    parser.nextTag();
+                }
+            } else if ("version".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    details.version = parser.getText();
+                    parser.nextTag();
+                }
+            } else if ("uiVersion".equals(name)) {
+                if (parser.next() == XmlPullParser.TEXT) {
+                    details.uiVersion = parser.getText();
+                    parser.nextTag();
                 }
             }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         return details;
@@ -393,12 +397,16 @@ public class ThemeUtils {
             if (entry == null)
                 return details;
 
-            details = getThemeDetails(zip.getInputStream(entry));
+            try {
+                details = getThemeDetails(zip.getInputStream(entry));
+            } catch (Exception e) {
+                return null;
+            }
             zip.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
         }
 
         return details;

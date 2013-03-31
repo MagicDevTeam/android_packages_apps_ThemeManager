@@ -226,12 +226,13 @@ public class ThemeElementDetailActivity extends Activity {
             if (mImages[position] == null) {
                 int h = mPreviews.getHeight();
                 mImages[position] = new ImageView(mContext);
+                mImages[position].setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
                 FileInputStream is = null;
                 try {
                     is = new FileInputStream(THEMES_PATH + "/.cache/" +
                         mTheme.getFileName() + "/" + mPreviewList[position]);
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
                 if (is != null) {
                     BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -244,14 +245,12 @@ public class ThemeElementDetailActivity extends Activity {
                     mImages[position].setImageDrawable(drawable);
                 } else
                     mImages[position].setImageResource(R.drawable.no_preview);
-                mImages[position].setScaleType(ImageView.ScaleType.FIT_XY);
-                mImages[position].setAdjustViewBounds(true);
+                mImages[position].setScaleType(ImageView.ScaleType.FIT_CENTER);
             }
 
             return mImages[position];
-
-            //return mImages[position];
         }
+
         /** Returns the size (0.0f to 1.0f) of the views
          * depending on the 'offset' to the center. */
         public float getScale(boolean focused, int offset) {

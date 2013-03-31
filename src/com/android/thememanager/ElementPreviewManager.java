@@ -106,6 +106,9 @@ public class ElementPreviewManager {
     }
 
     private InputStream fetch(Theme theme, int elementType) throws IOException {
+        if (!ThemeUtils.themeCacheDirExists(theme.getFileName())) {
+            ThemeUtils.extractThemePreviews(theme.getFileName(), theme.getThemePath());
+        }
         String previewName = null;
         String themeId = theme.getFileName();
         try{

@@ -28,9 +28,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.android.thememanager.R;
+import com.android.thememanager.Theme;
+import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.fragment.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
@@ -69,21 +72,19 @@ public class ThemeManagerTabActivity extends FragmentActivity {
         mTabsAdapter.addTab(mTabHost.newTabSpec("mix").setIndicator(getString(R.string.tab_mixer)),
                 MixThemesFragment.class, null);
 
+        mTabsAdapter.addTab(mTabHost.newTabSpec("get").setIndicator(getString(R.string.tab_get_themes)),
+                GetThemesFragment.class, null);
+
         getActionBar().show();
-        
+
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+        } else {
+            //check if there are any themes available, if not show the "Get Themes" tab
+            List<Theme> themes = ThemeUtils.getAllThemes(this);
+            if (themes == null || themes.size() == 0)
+                mTabHost.setCurrentTabByTag("get");
         }
-    }
-    
-    public void updatePage(int position) {
-    	if (position == 0) {
-    		mLeftSwipe.setVisibility(View.VISIBLE);
-    		mRightSwipe.setVisibility(View.GONE);
-    	} else if (position == mTabsAdapter.getCount() - 1) {
-    		mLeftSwipe.setVisibility(View.GONE);
-    		mRightSwipe.setVisibility(View.VISIBLE);
-    	}
     }
     
     @Override

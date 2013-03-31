@@ -391,12 +391,16 @@ public class ThemeUtils {
             if (entry == null)
                 return details;
 
-            details = getThemeDetails(zip.getInputStream(entry));
+            try {
+                details = getThemeDetails(zip.getInputStream(entry));
+            } catch (Exception e) {
+                return null;
+            }
             zip.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return null;
         }
 
         return details;

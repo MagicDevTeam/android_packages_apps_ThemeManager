@@ -22,6 +22,7 @@
 
     <string name="tab_themes">Complete Themes</string>
     <string name="tab_mixer">Theme Mixer</string>
+    <string name="tab_get_themes">Get Themes</string>
 
     <string name="coming_soon">Coming Soon!</string>
 
@@ -37,6 +38,21 @@
     <string name="mixer_font_label">Fonts</string>
 
     <string name="not_a_theme_file">File is not a theme!</string>
+
+    <!-- ChameleonOS theme links -->
+    <string name="get_themes_goo_title">goo.im</string>
+    <string name="get_themes_goo_link">http://goo.im/devs/ChameleonOS/themes/</string>
+    <string name="get_themes_chaos_forums_title">ChameleonOS Forums</string>
+    <string name="get_themes_chaos_forums_link">http://forums.chameleonos.org/forums/chaos-themes.27/</string>
+    <!-- MIUI theme links -->
+    <string name="get_themes_pimp_my_miui_title">Pimp My MIUI</string>
+    <string name="get_themes_pimp_my_miui_link">http://pimpmymiui.com/themes/full-themes</string>
+    <string name="get_themes_miui_title">MIUI forums</string>
+    <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
+
+    <string name="get_themes_getting_started">Some external links to themes to get you started.</string>
+    <string name="get_themes_chameleonos">ChameleonOS Themes</string>
+    <string name="get_themes_miui">MIUI Themes (note: not all elements theme)</string>
 
     <string name="dlg_apply_theme_with_font_title">Apply theme with font</string>
     <string name="dlg_apply_theme_with_font_body">This theme contains fonts which would require a system reboot to be applied.</string>

@@ -34,7 +34,7 @@
         <activity android:name=".activity.ThemeBootanimationDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ThemeRingtoneDetailActivity" android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.InstallThemeActivity">
+        <activity android:name=".activity.InstallThemeActivity" android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

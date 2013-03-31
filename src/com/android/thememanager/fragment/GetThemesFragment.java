@@ -44,8 +44,10 @@ public class GetThemesFragment extends Fragment {
                 getString(R.string.get_themes_goo_title));
         setHtmlLink((TextView)v.findViewById(R.id.chaos_forums), getString(R.string.get_themes_chaos_forums_link),
                 getString(R.string.get_themes_chaos_forums_title));
-        setHtmlLink((TextView)v.findViewById(R.id.pimpmymiui), getString(R.string.get_themes_pimp_my_miui_link),
-                getString(R.string.get_themes_pimp_my_miui_title));
+        setHtmlLink((TextView)v.findViewById(R.id.pimpmymiui), getString(R.string.get_themes_pimpmymiui_link),
+                getString(R.string.get_themes_pimpmymiui_title));
+        setHtmlLink((TextView)v.findViewById(R.id.droidviews), getString(R.string.get_themes_droidviews_link),
+                getString(R.string.get_themes_droidviews_title));
         setHtmlLink((TextView)v.findViewById(R.id.miui_forums), getString(R.string.get_themes_miui_link),
                 getString(R.string.get_themes_miui_title));
 

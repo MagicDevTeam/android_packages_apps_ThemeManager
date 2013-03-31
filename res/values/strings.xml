@@ -46,8 +46,10 @@
     <string name="get_themes_chaos_forums_title">ChameleonOS Forums</string>
     <string name="get_themes_chaos_forums_link">http://forums.chameleonos.org/forums/chaos-themes.27/</string>
     <!-- MIUI theme links -->
-    <string name="get_themes_pimp_my_miui_title">Pimp My MIUI</string>
-    <string name="get_themes_pimp_my_miui_link">http://pimpmymiui.com/themes/full-themes</string>
+    <string name="get_themes_pimpmymiui_title">Pimp My MIUI</string>
+    <string name="get_themes_pimpmymiui_link">http://pimpmymiui.com/themes/full-themes</string>
+    <string name="get_themes_droidviews_title">Droid Views</string>
+    <string name="get_themes_droidviews_link">http://droidviews.com/tag/miui-jb-themes/</string>
     <string name="get_themes_miui_title">MIUI forums</string>
     <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
 

@@ -45,7 +45,11 @@
     <TextView
         android:id="@+id/pimpmymiui"
         style="@style/ThemeLink"
-        android:text="@string/get_themes_pimp_my_miui_title" />
+        android:text="@string/get_themes_pimpmymiui_title" />
+    <TextView
+        android:id="@+id/droidviews"
+        style="@style/ThemeLink"
+        android:text="@string/get_themes_droidviews_title" />
     <TextView
         android:id="@+id/miui_forums"
         style="@style/ThemeLink"

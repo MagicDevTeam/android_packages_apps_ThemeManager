@@ -276,9 +276,12 @@ public class ThemeUtils {
             File file = new File(themePath);
             long lastModified = file.lastModified();
             dataSource.open();
-            if (dataSource.entryExists(themeId) && !dataSource.entryIsOlder(themeId, lastModified)) {
-                dataSource.close();
-                return true;
+            if (dataSource.entryExists(themeId)) {
+                if(!dataSource.entryIsOlder(themeId, lastModified)) {
+                    dataSource.close();
+                    return true;
+                } else
+                    deleteThemeCacheDir(themeId);
             }
 
             ZipFile zip = new ZipFile(themePath);

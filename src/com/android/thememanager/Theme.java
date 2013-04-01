@@ -57,6 +57,7 @@ public class Theme {
     private String uiVersion;
     private String themePath;
     private boolean isCosTheme;
+    private boolean isDefaultTheme;
     private boolean hasWallpaper;
     private boolean hasIcons;
     private boolean hasLockscreen;
@@ -140,6 +141,14 @@ public class Theme {
 
     public void setIsCosTheme(boolean isCosTheme) {
         this.isCosTheme = isCosTheme;
+    }
+
+    public boolean getIsDefaultTheme() {
+        return isDefaultTheme;
+    }
+
+    public void setIsDefaultTheme(boolean isDefaultTheme) {
+        this.isDefaultTheme = isDefaultTheme;
     }
 
     public boolean getHasWallpaper() {

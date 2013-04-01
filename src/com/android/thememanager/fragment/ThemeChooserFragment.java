@@ -135,9 +135,11 @@ public class ThemeChooserFragment extends Fragment {
             case R.id.menu_delete_theme:
                 int id = info.targetView.getId();
                 Theme theme = mThemesList.get(id);
-                ThemeUtils.deleteTheme(theme, getActivity());
-                ThemeUtils.deleteThemeCacheDir(theme.getFileName());
-                mViewUpdateHandler.sendEmptyMessage(0);
+                if (!theme.getIsDefaultTheme()) {
+                    ThemeUtils.deleteTheme(theme, getActivity());
+                    ThemeUtils.deleteThemeCacheDir(theme.getFileName());
+                    mViewUpdateHandler.sendEmptyMessage(0);
+                }
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -339,11 +341,12 @@ public class ThemeChooserFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(String... strings) {
+            ThemeUtils.addThemeEntryToDb("default", Globals.DEFAULT_SYSTEM_THEME, getActivity(), true);
             String[] availableThemes = themeList(THEMES_PATH);
             for (String themeId : availableThemes) {
                 ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
                         THEMES_PATH + "/" + themeId,
-                        getActivity());
+                        getActivity(), false);
             }
             //removeNonExistingThemes(availableThemes);
             return Boolean.TRUE;

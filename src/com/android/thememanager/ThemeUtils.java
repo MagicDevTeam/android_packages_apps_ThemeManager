@@ -277,7 +277,8 @@ public class ThemeUtils {
         return themes;
     }
 
-    public static boolean addThemeEntryToDb(String themeId, String themePath, Context context) {
+    public static boolean addThemeEntryToDb(String themeId, String themePath,
+            Context context, boolean isDefaultTheme) {
         try {
             ThemesDataSource dataSource = new ThemesDataSource(context);
             File file = new File(themePath);
@@ -309,6 +310,7 @@ public class ThemeUtils {
             theme.setVersion(details.version);
             theme.setUiVersion(details.uiVersion);
             theme.setIsCosTheme(details.isCosTheme);
+            theme.setIsDefaultTheme(isDefaultTheme);
             theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);

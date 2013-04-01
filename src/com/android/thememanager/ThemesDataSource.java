@@ -41,6 +41,7 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_THEME_UI_VERSION,
             ThemeSQLiteHelper.COLUMN_THEME_PATH,
             ThemeSQLiteHelper.COLUMN_IS_COS_THEME,
+            ThemeSQLiteHelper.COLUMN_IS_DEFAULT_THEME,
             ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER,
             ThemeSQLiteHelper.COLUMN_HAS_ICONS,
             ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
@@ -76,6 +77,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_THEME_UI_VERSION, theme.getUiVersion());
         values.put(ThemeSQLiteHelper.COLUMN_THEME_PATH, theme.getThemePath());
         values.put(ThemeSQLiteHelper.COLUMN_IS_COS_THEME, theme.getIsCosTheme());
+        values.put(ThemeSQLiteHelper.COLUMN_IS_DEFAULT_THEME, theme.getIsDefaultTheme());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER, theme.getHasWallpaper());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_ICONS, theme.getHasIcons());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
@@ -372,27 +374,50 @@ public class ThemesDataSource {
 
     private Theme cursorToTheme(Cursor cursor) {
         Theme theme = new Theme();
-        theme.setId(cursor.getLong(0));
-        theme.setFileName(cursor.getString(1));
-        theme.setLastModified(Long.getLong(cursor.getString(2), 0));
-        theme.setTitle(cursor.getString(3));
-        theme.setAuthor(cursor.getString(4));
-        theme.setDesigner(cursor.getString(5));
-        theme.setVersion(cursor.getString(6));
-        theme.setUiVersion(cursor.getString(7));
-        theme.setThemePath(cursor.getString(8));
-        theme.setIsCosTheme(cursor.getInt(9) == 1);
-        theme.setHasWallpaper(cursor.getInt(10) == 1);
-        theme.setHasIcons(cursor.getInt(11) == 1);
-        theme.setHasLockscreen(cursor.getInt(12) == 1);
-        theme.setHasContacts(cursor.getInt(13) == 1);
-        theme.setHasSystemUI(cursor.getInt(14) == 1);
-        theme.setHasFramework(cursor.getInt(15) == 1);
-        theme.setHasRingtone(cursor.getInt(16) == 1);
-        theme.setHasNotification(cursor.getInt(17) == 1);
-        theme.setHasBootanimation(cursor.getInt(18) == 1);
-        theme.setHasMms(cursor.getInt(19) == 1);
-        theme.setHasFont(cursor.getInt(20) == 1);
+        theme.setId(cursor.getLong(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_ID)));
+        theme.setFileName(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_FILE_NAME)));
+        theme.setLastModified(Long.getLong(
+                cursor.getString(cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED)), 0));
+        theme.setTitle(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_TITLE)));
+        theme.setAuthor(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_AUTHOR)));
+        theme.setDesigner(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_DESIGNER)));
+        theme.setVersion(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_VERSION)));
+        theme.setUiVersion(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_UI_VERSION)));
+        theme.setThemePath(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_THEME_PATH)));
+        theme.setIsCosTheme(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_IS_COS_THEME)) == 1);
+        theme.setIsDefaultTheme(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_IS_DEFAULT_THEME)) == 1);
+        theme.setHasWallpaper(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER)) == 1);
+        theme.setHasIcons(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_ICONS)) == 1);
+        theme.setHasLockscreen(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN)) == 1);
+        theme.setHasContacts(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS)) == 1);
+        theme.setHasSystemUI(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI)) == 1);
+        theme.setHasFramework(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK)) == 1);
+        theme.setHasRingtone(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_RINGTONE)) == 1);
+        theme.setHasNotification(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_NOTIFICATION)) == 1);
+        theme.setHasBootanimation(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION)) == 1);
+        theme.setHasMms(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_MMS)) == 1);
+        theme.setHasFont(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_FONT)) == 1);
         return theme;
     }
 }

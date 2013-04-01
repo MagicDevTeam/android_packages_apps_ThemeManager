@@ -91,6 +91,7 @@ public class ThemeUtils {
         File f = new File(Globals.CACHE_DIR + "/" + themeName);
         if (f.exists())
             deleteFile(f);
+        f.delete();
     }
 
     /**
@@ -323,7 +324,9 @@ public class ThemeUtils {
 
             try {
                 dataSource.createThemeEntry(theme);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             dataSource.close();
         } catch (IOException e) {
             return false;

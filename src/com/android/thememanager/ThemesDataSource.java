@@ -91,7 +91,7 @@ public class ThemesDataSource {
         if (entryExists(theme.getFileName()))
             insertId = database.update(ThemeSQLiteHelper.TABLE_THEMES, values,
                     ThemeSQLiteHelper.COLUMN_THEME_FILE_NAME + "='" + theme.getFileName() + "'",
-                    allColumns);
+                    null);
         else
             insertId = database.insert(ThemeSQLiteHelper.TABLE_THEMES, null,
                     values);

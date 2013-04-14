@@ -197,6 +197,9 @@ public class ThemeMixerChooserActivity extends Activity {
                                         });
                             }
                             break;
+                        case Theme.THEME_ELEMENT_TYPE_CONTACTS:
+                            ts.resetThemeContacts();
+                            break;
                     }
                 } catch (Exception e) {
                 }

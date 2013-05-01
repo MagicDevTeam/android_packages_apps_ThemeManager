@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The ChameleonOS Project
+**
+** * Licensed under the GNU GPLv2 license
+**
+** The text of the license can be found in the LICENSE file
+** or at https://www.gnu.org/licenses/gpl-2.0.txt
+*/
+-->
+<resources>
+
+    <string name="app_name">Theme Manager</string>
+    <string name="hello_world">Hallo Welt!</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="menu_reset">Thema zurücksetzen</string>
+    <string name="menu_reset_element">Reset</string>
+    <string name="menu_delete_theme">Thema Löschen</string>
+
+    <string name="btn_apply_theme">Anwenden</string>
+    <string name="btn_ok">OK</string>
+
+    <string name="btn_play">Vorschau</string>
+    <string name="btn_set">Anwenden</string>
+
+    <string name="ringtone">Klingelton</string>
+    <string name="notification">Benachrichtiung</string>
+
+    <string name="loading_themes">Lade Themen...</string>
+    <string name="applying_theme">Thema Anwenden ...</string>
+    <string name="installing_theme">Installiere Thema...</string>
+
+    <string name="tab_themes">Lokal</string>
+    <string name="tab_mixer">Mischen</string>
+    <string name="tab_get_themes">Online</string>
+
+    <string name="coming_soon">Bald verfügbar!</string>
+
+    <string name="mixer_icons_label">Symbole</string>
+    <string name="mixer_walllpaper_label">Hintergrundbild</string>
+    <string name="mixer_systemui_label">Statusleiste</string>
+    <string name="mixer_framework_label">Framework</string>
+    <string name="mixer_lockscreen_label">Sperrbildschirm</string>
+    <string name="mixer_contacts_label">Wähltasten/Kontakte</string>
+    <string name="mixer_ringtones_label">Ringtones</string>
+    <string name="mixer_bootanimation_label">Startanimation</string>
+    <string name="mixer_mms_label">SMS</string>
+    <string name="mixer_font_label">Schriftart</string>
+
+    <string name="not_a_theme_file">Datei ist kein gültiges Thema!</string>
+
+    <!-- ChameleonOS theme links -->
+    <string name="get_themes_goo_title">goo.im</string>
+    <string name="get_themes_goo_link">http://goo.im/devs/ChameleonOS/themes/</string>
+    <string name="get_themes_chaos_forums_title">ChameleonOS Forums</string>
+    <string name="get_themes_chaos_forums_link">http://forums.chameleonos.org/forums/theme-releases.10/</string>
+    <!-- MIUI theme links -->
+    <string name="get_themes_pimpmymiui_title">Pimp My MIUI</string>
+    <string name="get_themes_pimpmymiui_link">http://pimpmymiui.com/themes/full-themes</string>
+    <string name="get_themes_droidviews_title">Droid Views</string>
+    <string name="get_themes_droidviews_link">http://droidviews.com/tag/miui-jb-themes/</string>
+    <string name="get_themes_miui_title">MIUI forums</string>
+    <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
+
+    <string name="get_themes_getting_started">Zum Einstieg einige Externe Links zu Themen.</string>
+    <string name="get_themes_chameleonos">ChameleonOS Themes</string>
+    <string name="get_themes_miui">MIUI Themes (note: not all elements theme)</string>
+
+    <string name="dlg_apply_theme_with_font_title">Anwenden mit Schriftart</string>
+    <string name="dlg_apply_theme_with_font_body">Dieses Thema enthält eine Schriftart wodurch ein Neustart benötigt wird.</string>
+    <string name="dlg_apply_theme_with_font_without_reboot">Thema ohne Schriftart Anwenden</string>
+    <string name="dlg_apply_theme_with_font_and_reboot">Thema mit Schriftart Anwenden und Neustarten</string>
+
+    <string name="dlg_apply_font_title">Schriftart Anwenden</string>
+    <string name="dlg_apply_font_body">Die neue Schriftart wird erst nach einem #Neustart komplett angewendet.</string>
+    <string name="dlg_apply_font_without_reboot">Schriftart Anwenden und ohne neustart</string>
+    <string name="dlg_apply_font_and_reboot">Schriftart Anwenden und neustarten</string>
+
+    <string name="dlg_reset_theme_with_font_title">Thema mit Schriftart entfernen</string>
+    <string name="dlg_reset_theme_with_font_body">Dieses Thema enthält eine Schriftart wofür ein Neustart erforderlich ist.</string>
+    <string name="dlg_reset_theme_with_font_without_reboot">Thema ohne Schriftart entfernen</string>
+    <string name="dlg_reset_theme_with_font_and_reboot">Thema mit Schriftart entfernen und Neustarten</string>
+
+    <string name="dlg_reset_font_title">Schriftart entfernen</string>
+    <string name="dlg_reset_font_body">Beim entfernen einer benutzerdefinierten Schriftart ist ein Neustart nötig.</string>
+    <string name="dlg_reset_font_without_reboot">Benutzerdefinierte Schriftart nicht entfernen</string>
+    <string name="dlg_reset_font_and_reboot">Schriftart entfernen und Neustarten</string>
+
+    <string name="dlg_scale_boot_title">Startanimation Anpassen</string>
+    <string name="dlg_scale_boot_body">Anpassen der Startanimation erlaubt die größe der Startanimation an das Gerät anzupassen.\n\nSollte das ergebniss eine schwarze Startanimation sein, wähle erneut die Startanimation ohne anpassung aus.</string>
+    <string name="dlg_scale_boot_no_scaling">Anweden ohne anpassung</string>
+    <string name="dlg_scale_boot_with_scaling">Anwenden und Anpassen</string>
+
+    <string name="dlg_theme_failed_title">Oooooops!</string>
+    <string name="dlg_theme_failed_body">Irgendwas schreckliches ist passiert und das Thema wurde nicht angewendet!\n\nVersuche es noch einmal, oder wähle ein anderes Thema.</string>
+
+    <string name="dlg_install_theme_title">Installiere Thema</string>
+    <string name="dlg_install_theme_body">Thema Installieren?</string>
+    <string name="dlg_install_theme_cancel">Abbrechen</string>
+    <string name="dlg_install_theme_install">Installieren</string>
+
+    <string name="dlg_theme_exists_title">Thema bereits vorhanden</string>
+    <string name="dlg_theme_exists_body">Thema ist bereits Installiert.\n\n Wähle Installieren zur Neuinstallation</string>
+    <string name="dlg_theme_exists_cancel">Abbrechen</string>
+    <string name="dlg_theme_exists_install">Installieren</string>
+</resources>

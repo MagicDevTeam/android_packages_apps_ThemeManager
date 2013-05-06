@@ -15,6 +15,7 @@
 
 package com.android.thememanager.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,12 +32,16 @@ import android.app.ProgressDialog;
 import android.os.ServiceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.thememanager.Globals;
 import com.android.thememanager.PreviewHelper;
@@ -82,6 +87,22 @@ public class ThemeDetailActivity extends Activity {
         mPreviews.setSpacing(20);
         mPreviews.setAnimationDuration(1000);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_theme_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_details:
+                Theme.showExtendedThemeDetails(this, mTheme);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

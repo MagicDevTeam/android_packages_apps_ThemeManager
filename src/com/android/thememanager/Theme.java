@@ -15,6 +15,13 @@
 
 package com.android.thememanager;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.TextView;
+
 public class Theme {
 
     public static final int THEME_ELEMENT_TYPE_ICONS = 0;
@@ -244,5 +251,44 @@ public class Theme {
 
     public void setLastModified(long lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public static void showThemeDetails(Context context, Theme theme) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View content = inflater.inflate(R.layout.theme_info, null);
+        ((TextView)content.findViewById(R.id.theme_name)).setText(theme.getTitle());
+        ((TextView)content.findViewById(R.id.theme_version)).setText(theme.getVersion());
+        ((TextView)content.findViewById(R.id.theme_author)).setText(theme.getAuthor());
+        ((TextView)content.findViewById(R.id.theme_designer)).setText(theme.getDesigner());
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.theme_info_details))
+                .setPositiveButton(context.getString(R.string.btn_ok), null)
+                .setView(content)
+                .setIcon(android.R.drawable.ic_menu_info_details)
+                .create().show();
+    }
+
+    public static void showExtendedThemeDetails(Context context, Theme theme) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View content = inflater.inflate(R.layout.theme_info_extended, null);
+        ((TextView)content.findViewById(R.id.theme_name)).setText(theme.getTitle());
+        ((TextView)content.findViewById(R.id.theme_version)).setText(theme.getVersion());
+        ((TextView)content.findViewById(R.id.theme_author)).setText(theme.getAuthor());
+        ((TextView)content.findViewById(R.id.theme_designer)).setText(theme.getDesigner());
+        ((CheckBox)content.findViewById(R.id.has_icons)).setChecked(theme.getHasIcons());
+        ((CheckBox)content.findViewById(R.id.has_wallpaper)).setChecked(theme.getHasWallpaper());
+        ((CheckBox)content.findViewById(R.id.has_systemui)).setChecked(theme.getHasSystemUI());
+        ((CheckBox)content.findViewById(R.id.has_framework)).setChecked(theme.getHasFramework());
+        ((CheckBox)content.findViewById(R.id.has_contacts)).setChecked(theme.getHasContacts());
+        ((CheckBox)content.findViewById(R.id.has_ringtones)).setChecked(theme.getHasRingtone() || theme.getHasNotification());
+        ((CheckBox)content.findViewById(R.id.has_bootani)).setChecked(theme.getHasBootanimation());
+        ((CheckBox)content.findViewById(R.id.has_mms)).setChecked(theme.getHasMms());
+        ((CheckBox)content.findViewById(R.id.has_fonts)).setChecked(theme.getHasFont());
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.theme_info_details))
+                .setPositiveButton(context.getString(R.string.btn_ok), null)
+                .setView(content)
+                .setIcon(android.R.drawable.ic_menu_info_details)
+                .create().show();
     }
 }

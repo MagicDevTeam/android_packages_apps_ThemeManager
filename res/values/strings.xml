@@ -18,6 +18,7 @@
     <string name="menu_reset">Reset theme</string>
     <string name="menu_reset_element">Reset</string>
     <string name="menu_delete_theme">Delete theme</string>
+    <string name="menu_info">Theme Info</string>
 
     <string name="btn_apply_theme">Apply</string>
     <string name="btn_ok">OK</string>
@@ -50,6 +51,12 @@
     <string name="mixer_font_label">Fonts</string>
 
     <string name="not_a_theme_file">File is not a theme!</string>
+
+    <string name="theme_info_details">Theme details</string>
+    <string name="theme_info_name">Name: </string>
+    <string name="theme_info_author">Author: </string>
+    <string name="theme_info_designer">Designer: </string>
+    <string name="theme_info_version">Version: </string>
 
     <!-- ChameleonOS theme links -->
     <string name="get_themes_goo_title">goo.im</string>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/DetailLabel"
+            android:text="@string/theme_info_name" />
+        <TextView
+            style="@style/DetailInfoLabel"
+            android:id="@+id/theme_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/DetailLabel"
+            android:text="@string/theme_info_version" />
+        <TextView
+            style="@style/DetailInfoLabel"
+            android:id="@+id/theme_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/DetailLabel"
+            android:text="@string/theme_info_author" />
+        <TextView
+            style="@style/DetailInfoLabel"
+            android:id="@+id/theme_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/DetailLabel"
+            android:text="@string/theme_info_designer" />
+        <TextView
+            style="@style/DetailInfoLabel"
+            android:id="@+id/theme_designer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="5dp"
+        android:background="@android:color/holo_blue_bright" />
+
+    <CheckBox
+        android:id="@+id/has_icons"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_icons_label" />
+    <CheckBox
+        android:id="@+id/has_wallpaper"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_walllpaper_label" />
+    <CheckBox
+        android:id="@+id/has_systemui"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_systemui_label" />
+    <CheckBox
+        android:id="@+id/has_framework"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_framework_label" />
+    <CheckBox
+        android:id="@+id/has_contacts"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_contacts_label" />
+    <CheckBox
+        android:id="@+id/has_ringtones"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_ringtones_label" />
+    <CheckBox
+        android:id="@+id/has_bootani"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_bootanimation_label" />
+    <CheckBox
+        android:id="@+id/has_mms"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_mms_label" />
+    <CheckBox
+        android:id="@+id/has_fonts"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_font_label" />
+</LinearLayout>

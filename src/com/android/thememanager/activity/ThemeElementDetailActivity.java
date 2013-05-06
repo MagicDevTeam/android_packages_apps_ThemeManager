@@ -31,6 +31,8 @@ import android.os.Bundle;
 import android.os.ServiceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -129,6 +131,22 @@ public class ThemeElementDetailActivity extends Activity {
         mPreviews.setAdapter(mAdapter);
         mPreviews.setSpacing(20);
         mPreviews.setAnimationDuration(1000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_theme_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_details:
+                Theme.showThemeDetails(this, mTheme);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

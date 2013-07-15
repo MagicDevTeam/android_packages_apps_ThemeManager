@@ -12,4 +12,5 @@
 -->
 <resources>
     <color name="mixer_item_label_color">#ffffff</color>
+    <color name="empty_preview_background">#cccccc</color>
 </resources>

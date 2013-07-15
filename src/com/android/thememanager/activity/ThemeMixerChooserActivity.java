@@ -54,7 +54,7 @@ public class ThemeMixerChooserActivity extends Activity {
 
     private GridView mGridView = null;
     private List<Theme> mThemeList = null;
-    private ImageAdapter mAdapter = null;
+    private PreviewAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
     private int mElementType = Theme.THEME_ELEMENT_TYPE_ICONS;
 
@@ -85,7 +85,7 @@ public class ThemeMixerChooserActivity extends Activity {
                 startActivity(intent);
             }
         });
-        mAdapter = new ImageAdapter(ThemeMixerChooserActivity.this);
+        mAdapter = new PreviewAdapter(ThemeMixerChooserActivity.this);
         mGridView.setAdapter(mAdapter);
 	}
 
@@ -209,21 +209,50 @@ public class ThemeMixerChooserActivity extends Activity {
         }
     }
 
-    public class ImageAdapter extends BaseAdapter {
-        int mGalleryItemBackground;
+    public class PreviewAdapter extends BaseAdapter {
         private Context mContext;
 
         private ElementPreviewManager mPreviewManager = new ElementPreviewManager();
 
-        private ImageView[] mImages;
+        private View[] mPreviews;
         private int mPreviewWidth;
         private int mPreviewHeight;
 
-        public ImageAdapter(Context c) {
+        public PreviewAdapter(Context c) {
             mContext = c;
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
             mPreviewWidth = dm.widthPixels / 3;
             mPreviewHeight = dm.heightPixels / 3;
+
+            preloadPreviews();
+        }
+
+        private void preloadPreviews() {
+            mPreviews = new View[mThemeList.size()];
+            for (int i = 0; i < mPreviews.length; i++) {
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                mPreviews[i] = inflater.inflate(R.layout.theme_preview, null);
+                FrameLayout fl = (FrameLayout)mPreviews[i].findViewById(R.id.preview_layout);
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
+                params.width = mPreviewWidth;
+                params.height = mPreviewHeight;
+                fl.setLayoutParams(params);
+                PreviewHolder holder = new PreviewHolder();
+                holder.preview = (ImageView) mPreviews[i].findViewById(R.id.preview_image);
+                holder.name = (TextView) mPreviews[i].findViewById(R.id.theme_name);
+                holder.osTag = (ImageView) mPreviews[i].findViewById(R.id.os_indicator);
+                holder.progress = mPreviews[i].findViewById(R.id.loading_indicator);
+                mPreviews[i].setTag(holder);
+                mPreviewManager.fetchDrawableOnThread(mThemeList.get(i), mElementType, holder);
+
+                holder.name.setText(mThemeList.get(i).getTitle());
+                holder.preview.setImageResource(R.drawable.empty_preview);
+
+                if (mThemeList.get(i).getIsCosTheme())
+                    holder.osTag.setImageResource(R.drawable.chaos);
+                else
+                    holder.osTag.setImageResource(R.drawable.miui);
+            }
         }
 
         public int getCount() {
@@ -239,36 +268,7 @@ public class ThemeMixerChooserActivity extends Activity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-            PreviewHolder holder = null;
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.theme_preview, null);
-                FrameLayout fl = (FrameLayout)convertView.findViewById(R.id.preview_layout);
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
-                params.width = mPreviewWidth;
-                params.height = mPreviewHeight;
-                fl.setLayoutParams(params);
-                holder = new PreviewHolder();
-                holder.preview = (ImageView) convertView.findViewById(R.id.preview_image);
-                holder.name = (TextView) convertView.findViewById(R.id.theme_name);
-                holder.osTag = (ImageView) convertView.findViewById(R.id.os_indicator);
-                convertView.setTag(holder);
-            } else {
-                holder = (PreviewHolder) convertView.getTag();
-            }
-            if (holder.preview.getDrawable() == null) {
-                holder.preview.setImageResource(R.drawable.preview);
-            }
-
-            mPreviewManager.fetchDrawableOnThread(mThemeList.get(position), mElementType, holder.preview);
-            holder.name.setText(mThemeList.get(position).getTitle());
-
-            if (mThemeList.get(position).getIsCosTheme())
-                holder.osTag.setImageResource(R.drawable.chaos);
-            else
-                holder.osTag.setImageResource(R.drawable.miui);
-
-            return convertView;
+            return mPreviews[position];
         }
 
         public void destroy() {

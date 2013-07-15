@@ -21,7 +21,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.View;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,6 +37,7 @@ public class ElementPreviewManager {
         drawableMap = new WeakHashMap<String, BitmapDrawable>();
     }
 
+    @SuppressWarnings("deprecation")
     public BitmapDrawable fetchDrawable(Theme theme, int elementType) {
         String themeId = theme.getFileName();
         if (drawableMap.containsKey(themeId)) {
@@ -76,21 +77,22 @@ public class ElementPreviewManager {
         }
     }
 
-    public void fetchDrawableOnThread(final Theme theme, final int elementType, final ImageView imageView) {
+    public void fetchDrawableOnThread(final Theme theme, final int elementType, final PreviewHolder holder) {
         String themeId = theme.getFileName();
         if (drawableMap.containsKey(themeId)) {
-            imageView.setImageDrawable(drawableMap.get(themeId));
+            holder.preview.setImageDrawable(drawableMap.get(themeId));
+            holder.progress.setVisibility(View.GONE);
             return;
-        } else
-            imageView.setImageResource(R.drawable.preview);
+        }
 
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 if (message.obj != null)
-                    imageView.setImageDrawable((BitmapDrawable) message.obj);
+                    holder.preview.setImageDrawable((BitmapDrawable) message.obj);
                 else
-                    imageView.setImageResource(R.drawable.no_preview);
+                    holder.preview.setImageResource(R.drawable.no_preview);
+                holder.progress.setVisibility(View.GONE);
             }
         };
 
@@ -147,8 +149,9 @@ public class ElementPreviewManager {
         }
 
         FileInputStream fis = null;
-        if (previewName != null)
+        if (previewName != null) {
             fis = new FileInputStream(Globals.CACHE_DIR + "/" + themeId + "/" + previewName);
+        }
 
         return fis;
     }

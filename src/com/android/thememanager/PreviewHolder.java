@@ -15,11 +15,13 @@
 
 package com.android.thememanager;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PreviewHolder {
     public ImageView preview;
     public ImageView osTag;
+    public View progress;
     public TextView name;
 }

@@ -30,6 +30,14 @@
             android:scaleType="fitXY"
             />
 
+        <ProgressBar
+            android:id="@+id/loading_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            />
+
         <ImageView
                 android:id="@+id/os_indicator"
                 android:layout_width="wrap_content"

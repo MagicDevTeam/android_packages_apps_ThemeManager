@@ -18,10 +18,12 @@ package com.android.thememanager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.android.thememanager.widget.FlipImageView;
 
 public class PreviewHolder {
-    public ImageView preview;
+    public FlipImageView preview;
     public ImageView osTag;
     public View progress;
     public TextView name;
+    public int index = 0;
 }

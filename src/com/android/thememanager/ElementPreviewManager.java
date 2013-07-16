@@ -88,10 +88,13 @@ public class ElementPreviewManager {
         final Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
+                long delay = 0;
+                if (ThemeUtils.themeCacheDirExists(theme.getFileName()))
+                    delay = holder.index * 50;
                 if (message.obj != null)
-                    holder.preview.setImageDrawable((BitmapDrawable) message.obj);
+                    holder.preview.setImageDrawableAnimated((BitmapDrawable) message.obj, delay);
                 else
-                    holder.preview.setImageResource(R.drawable.no_preview);
+                    holder.preview.setImageResourceAnimated(R.drawable.no_preview, delay);
                 holder.progress.setVisibility(View.GONE);
             }
         };

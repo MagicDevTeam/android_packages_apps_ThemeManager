@@ -50,6 +50,7 @@ import com.android.thememanager.Theme;
 import com.android.thememanager.ThemesDataSource;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.activity.ThemeDetailActivity;
+import com.android.thememanager.widget.FlipImageView;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -274,10 +275,11 @@ public class ThemeChooserFragment extends Fragment {
                 params.height = mPreviewHeight;
                 fl.setLayoutParams(params);
                 PreviewHolder holder = new PreviewHolder();
-                holder.preview = (ImageView) mPreviews[i].findViewById(R.id.preview_image);
+                holder.preview = (FlipImageView) mPreviews[i].findViewById(R.id.preview_image);
                 holder.name = (TextView) mPreviews[i].findViewById(R.id.theme_name);
                 holder.osTag = (ImageView) mPreviews[i].findViewById(R.id.os_indicator);
                 holder.progress = mPreviews[i].findViewById(R.id.loading_indicator);
+                holder.index = i;
                 mPreviews[i].setTag(holder);
                 mPreviewManager.fetchDrawableOnThread(mThemesList.get(i), holder);
 

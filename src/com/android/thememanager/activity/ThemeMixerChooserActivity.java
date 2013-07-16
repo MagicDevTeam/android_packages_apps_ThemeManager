@@ -87,6 +87,9 @@ public class ThemeMixerChooserActivity extends Activity {
         });
         mAdapter = new PreviewAdapter(ThemeMixerChooserActivity.this);
         mGridView.setAdapter(mAdapter);
+
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
     @Override
@@ -203,6 +206,9 @@ public class ThemeMixerChooserActivity extends Activity {
                     }
                 } catch (Exception e) {
                 }
+                return true;
+            case android.R.id.home:
+                onBackPressed();
                 return true;
             default:
                 return false;

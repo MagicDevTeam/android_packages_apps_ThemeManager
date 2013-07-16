@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
 import android.os.Bundle;
 import android.os.ServiceManager;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -75,6 +76,9 @@ public class ThemeBootanimationDetailActivity extends Activity {
             mPreview.LoadAnimation(Globals.CACHE_DIR + "/bootanimation.zip");
         } catch (IOException e) {
         }
+
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void extractAnimation(String path) throws IOException {
@@ -125,6 +129,15 @@ public class ThemeBootanimationDetailActivity extends Activity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void applyTheme(View view) {

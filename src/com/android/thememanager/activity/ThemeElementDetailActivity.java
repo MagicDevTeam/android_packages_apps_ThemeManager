@@ -131,6 +131,9 @@ public class ThemeElementDetailActivity extends Activity {
         mPreviews.setAdapter(mAdapter);
         mPreviews.setSpacing(20);
         mPreviews.setAnimationDuration(1000);
+
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -144,6 +147,9 @@ public class ThemeElementDetailActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.menu_details:
                 Theme.showThemeDetails(this, mTheme);
+                return true;
+            case android.R.id.home:
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

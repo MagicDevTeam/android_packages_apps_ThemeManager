@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -98,6 +99,9 @@ public class ThemeRingtoneDetailActivity extends Activity
 
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setOnPreparedListener(this);
+
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
@@ -127,6 +131,15 @@ public class ThemeRingtoneDetailActivity extends Activity
         if (mMediaPlayer.isPlaying())
             mMediaPlayer.stop();
         unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void onClick(View v) {

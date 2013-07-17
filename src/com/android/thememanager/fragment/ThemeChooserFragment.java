@@ -269,6 +269,7 @@ public class ThemeChooserFragment extends Fragment {
             for (int i = 0; i < mPreviews.length; i++) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 mPreviews[i] = inflater.inflate(R.layout.theme_preview, null);
+                mPreviews[i].setId(i);
                 FrameLayout fl = (FrameLayout)mPreviews[i].findViewById(R.id.preview_layout);
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)fl.getLayoutParams();
                 params.width = mPreviewWidth;

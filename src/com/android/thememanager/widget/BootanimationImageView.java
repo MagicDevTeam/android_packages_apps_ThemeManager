@@ -50,7 +50,7 @@ public class BootanimationImageView extends ImageView {
         mAnimation = new AnimationDrawable();
     }
 
-    public void LoadAnimation(String path) throws IOException {
+    public void loadAnimation(String path) throws IOException {
         ZipFile zip = new ZipFile(path);
         ZipEntry entry = zip.getEntry("desc.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry)));
@@ -97,7 +97,7 @@ public class BootanimationImageView extends ImageView {
         return drawable;
     }
 
-    private class AnimationPart {
+    private static class AnimationPart {
         public int playCount;
         public int pause;
         String partName;

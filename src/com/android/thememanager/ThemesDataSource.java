@@ -117,8 +117,11 @@ public class ThemesDataSource {
                 ThemeSQLiteHelper.COLUMN_THEME_FILE_NAME + "='" + themeId + "'",
                 null, null, null, null);
 
-        boolean exists = (c != null && c.getCount() > 0);
-        c.close();
+        boolean exists = false;
+        if (c != null) {
+            exists = c.getCount() > 0;
+            c.close();
+        }
         return exists;
     }
 
@@ -128,13 +131,15 @@ public class ThemesDataSource {
                 null, null, null, null);
         boolean isOlder = false;
 
-        if (c != null && c.getCount() > 0) {
-            c.moveToFirst();
-            String modified = c.getString(c.getColumnIndex(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED));
-            if (modified == null || lastModified > Long.parseLong(modified))
-                isOlder = true;
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                String modified = c.getString(c.getColumnIndex(ThemeSQLiteHelper.COLUMN_LAST_MODIFIED));
+                if (modified == null || lastModified > Long.parseLong(modified))
+                    isOlder = true;
+            }
+            c.close();
         }
-        c.close();
         return isOlder;
     }
 
@@ -145,12 +150,13 @@ public class ThemesDataSource {
                 ThemeSQLiteHelper.COLUMN_ID + "='" + id + "'",
                 null, null, null, null);
 
-        if (c != null && c.getCount() > 0) {
-            c.moveToFirst();
-            theme = cursorToTheme(c);
+        if (c != null) {
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                theme = cursorToTheme(c);
+            }
+            c.close();
         }
-
-        c.close();
         return theme;
     }
 

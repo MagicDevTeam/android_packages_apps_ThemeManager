@@ -73,7 +73,7 @@ public class ThemeBootanimationDetailActivity extends Activity {
         mPreview = (BootanimationImageView) findViewById(R.id.preview);
         try {
             extractAnimation(mTheme.getThemePath());
-            mPreview.LoadAnimation(Globals.CACHE_DIR + "/bootanimation.zip");
+            mPreview.loadAnimation(Globals.CACHE_DIR + "/bootanimation.zip");
         } catch (IOException e) {
         }
 

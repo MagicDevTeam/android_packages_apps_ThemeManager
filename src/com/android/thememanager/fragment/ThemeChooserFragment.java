@@ -334,12 +334,9 @@ public class ThemeChooserFragment extends Fragment {
     }
 
     private class LoadThemesInfoTask extends AsyncTask<String, Integer, Boolean> {
-        int progress = 0;
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //getActivity().showDialog(ThemeManagerTabActivity.DIALOG_LOAD_THEMES_PROGRESS);
         }
 
         @Override
@@ -351,7 +348,6 @@ public class ThemeChooserFragment extends Fragment {
                         THEMES_PATH + "/" + themeId,
                         getActivity(), false);
             }
-            //removeNonExistingThemes(availableThemes);
             return Boolean.TRUE;
         }
 

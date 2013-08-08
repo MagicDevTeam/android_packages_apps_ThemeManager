@@ -64,7 +64,7 @@ public class MixThemesFragment extends Fragment {
         return v;
     }
 
-    public class MixerAdapter extends BaseAdapter {
+    public static class MixerAdapter extends BaseAdapter {
         private Context mContext;
 
         public MixerAdapter(Context c) {

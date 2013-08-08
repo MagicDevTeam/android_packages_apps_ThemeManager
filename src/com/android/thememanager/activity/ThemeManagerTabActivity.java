@@ -15,85 +15,66 @@
 
 package com.android.thememanager.activity;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.TabHost;
-import android.widget.TabWidget;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.android.thememanager.R;
+
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.os.Bundle;
+
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.fragment.GetThemesFragment;
 import com.android.thememanager.fragment.MixThemesFragment;
 import com.android.thememanager.fragment.ThemeChooserFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Demonstrates combining a TabHost with a ViewPager to implement a tab UI
- * that switches between tabs and also allows the user to perform horizontal
- * flicks to move between the tabs.
- */
-public class ThemeManagerTabActivity extends FragmentActivity {
-    public static final int DIALOG_LOAD_THEMES_PROGRESS = 0;
-    private ProgressDialog mProgressDialog;
-
-    TabHost mTabHost;
-    ViewPager  mViewPager;
+public class ThemeManagerTabActivity extends Activity {
+    ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
-    HorizontalScrollView mTabScroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fragment_tabs_pager);
-        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-        mTabHost.setup();
-        
-        mTabScroller = (HorizontalScrollView)findViewById(R.id.tab_scroller);
+        mViewPager = new ViewPager(this);
+        mViewPager.setId(424242);
+        mViewPager.setOffscreenPageLimit(3);
+        setContentView(mViewPager);
 
-        mViewPager = (ViewPager)findViewById(R.id.pager);
-        mViewPager.setOffscreenPageLimit(4);
+        final ActionBar bar = getActionBar();
+        bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager, mTabScroller);
-
-        mTabsAdapter.addTab(mTabHost.newTabSpec("local").setIndicator(getString(R.string.tab_themes)),
+        mTabsAdapter = new TabsAdapter(this, mViewPager);
+        mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_themes)),
                 ThemeChooserFragment.class, null);
-
-        mTabsAdapter.addTab(mTabHost.newTabSpec("mix").setIndicator(getString(R.string.tab_mixer)),
+        mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_mixer)),
                 MixThemesFragment.class, null);
-
-        mTabsAdapter.addTab(mTabHost.newTabSpec("get").setIndicator(getString(R.string.tab_get_themes)),
+        mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_get_themes)),
                 GetThemesFragment.class, null);
 
-        getActionBar().show();
-
         if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));
+            bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
         } else {
             //check if there are any themes available, if not show the "Get Themes" tab
             List<Theme> themes = ThemeUtils.getAllThemes(this);
             if (themes == null || themes.size() == 0)
-                mTabHost.setCurrentTabByTag("get");
+                bar.setSelectedNavigationItem(2);
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("tab", mTabHost.getCurrentTabTag());
+        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
     }
 
     /**
@@ -108,62 +89,37 @@ public class ThemeManagerTabActivity extends FragmentActivity {
      * tab changes.
      */
     public static class TabsAdapter extends FragmentPagerAdapter
-            implements TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener {
+            implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
         private final Context mContext;
-        private final TabHost mTabHost;
+        private final ActionBar mActionBar;
         private final ViewPager mViewPager;
-        private final Activity mActivity;
         private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
-        private final HorizontalScrollView mTabScroller;
 
         static final class TabInfo {
-            @SuppressWarnings("unused")
-			private final String tag;
             private final Class<?> clss;
             private final Bundle args;
 
-            TabInfo(String _tag, Class<?> _class, Bundle _args) {
-                tag = _tag;
+            TabInfo(Class<?> _class, Bundle _args) {
                 clss = _class;
                 args = _args;
             }
         }
 
-        static class DummyTabFactory implements TabHost.TabContentFactory {
-            private final Context mContext;
-
-            public DummyTabFactory(Context context) {
-                mContext = context;
-            }
-
-            @Override
-            public View createTabContent(String tag) {
-                View v = new View(mContext);
-                v.setMinimumWidth(0);
-                v.setMinimumHeight(0);
-                return v;
-            }
-        }
-
-        public TabsAdapter(FragmentActivity activity, TabHost tabHost, ViewPager pager, HorizontalScrollView tabScroller) {
+        public TabsAdapter(Activity activity, ViewPager pager) {
             super(activity.getFragmentManager());
             mContext = activity;
-            mActivity = activity;
-            mTabHost = tabHost;
+            mActionBar = activity.getActionBar();
             mViewPager = pager;
-            mTabHost.setOnTabChangedListener(this);
             mViewPager.setAdapter(this);
             mViewPager.setOnPageChangeListener(this);
-            mTabScroller = tabScroller;
         }
 
-        public void addTab(TabHost.TabSpec tabSpec, Class<?> clss, Bundle args) {
-            tabSpec.setContent(new DummyTabFactory(mContext));
-            String tag = tabSpec.getTag();
-
-            TabInfo info = new TabInfo(tag, clss, args);
+        public void addTab(Tab tab, Class<?> clss, Bundle args) {
+            TabInfo info = new TabInfo(clss, args);
+            tab.setTag(info);
+            tab.setTabListener(this);
             mTabs.add(info);
-            mTabHost.addTab(tabSpec);
+            mActionBar.addTab(tab);
             notifyDataSetChanged();
         }
 
@@ -179,52 +135,35 @@ public class ThemeManagerTabActivity extends FragmentActivity {
         }
 
         @Override
-        public void onTabChanged(String tabId) {
-            int position = mTabHost.getCurrentTab();
-            mViewPager.setCurrentItem(position);
-        }
-
-        @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
 
         @Override
         public void onPageSelected(int position) {
-            // Unfortunately when TabHost changes the current tab, it kindly
-            // also takes care of putting focus on it when not in touch mode.
-            // The jerk.
-            // This hack tries to prevent this from pulling focus out of our
-            // ViewPager.
-            TabWidget widget = mTabHost.getTabWidget();
-            int oldFocusability = widget.getDescendantFocusability();
-            widget.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
-            mTabHost.setCurrentTab(position);
-            widget.setDescendantFocusability(oldFocusability);
-            int x = mTabScroller.getScrollX();
-            int w = widget.getChildAt(0).getWidth();
-            int mid = x + (mTabHost.getWidth() - w) / 2;
-            int tabX = position * w;
-            if (tabX < mid || tabX > mid)
-            	mTabScroller.scrollBy(tabX-mid, 0);
+            mActionBar.setSelectedNavigationItem(position);
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
         }
-    }
 
-    public Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_LOAD_THEMES_PROGRESS:
-                mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setMessage(getResources().getText(R.string.loading_themes));
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setCancelable(false );
-                mProgressDialog.setProgress(0);
-                mProgressDialog.show();
-                return mProgressDialog;
-            default:
-                return null;
+        @Override
+        public void onTabSelected(Tab tab, FragmentTransaction ft) {
+            Object tag = tab.getTag();
+            for (int i=0; i<mTabs.size(); i++) {
+                if (mTabs.get(i) == tag) {
+                    mViewPager.setCurrentItem(i);
+                }
+            }
+        }
+
+        @Override
+        public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+        }
+
+        @Override
+        public void onTabReselected(Tab tab, FragmentTransaction ft) {
         }
     }
 }
+

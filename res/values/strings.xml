@@ -39,6 +39,8 @@
 
     <string name="coming_soon">Coming Soon!</string>
 
+    <string name="remove_existing_theme">Remove currently applied theme</string>
+
     <string name="mixer_icons_label">Icons</string>
     <string name="mixer_walllpaper_label">Wallpaper</string>
     <string name="mixer_systemui_label">Status bar</string>
@@ -49,6 +51,7 @@
     <string name="mixer_bootanimation_label">Boot animation</string>
     <string name="mixer_mms_label">Messaging</string>
     <string name="mixer_font_label">Fonts</string>
+    <string name="mixer_third_party_apps">3rd Party Apps</string>
 
     <string name="not_a_theme_file">File is not a theme!</string>
 

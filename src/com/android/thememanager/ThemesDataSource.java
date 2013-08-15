@@ -51,7 +51,8 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_NOTIFICATION,
             ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION,
             ThemeSQLiteHelper.COLUMN_HAS_MMS,
-            ThemeSQLiteHelper.COLUMN_HAS_FONT };
+            ThemeSQLiteHelper.COLUMN_HAS_FONT,
+            ThemeSQLiteHelper.COLUMN_IS_COMPLETE };
 
     public ThemesDataSource(Context context) {
         dbHelper = new ThemeSQLiteHelper(context);
@@ -88,6 +89,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION, theme.getHasBootanimation());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_MMS, theme.getHasMms());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FONT, theme.getHasFont());
+        values.put(ThemeSQLiteHelper.COLUMN_IS_COMPLETE, theme.getIsComplete());
         long insertId;
         if (entryExists(theme.getFileName()))
             insertId = database.update(ThemeSQLiteHelper.TABLE_THEMES, values,
@@ -164,7 +166,8 @@ public class ThemesDataSource {
         List<Theme> themes = new ArrayList<Theme>();
 
         Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
-                allColumns, null, null, null, null, null);
+                allColumns, null, null, null, null,
+                ThemeSQLiteHelper.COLUMN_IS_COMPLETE + " DESC");
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -181,8 +184,7 @@ public class ThemesDataSource {
         List<Theme> themes = new ArrayList<Theme>();
 
         Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
-                allColumns, ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI + "=1 AND "
-                + ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK + "=1",
+                allColumns, ThemeSQLiteHelper.COLUMN_IS_COMPLETE + "=1",
                 null, null, null, null);
 
         cursor.moveToFirst();
@@ -423,6 +425,8 @@ public class ThemesDataSource {
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_MMS)) == 1);
         theme.setHasFont(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_FONT)) == 1);
+        theme.setIsComplete(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_IS_COMPLETE)) == 1);
         return theme;
     }
 }

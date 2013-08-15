@@ -95,4 +95,16 @@
         <item name="android:button">@drawable/theme_item_selector</item>
     </style>
 
+    <style name="ThemeItemChecklist">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:enabled">true</item>
+    </style>
+
 </resources>

@@ -151,7 +151,7 @@ public class ThemeChooserFragment extends Fragment {
         public void handleMessage(Message msg) {
             ThemesDataSource dataSource = new ThemesDataSource(getActivity());
             dataSource.open();
-            mThemesList = dataSource.getCompleteThemes();
+            mThemesList = dataSource.getAllThemes();
             dataSource.close();
 
             mAdapter = new PreviewAdapter(getActivity());

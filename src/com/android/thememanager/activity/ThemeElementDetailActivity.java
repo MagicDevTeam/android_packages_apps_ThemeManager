@@ -69,7 +69,7 @@ public class ThemeElementDetailActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_theme_detail);
+        setContentView(R.layout.activity_theme_element_detail);
 
 
         mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);

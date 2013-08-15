@@ -23,6 +23,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,7 @@ import java.util.WeakHashMap;
 import java.util.Map;
 
 public class PreviewManager {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private final Map<String, BitmapDrawable> drawableMap;
 
     public PreviewManager() {
@@ -115,8 +116,17 @@ public class PreviewManager {
         if (!ThemeUtils.themeCacheDirExists(theme.getFileName())) {
             ThemeUtils.extractThemePreviews(theme.getFileName(), theme.getThemePath());
         }
-        FileInputStream fis;
-        fis = new FileInputStream(Globals.CACHE_DIR + "/" + theme.getFileName() + "/preview_launcher_0.png");
+
+        File preview = new File(Globals.CACHE_DIR + "/" + theme.getFileName() + "/preview_launcher_0.png");
+        FileInputStream fis = null;
+        if (preview.exists()) {
+            fis = new FileInputStream(preview);
+        }else {
+            String[] previewsList = PreviewHelper.getAllPreviews(Globals.CACHE_DIR + "/" + theme.getFileName());
+            if (previewsList != null && previewsList.length > 0)
+                fis = new FileInputStream(Globals.CACHE_DIR + "/" +
+                        theme.getFileName() + "/" + previewsList[0]);
+        }
 
         return fis;
     }

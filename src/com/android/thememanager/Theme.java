@@ -75,6 +75,7 @@ public class Theme {
     private boolean hasBootanimation;
     private boolean hasMms;
     private boolean hasFont;
+    private boolean isComplete;
     private long lastModified;
 
     public long getId() {
@@ -243,6 +244,14 @@ public class Theme {
 
     public void setHasFont(boolean hasFont) {
         this.hasFont = hasFont;
+    }
+
+    public boolean getIsComplete() {
+        return isComplete;
+    }
+
+    public void setIsComplete(boolean isComplete) {
+        this.isComplete = isComplete;
     }
 
     public long getLastModified() {

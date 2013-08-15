@@ -44,9 +44,10 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_MMS = "has_mms";
     public static final String COLUMN_HAS_FONT = "has_font";
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
+    public static final String COLUMN_IS_COMPLETE = "is_complete";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -72,7 +73,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_HAS_NOTIFICATION + " integer, "
             + COLUMN_HAS_BOOTANIMATION + " integer, "
             + COLUMN_HAS_MMS + " integer, "
-            + COLUMN_HAS_FONT + " integer);";
+            + COLUMN_HAS_FONT + " integer, "
+            + COLUMN_IS_COMPLETE + " integer);";
 
 
     public ThemeSQLiteHelper(Context context) {

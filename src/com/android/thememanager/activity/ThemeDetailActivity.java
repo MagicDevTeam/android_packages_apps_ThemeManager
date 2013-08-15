@@ -15,7 +15,6 @@
 
 package com.android.thememanager.activity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,12 +35,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.thememanager.Globals;
 import com.android.thememanager.PreviewHelper;
@@ -50,11 +50,25 @@ import com.android.thememanager.SimpleDialogs;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
+import com.android.thememanager.widget.SlidingUpPanelLayout;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ThemeDetailActivity extends Activity {
+import static cos.content.res.ThemeResources.BOOTANI_NAME;
+import static cos.content.res.ThemeResources.CHAOS_FRAMEWORK_NAME;
+import static cos.content.res.ThemeResources.CONTACTS_PACKAGE;
+import static cos.content.res.ThemeResources.DIALER_PACKAGE;
+import static cos.content.res.ThemeResources.FONTS_NAME;
+import static cos.content.res.ThemeResources.ICONS_NAME;
+import static cos.content.res.ThemeResources.MMS_PACKAGE;
+import static cos.content.res.ThemeResources.RINGTONES_NAME;
+import static cos.content.res.ThemeResources.SYSTEMUI_PACKAGE;
+import static cos.content.res.ThemeResources.WALLPAPER_NAME;
+
+public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayout.PanelSlideListener {
     private static final String TAG = "ThemeManager";
     private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
 
@@ -65,6 +79,11 @@ public class ThemeDetailActivity extends Activity {
     private ImageAdapter mAdapter = null;
     private ProgressDialog mProgressDialog;
     private Theme mTheme = null;
+    private SlidingUpPanelLayout mSlidingPanel;
+    private CheckBox mRemoveExistingThemeCheckBox;
+    private boolean mRemoveExistingTheme = false;
+
+    private List<String> mExcludedItemsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +91,7 @@ public class ThemeDetailActivity extends Activity {
         setContentView(R.layout.activity_theme_detail);
 
         mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);
+        mExcludedItemsList = new ArrayList<String>();
 
         if (mTheme == null)
             finish();
@@ -87,10 +107,173 @@ public class ThemeDetailActivity extends Activity {
         mPreviews.setSpacing(20);
         mPreviews.setAnimationDuration(1000);
 
+        setupSlidingPanel();
+
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void setupSlidingPanel() {
+        mSlidingPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_panel);
+        final View dragView = findViewById(R.id.drag_view);
+        mSlidingPanel.setDragView(dragView);
+        mSlidingPanel.setShadowDrawable(R.drawable.panel_shadow_holo_dark);
+        mSlidingPanel.setPanelSlideListener(this);
+        ViewTreeObserver observer = dragView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mSlidingPanel.setPanelHeight(dragView.getHeight());
+            }
+        });
+        initItemsChecklist();
+    }
+
+    private void initItemsChecklist() {
+        initChecklistItem(R.id.has_icons, mTheme.getHasIcons());
+        initChecklistItem(R.id.has_wallpaper, mTheme.getHasWallpaper());
+        initChecklistItem(R.id.has_systemui, mTheme.getHasSystemUI());
+        initChecklistItem(R.id.has_framework, mTheme.getHasFramework());
+        initChecklistItem(R.id.has_contacts, mTheme.getHasContacts());
+        initChecklistItem(R.id.has_ringtones, mTheme.getHasRingtone() || mTheme.getHasNotification());
+        initChecklistItem(R.id.has_bootani, mTheme.getHasBootanimation());
+        initChecklistItem(R.id.has_mms, mTheme.getHasMms());
+        initChecklistItem(R.id.has_fonts, mTheme.getHasFont());
+        initChecklistItem(R.id.has_third_party, true);
+
+        mRemoveExistingThemeCheckBox = (CheckBox) findViewById(R.id.remove_existing_theme);
+        mRemoveExistingThemeCheckBox.setOnCheckedChangeListener(mChecklistItemChanged);
+        if (mTheme.getIsComplete()) {
+            mRemoveExistingThemeCheckBox.setChecked(true);
+        }
+    }
+
+    CompoundButton.OnCheckedChangeListener mChecklistItemChanged = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int id = buttonView.getId();
+            switch (id) {
+                case R.id.has_icons:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(ICONS_NAME))
+                            mExcludedItemsList.remove(ICONS_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(ICONS_NAME))
+                            mExcludedItemsList.add(ICONS_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_wallpaper:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(WALLPAPER_NAME))
+                            mExcludedItemsList.remove(WALLPAPER_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(WALLPAPER_NAME))
+                            mExcludedItemsList.add(WALLPAPER_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_systemui:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(SYSTEMUI_PACKAGE))
+                            mExcludedItemsList.remove(SYSTEMUI_PACKAGE);
+                    } else {
+                        if (!mExcludedItemsList.contains(SYSTEMUI_PACKAGE))
+                            mExcludedItemsList.add(SYSTEMUI_PACKAGE);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_framework:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(CHAOS_FRAMEWORK_NAME))
+                            mExcludedItemsList.remove(CHAOS_FRAMEWORK_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(CHAOS_FRAMEWORK_NAME))
+                            mExcludedItemsList.add(CHAOS_FRAMEWORK_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_contacts:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(CONTACTS_PACKAGE))
+                            mExcludedItemsList.remove(CONTACTS_PACKAGE);
+                    } else {
+                        if (!mExcludedItemsList.contains(CONTACTS_PACKAGE))
+                            mExcludedItemsList.add(CONTACTS_PACKAGE);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_ringtones:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(RINGTONES_NAME))
+                            mExcludedItemsList.remove(RINGTONES_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(RINGTONES_NAME))
+                            mExcludedItemsList.add(RINGTONES_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_bootani:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(BOOTANI_NAME))
+                            mExcludedItemsList.remove(BOOTANI_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(BOOTANI_NAME))
+                            mExcludedItemsList.add(BOOTANI_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_mms:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(MMS_PACKAGE))
+                            mExcludedItemsList.remove(MMS_PACKAGE);
+                    } else {
+                        if (!mExcludedItemsList.contains(MMS_PACKAGE))
+                            mExcludedItemsList.add(MMS_PACKAGE);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_fonts:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(FONTS_NAME))
+                            mExcludedItemsList.remove(FONTS_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(FONTS_NAME))
+                            mExcludedItemsList.add(FONTS_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_third_party:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains("third_party"))
+                            mExcludedItemsList.remove("third_party");
+                    } else {
+                        if (!mExcludedItemsList.contains("third_party"))
+                            mExcludedItemsList.add("third_party");
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.remove_existing_theme:
+                    mRemoveExistingTheme = isChecked;
+                    break;
+            }
+        }
+    };
+
+    private void initChecklistItem(CheckBox item, boolean isAvailable) {
+        if (isAvailable) {
+            item.setChecked(true);
+            item.setOnCheckedChangeListener(mChecklistItemChanged);
+        } else
+            item.setEnabled(false);
+    }
+
+    private void initChecklistItem(int itemId, boolean isAvailable) {
+        CheckBox item = (CheckBox) findViewById(itemId);
+        if (item == null)
+            return;
+        initChecklistItem(item, isAvailable);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_theme_details, menu);
@@ -157,12 +340,12 @@ public class ThemeDetailActivity extends Activity {
     }
 
     public void applyTheme(View view) {
-        if (mTheme.getHasFont()) {
+        if (mTheme.getHasFont() && !mExcludedItemsList.contains(FONTS_NAME)) {
             displayThemeFontDialog();
-        } else if (mTheme.getHasBootanimation()) {
+        } else if (mTheme.getHasBootanimation() && !mExcludedItemsList.contains(BOOTANI_NAME)) {
             displayBootAnimationFontDialog(false);
         } else {
-            applyTheme(mTheme.getThemePath(), false, false);
+            applyTheme(mTheme.getThemePath(), false, false, mRemoveExistingTheme);
         }
     }
 
@@ -178,7 +361,7 @@ public class ThemeDetailActivity extends Activity {
                         if (mTheme.getHasBootanimation())
                             displayBootAnimationFontDialog(isYes);
                         else
-                            applyTheme(mTheme.getThemePath(), false, isYes);
+                            applyTheme(mTheme.getThemePath(), false, isYes, mRemoveExistingTheme);
                     }
                 });
     }
@@ -192,9 +375,23 @@ public class ThemeDetailActivity extends Activity {
                 new SimpleDialogs.OnYesNoResponse() {
                     @Override
                     public void onYesNoResponse(boolean isYes) {
-                        applyTheme(mTheme.getThemePath(), applyFont, isYes);
+                        applyTheme(mTheme.getThemePath(), applyFont, isYes, mRemoveExistingTheme);
                     }
                 });
+    }
+
+    @Override
+    public void onPanelSlide(View panel, float slideOffset) {
+    }
+
+    @Override
+    public void onPanelCollapsed(View panel) {
+        ((ImageView)panel.findViewById(R.id.drag_view)).setImageResource(R.drawable.ic_slide_up);
+    }
+
+    @Override
+    public void onPanelExpanded(View panel) {
+        ((ImageView)panel.findViewById(R.id.drag_view)).setImageResource(R.drawable.ic_slide_down);
     }
 
     public class ImageAdapter extends BaseAdapter {
@@ -289,10 +486,11 @@ public class ThemeDetailActivity extends Activity {
         }
     }
 
-    private void applyTheme(String theme, boolean applyFont, boolean scaleBoot) {
+    private void applyTheme(String theme, boolean applyFont, boolean scaleBoot, boolean removeExistingTheme) {
         IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
         try {
-            ts.applyTheme(FileProvider.CONTENT + ThemeUtils.stripPath(theme), applyFont, scaleBoot);
+            ts.applyTheme(FileProvider.CONTENT + ThemeUtils.stripPath(theme), mExcludedItemsList,
+                    applyFont, scaleBoot, removeExistingTheme);
             showDialog(DIALOG_PROGRESS);
         } catch (Exception e) {
             SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,

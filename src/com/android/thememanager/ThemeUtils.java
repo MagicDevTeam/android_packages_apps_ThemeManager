@@ -310,7 +310,8 @@ public class ThemeUtils {
             theme.setUiVersion(details.uiVersion);
             theme.setIsCosTheme(details.isCosTheme);
             theme.setIsDefaultTheme(isDefaultTheme);
-            theme.setHasWallpaper(zip.getEntry("wallpaper") != null);
+            theme.setHasWallpaper(zip.getEntry("wallpaper/default_wallpaper.jpg") != null ||
+                    zip.getEntry("wallpaper/default_wallpaper.png") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
             theme.setHasContacts(zip.getEntry("com.android.contacts") != null);
@@ -321,6 +322,8 @@ public class ThemeUtils {
             theme.setHasBootanimation(zip.getEntry("boots") != null);
             theme.setHasMms(zip.getEntry("com.android.mms") != null);
             theme.setHasFont(zip.getEntry("fonts") != null);
+            theme.setIsComplete(theme.getHasSystemUI() && theme.getHasFramework() &&
+                    theme.getHasMms() && theme.getHasContacts());
             theme.setLastModified(lastModified);
 
             try {

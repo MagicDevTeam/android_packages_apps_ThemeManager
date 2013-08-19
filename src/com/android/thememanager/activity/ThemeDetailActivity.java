@@ -50,12 +50,13 @@ import com.android.thememanager.SimpleDialogs;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
-import com.android.thememanager.widget.SlidingUpPanelLayout;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.chameleonos.support.widget.SlidingUpPanelLayout;
 
 import static cos.content.res.ThemeResources.BOOTANI_NAME;
 import static cos.content.res.ThemeResources.CHAOS_FRAMEWORK_NAME;

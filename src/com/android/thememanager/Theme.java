@@ -25,33 +25,38 @@ import android.widget.TextView;
 public class Theme {
 
     public static final int THEME_ELEMENT_TYPE_ICONS = 0;
-    public static final int THEME_ELEMENT_TYPE_WALLPAPER = 1;
-    public static final int THEME_ELEMENT_TYPE_SYSTEMUI = 2;
-    public static final int THEME_ELEMENT_TYPE_FRAMEWORK = 3;
-    public static final int THEME_ELEMENT_TYPE_CONTACTS = 4;
-    public static final int THEME_ELEMENT_TYPE_RINGTONES = 5;
-    public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 6;
-    public static final int THEME_ELEMENT_TYPE_MMS = 7;
-    public static final int THEME_ELEMENT_TYPE_FONT = 8;
+    public static final int THEME_ELEMENT_TYPE_SYSTEMUI = 1;
+    public static final int THEME_ELEMENT_TYPE_FRAMEWORK = 2;
+    public static final int THEME_ELEMENT_TYPE_CONTACTS = 3;
+    public static final int THEME_ELEMENT_TYPE_DIALER = 4;
+    public static final int THEME_ELEMENT_TYPE_MMS = 5;
+    public static final int THEME_ELEMENT_TYPE_WALLPAPER = 6;
+    public static final int THEME_ELEMENT_TYPE_RINGTONES = 7;
+    public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 8;
+    public static final int THEME_ELEMENT_TYPE_FONT = 9;
 
-    public static int[] sElementIcons = { android.R.drawable.ic_menu_view,
-            android.R.drawable.ic_menu_gallery,
-            android.R.drawable.ic_menu_sort_by_size,
-            android.R.drawable.ic_menu_today,
-            android.R.drawable.ic_menu_call,
-            android.R.drawable.ic_menu_call,
-            android.R.drawable.ic_menu_slideshow,
-            android.R.drawable.ic_menu_send,
-            android.R.drawable.ic_menu_sort_alphabetically };
+    public static int[] sElementIcons = {
+            R.drawable.ic_icons,
+            R.drawable.ic_systemui,
+            R.drawable.ic_framework,
+            R.drawable.ic_contacts,
+            R.drawable.ic_dialer,
+            R.drawable.ic_mms,
+            R.drawable.ic_wallpaper,
+            R.drawable.ic_ringtones,
+            R.drawable.ic_bootani,
+            R.drawable.ic_fonts };
 
-    public static int[] sElementLabels = { R.string.mixer_icons_label,
-            R.string.mixer_walllpaper_label,
+    public static int[] sElementLabels = {
+            R.string.mixer_icons_label,
             R.string.mixer_systemui_label,
             R.string.mixer_framework_label,
             R.string.mixer_contacts_label,
+            R.string.mixer_dialer_label,
+            R.string.mixer_mms_label,
+            R.string.mixer_walllpaper_label,
             R.string.mixer_ringtones_label,
             R.string.mixer_bootanimation_label,
-            R.string.mixer_mms_label,
             R.string.mixer_font_label };
 
     private long id;
@@ -68,6 +73,7 @@ public class Theme {
     private boolean hasIcons;
     private boolean hasLockscreen;
     private boolean hasContacts;
+    private boolean hasDialer;
     private boolean hasSystemUI;
     private boolean hasFramework;
     private boolean hasRingtone;
@@ -190,6 +196,14 @@ public class Theme {
         this.hasContacts = hasContacts;
     }
 
+    public boolean getHasDialer() {
+        return hasDialer;
+    }
+
+    public void setHasDialer(boolean hasDialer) {
+        this.hasDialer = hasDialer;
+    }
+
     public boolean getHasSystemUI() {
         return hasSystemUI;
     }
@@ -289,6 +303,7 @@ public class Theme {
         ((CheckBox)content.findViewById(R.id.has_systemui)).setChecked(theme.getHasSystemUI());
         ((CheckBox)content.findViewById(R.id.has_framework)).setChecked(theme.getHasFramework());
         ((CheckBox)content.findViewById(R.id.has_contacts)).setChecked(theme.getHasContacts());
+        ((CheckBox)content.findViewById(R.id.has_dialer)).setChecked(theme.getHasDialer());
         ((CheckBox)content.findViewById(R.id.has_ringtones)).setChecked(theme.getHasRingtone() || theme.getHasNotification());
         ((CheckBox)content.findViewById(R.id.has_bootani)).setChecked(theme.getHasBootanimation());
         ((CheckBox)content.findViewById(R.id.has_mms)).setChecked(theme.getHasMms());

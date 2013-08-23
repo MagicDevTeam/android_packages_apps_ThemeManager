@@ -26,6 +26,7 @@ public class PreviewHelper {
     public static final String PREVIEW_STATUSBAR_PREFIX = "preview_statusbar_";
     public static final String PREVIEW_MMS_PREFIX = "preview_mms_";
     public static final String PREVIEW_CONTACTS_PREFIX = "preview_contact_";
+    public static final String PREVIEW_DIALER_PREFIX = "preview_dialer_";
     public static final String PREVIEW_BOOTANIMATION_PREFIX = "preview_animation_";
     public static final String PREVIEW_LOCKSCREEN_PREFIX = "preview_lockscreen_";
     public static final String PREVIEW_FONTS_PREFIX = "preview_fonts_";
@@ -79,6 +80,17 @@ public class PreviewHelper {
         @Override
         public boolean accept(File file, String s) {
             if (s.toLowerCase().contains(PREVIEW_MMS_PREFIX) &&
+                    s.toLowerCase().endsWith(".png"))
+                return true;
+            else
+                return false;
+        }
+    };
+
+    static FilenameFilter mDialerPreviewsFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String s) {
+            if (s.toLowerCase().contains(PREVIEW_DIALER_PREFIX) &&
                     s.toLowerCase().endsWith(".png"))
                 return true;
             else
@@ -203,6 +215,18 @@ public class PreviewHelper {
         String[] dirList = null;
         if (dir.exists() && dir.isDirectory())
             dirList = dir.list(mContactsPreviewsFilter);
+
+        if (dirList != null)
+            Arrays.sort(dirList);
+
+        return dirList;
+    }
+
+    public static String[] getDialerPreviews(String path) {
+        File dir = new File(path);
+        String[] dirList = null;
+        if (dir.exists() && dir.isDirectory())
+            dirList = dir.list(mDialerPreviewsFilter);
 
         if (dirList != null)
             Arrays.sort(dirList);

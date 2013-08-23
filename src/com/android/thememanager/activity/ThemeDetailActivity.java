@@ -136,6 +136,7 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
         initChecklistItem(R.id.has_systemui, mTheme.getHasSystemUI());
         initChecklistItem(R.id.has_framework, mTheme.getHasFramework());
         initChecklistItem(R.id.has_contacts, mTheme.getHasContacts());
+        initChecklistItem(R.id.has_dialer, mTheme.getHasDialer());
         initChecklistItem(R.id.has_ringtones, mTheme.getHasRingtone() || mTheme.getHasNotification());
         initChecklistItem(R.id.has_bootani, mTheme.getHasBootanimation());
         initChecklistItem(R.id.has_mms, mTheme.getHasMms());
@@ -201,6 +202,16 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
                     } else {
                         if (!mExcludedItemsList.contains(CONTACTS_PACKAGE))
                             mExcludedItemsList.add(CONTACTS_PACKAGE);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_dialer:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(DIALER_PACKAGE))
+                            mExcludedItemsList.remove(DIALER_PACKAGE);
+                    } else {
+                        if (!mExcludedItemsList.contains(DIALER_PACKAGE))
+                            mExcludedItemsList.add(DIALER_PACKAGE);
                         mRemoveExistingThemeCheckBox.setChecked(false);
                     }
                     break;

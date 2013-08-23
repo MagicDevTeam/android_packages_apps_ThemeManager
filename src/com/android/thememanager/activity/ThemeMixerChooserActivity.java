@@ -127,6 +127,9 @@ public class ThemeMixerChooserActivity extends Activity {
             case Theme.THEME_ELEMENT_TYPE_CONTACTS:
                 list = dataSource.getContactsThemes();
                 break;
+            case Theme.THEME_ELEMENT_TYPE_DIALER:
+                list = dataSource.getDialerThemes();
+                break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                 list = dataSource.getRingtoneThemes();
                 break;
@@ -203,6 +206,9 @@ public class ThemeMixerChooserActivity extends Activity {
                             break;
                         case Theme.THEME_ELEMENT_TYPE_CONTACTS:
                             ts.resetThemeContacts();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_DIALER:
+                            ts.resetThemeDialer();
                             break;
                     }
                 } catch (Exception e) {

@@ -134,6 +134,9 @@ public class ElementPreviewManager {
                 case Theme.THEME_ELEMENT_TYPE_CONTACTS:
                     previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
+                case Theme.THEME_ELEMENT_TYPE_DIALER:
+                    previewName = PreviewHelper.getDialerPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
                 case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                     previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;

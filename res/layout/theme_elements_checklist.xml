@@ -5,42 +5,71 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <CheckBox
-        android:id="@+id/has_icons"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_icons_label" />
-    <CheckBox
-        android:id="@+id/has_wallpaper"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_walllpaper_label" />
-    <CheckBox
-        android:id="@+id/has_systemui"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_systemui_label" />
-    <CheckBox
-        android:id="@+id/has_framework"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_framework_label" />
-    <CheckBox
-        android:id="@+id/has_contacts"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_contacts_label" />
-    <CheckBox
-        android:id="@+id/has_ringtones"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_ringtones_label" />
-    <CheckBox
-        android:id="@+id/has_bootani"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_bootanimation_label" />
-    <CheckBox
-        android:id="@+id/has_mms"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_mms_label" />
-    <CheckBox
-        android:id="@+id/has_fonts"
-        style="@style/ThemeItemChecklist"
-        android:text="@string/mixer_font_label" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/has_icons"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_icons_label" />
+        <CheckBox
+            android:id="@+id/has_systemui"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_systemui_label" />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/has_framework"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_framework_label" />
+        <CheckBox
+            android:id="@+id/has_contacts"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_contacts_label" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/has_dialer"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_dialer_label" />
+        <CheckBox
+            android:id="@+id/has_mms"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_mms_label" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/has_wallpaper"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_walllpaper_label" />
+        <CheckBox
+            android:id="@+id/has_ringtones"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_ringtones_label" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/has_bootani"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_bootanimation_label" />
+        <CheckBox
+            android:id="@+id/has_fonts"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_font_label" />
+    </LinearLayout>
     <CheckBox
         android:id="@+id/has_third_party"
         style="@style/ThemeItemChecklist"

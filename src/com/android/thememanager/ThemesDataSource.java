@@ -45,6 +45,7 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_ICONS,
             ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
             ThemeSQLiteHelper.COLUMN_HAS_CONTACTS,
+            ThemeSQLiteHelper.COLUMN_HAS_DIALER,
             ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI,
             ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK,
             ThemeSQLiteHelper.COLUMN_HAS_RINGTONE,
@@ -82,6 +83,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_ICONS, theme.getHasIcons());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS, theme.getHasContacts());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_DIALER, theme.getHasDialer());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI, theme.getHasSystemUI());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK, theme.getHasFramework());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_RINGTONE, theme.getHasRingtone());
@@ -361,6 +363,24 @@ public class ThemesDataSource {
         return themes;
     }
 
+    public List<Theme> getDialerThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_DIALER + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
     public List<Theme> getFontThemes() {
         List<Theme> themes = new ArrayList<Theme>();
 
@@ -411,6 +431,8 @@ public class ThemesDataSource {
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN)) == 1);
         theme.setHasContacts(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS)) == 1);
+        theme.setHasDialer(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_DIALER)) == 1);
         theme.setHasSystemUI(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI)) == 1);
         theme.setHasFramework(cursor.getInt(

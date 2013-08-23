@@ -46,11 +46,13 @@
     <string name="mixer_systemui_label">Status bar</string>
     <string name="mixer_framework_label">Framework</string>
     <string name="mixer_lockscreen_label">Lockscreen</string>
-    <string name="mixer_contacts_label">Contacts/Dialer</string>
+    <string name="mixer_contacts_label">Contacts</string>
+    <string name="mixer_dialer_label">Dialer</string>
     <string name="mixer_ringtones_label">Ringtones</string>
     <string name="mixer_bootanimation_label">Boot animation</string>
     <string name="mixer_mms_label">Messaging</string>
     <string name="mixer_font_label">Fonts</string>
+    <string name="mixer_launcher_label">Launcher</string>
     <string name="mixer_third_party_apps">3rd Party Apps</string>
 
     <string name="not_a_theme_file">File is not a theme!</string>

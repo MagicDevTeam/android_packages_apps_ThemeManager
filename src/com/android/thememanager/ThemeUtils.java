@@ -315,6 +315,7 @@ public class ThemeUtils {
             theme.setHasIcons(zip.getEntry("icons") != null);
             theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
             theme.setHasContacts(zip.getEntry("com.android.contacts") != null);
+            theme.setHasDialer(zip.getEntry("com.android.dialer") != null);
             theme.setHasSystemUI(zip.getEntry("com.android.systemui") != null);
             theme.setHasFramework(zip.getEntry("framework-res") != null);
             theme.setHasRingtone(zip.getEntry("ringtones/ringtone.mp3") != null);

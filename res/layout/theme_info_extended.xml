@@ -81,10 +81,6 @@
         style="@style/ThemeItem"
         android:text="@string/mixer_icons_label" />
     <CheckBox
-        android:id="@+id/has_wallpaper"
-        style="@style/ThemeItem"
-        android:text="@string/mixer_walllpaper_label" />
-    <CheckBox
         android:id="@+id/has_systemui"
         style="@style/ThemeItem"
         android:text="@string/mixer_systemui_label" />
@@ -97,6 +93,18 @@
         style="@style/ThemeItem"
         android:text="@string/mixer_contacts_label" />
     <CheckBox
+        android:id="@+id/has_dialer"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_dialer_label" />
+    <CheckBox
+        android:id="@+id/has_mms"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_mms_label" />
+    <CheckBox
+        android:id="@+id/has_wallpaper"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_walllpaper_label" />
+    <CheckBox
         android:id="@+id/has_ringtones"
         style="@style/ThemeItem"
         android:text="@string/mixer_ringtones_label" />
@@ -104,10 +112,6 @@
         android:id="@+id/has_bootani"
         style="@style/ThemeItem"
         android:text="@string/mixer_bootanimation_label" />
-    <CheckBox
-        android:id="@+id/has_mms"
-        style="@style/ThemeItem"
-        android:text="@string/mixer_mms_label" />
     <CheckBox
         android:id="@+id/has_fonts"
         style="@style/ThemeItem"

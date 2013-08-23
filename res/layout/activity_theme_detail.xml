@@ -93,8 +93,6 @@
                 android:id="@+id/remove_existing_theme"
                 style="@style/ThemeItemChecklist"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
                 android:textStyle="bold|italic"
                 android:text="@string/remove_existing_theme" />
         </LinearLayout>

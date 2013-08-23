@@ -89,12 +89,16 @@ public class MixThemesFragment extends Fragment {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.mixer_item, null);
             }
-            ImageView i = (ImageView)v.findViewById(R.id.mixer_icon);//mImages[position];//new ImageView(mContext);
-            i.setImageResource(Theme.sElementIcons[position]);
+            if (Theme.sElementIcons[position] != 0) {
+                ImageView i = (ImageView)v.findViewById(R.id.mixer_icon);//mImages[position];//new ImageView(mContext);
+                i.setImageResource(Theme.sElementIcons[position]);
 
-            TextView tv = (TextView) v.findViewById(R.id.mixer_label);
+                TextView tv = (TextView) v.findViewById(R.id.mixer_label);
 
-            tv.setText(Theme.sElementLabels[position]);
+                tv.setText(Theme.sElementLabels[position]);
+            } else {
+                v.setVisibility(View.INVISIBLE);
+            }
 
             return v;
         }

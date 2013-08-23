@@ -104,6 +104,10 @@ public class ThemeElementDetailActivity extends Activity {
                 mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
                 break;
+            case Theme.THEME_ELEMENT_TYPE_DIALER:
+                mPreviewList = PreviewHelper.getDialerPreviews(THEMES_PATH + "/.cache/" +
+                        ThemeUtils.stripExtension(themeName));
+                break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                 mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
                         ThemeUtils.stripExtension(themeName));
@@ -337,6 +341,9 @@ public class ThemeElementDetailActivity extends Activity {
                     break;
                 case Theme.THEME_ELEMENT_TYPE_CONTACTS:
                     ts.applyThemeContacts(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_DIALER:
+                    ts.applyThemeDialer(FileProvider.CONTENT + themeFileName);
                     break;
                 case Theme.THEME_ELEMENT_TYPE_RINGTONES:
                     ts.applyThemeRingtone(FileProvider.CONTENT + themeFileName);

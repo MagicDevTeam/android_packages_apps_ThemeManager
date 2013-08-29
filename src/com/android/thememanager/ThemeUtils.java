@@ -93,31 +93,6 @@ public class ThemeUtils {
         f.delete();
     }
 
-    /**
-     * Strips the file extension off of the given filename
-     */
-    public static String stripExtension(String filename) {
-        if (filename.lastIndexOf('.') > -1) {
-            filename = filename.substring(0, filename.lastIndexOf('.'));
-        }
-
-        return filename;
-    }
-
-    /**
-     * Strips all path information and returns just the filename
-     * @param filename complete path and filename
-     * @return filename without any path information
-     */
-    public static String stripPath(String filename) {
-        int index = filename.lastIndexOf('/');
-        if (index > -1) {
-            filename = filename.substring(index + 1);
-        }
-
-        return filename;
-    }
-
     public static boolean installedThemeHasFonts() {
         File fontsDir = new File("/data/fonts");
         return fontsDir.exists() && fontsDir.list().length > 0;

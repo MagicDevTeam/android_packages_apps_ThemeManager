@@ -33,6 +33,9 @@ public class FileProvider extends ContentProvider {
     public static final String CONTENT = "content://com.android.thememanager/";
     public static final Uri CONTENT_URI = Uri
             .parse(CONTENT);
+    public static final String CONTENT_BACKUP = "content://com.android.thememanager.backup/";
+    public static final Uri CONTENT_BACKUP_URI = Uri
+            .parse(CONTENT_BACKUP);
     private static final HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
 
     static {
@@ -69,6 +72,8 @@ public class FileProvider extends ContentProvider {
             f = new File(Globals.CACHE_DIR, uri.getPath());
         else if (uri.toString().endsWith("default.ctz"))
             f = new File(Globals.SYSTEM_THEME_PATH, uri.getPath());
+        else if (uri.toString().contains("backup"))
+            f = new File(Globals.BACKUP_PATH, uri.getPath());
         else
             f = new File(Globals.DEFAULT_THEME_PATH, uri.getPath());
 

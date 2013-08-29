@@ -41,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.thememanager.FileUtils;
 import com.android.thememanager.Globals;
 import com.android.thememanager.PreviewHolder;
 import com.android.thememanager.PreviewManager;
@@ -178,7 +179,7 @@ public class ThemeChooserFragment extends Fragment {
         switch (menuItem.getItemId()) {
             case R.id.menu_reset:
                 // have the theme service remove the existing theme
-                final IThemeManagerService ts = 
+                final IThemeManagerService ts =
                         IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
                 if (ThemeUtils.installedThemeHasFonts()) {
                     SimpleDialogs.displayYesNoDialog(
@@ -257,10 +258,11 @@ public class ThemeChooserFragment extends Fragment {
 
         public PreviewAdapter(Context c) {
             mContext = c;
+            int numColumns = Math.max(3, mGridView.getNumColumns());
+            int spacingTotal = mGridView.getHorizontalSpacing() * (numColumns - 1);
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
-            mPreviewWidth = dm.widthPixels / 3;
-            mPreviewHeight = dm.heightPixels / 3;
-
+            mPreviewWidth = dm.widthPixels / numColumns - spacingTotal;
+            mPreviewHeight = dm.heightPixels / numColumns;
             preloadPreviews();
         }
 
@@ -344,7 +346,7 @@ public class ThemeChooserFragment extends Fragment {
             ThemeUtils.addThemeEntryToDb("default", Globals.DEFAULT_SYSTEM_THEME, getActivity(), true);
             String[] availableThemes = themeList(THEMES_PATH);
             for (String themeId : availableThemes) {
-                ThemeUtils.addThemeEntryToDb(ThemeUtils.stripExtension(themeId),
+                ThemeUtils.addThemeEntryToDb(FileUtils.stripExtension(themeId),
                         THEMES_PATH + "/" + themeId,
                         getActivity(), false);
             }

@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.thememanager.FileUtils;
 import com.android.thememanager.Globals;
 import com.android.thememanager.R;
 import com.android.thememanager.SimpleDialogs;
@@ -157,7 +158,7 @@ public class ThemeBootanimationDetailActivity extends Activity {
                             IThemeManagerService ts = IThemeManagerService.Stub.asInterface(
                                     ServiceManager.getService("ThemeService"));
                             ts.applyThemeBootanimation(FileProvider.CONTENT +
-                                    ThemeUtils.stripPath(mTheme.getThemePath()), isYes);
+                                    FileUtils.stripPath(mTheme.getThemePath()), isYes);
                             showDialog(DIALOG_PROGRESS);
                         } catch (Exception e) {
                             SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,

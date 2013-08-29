@@ -2,12 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.thememanager"
     android:versionCode="42"
-    android:versionName="2.0" >
+    android:versionName="2.1" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
     <uses-permission android:name="android.permission.ACCESS_THEME_SERVICE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -48,7 +49,7 @@
 
         <provider
             android:name="com.android.thememanager.provider.FileProvider"
-            android:authorities="com.android.thememanager"
+            android:authorities="com.android.thememanager;com.android.thememanager.backup"
             android:exported="true" />
 
     </application>

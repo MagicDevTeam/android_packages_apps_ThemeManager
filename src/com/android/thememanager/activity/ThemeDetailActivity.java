@@ -20,39 +20,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.IThemeManagerService;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.os.Handler;
 import android.os.ServiceManager;
-import android.util.DisplayMetrics;
-import android.util.Log;
+import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.BaseAdapter;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.thememanager.FileUtils;
 import com.android.thememanager.Globals;
 import com.android.thememanager.PreviewHelper;
 import com.android.thememanager.R;
+import com.android.thememanager.RingtoneUtils;
 import com.android.thememanager.SimpleDialogs;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,17 +60,7 @@ import static cos.content.res.ThemeResources.RINGTONES_NAME;
 import static cos.content.res.ThemeResources.SYSTEMUI_PACKAGE;
 import static cos.content.res.ThemeResources.WALLPAPER_NAME;
 
-public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayout.PanelSlideListener {
-    private static final String TAG = "ThemeManager";
-    private static final String THEMES_PATH = Globals.DEFAULT_THEME_PATH;
-
-    private static final int DIALOG_PROGRESS = 0;
-
-    private Gallery mPreviews = null;
-    private String[] mPreviewList = null;
-    private ImageAdapter mAdapter = null;
-    private ProgressDialog mProgressDialog;
-    private Theme mTheme = null;
+public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUpPanelLayout.PanelSlideListener {
     private SlidingUpPanelLayout mSlidingPanel;
     private CheckBox mRemoveExistingThemeCheckBox;
     private boolean mRemoveExistingTheme = false;
@@ -89,6 +70,7 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_theme_detail);
 
         mTheme = ThemeUtils.getThemeEntryById(getIntent().getLongExtra("theme_id", -1), this);
@@ -97,21 +79,16 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
         if (mTheme == null)
             finish();
 
+        mHandler = new Handler();
+
         mPreviewList = PreviewHelper.getAllPreviews(THEMES_PATH + "/.cache/" +
                 mTheme.getFileName());
 
         ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
 
-        mAdapter = new ImageAdapter(this);
-        mPreviews = (Gallery) findViewById(R.id.previews);
-        mPreviews.setAdapter(mAdapter);
-        mPreviews.setSpacing(20);
-        mPreviews.setAnimationDuration(1000);
-
+        setupPager();
         setupSlidingPanel();
-
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        setupActionBar();
     }
 
     private void setupSlidingPanel() {
@@ -311,6 +288,14 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
             String action = intent.getAction();
             if (Globals.ACTION_THEME_APPLIED.equals(action)) {
                 dismissDialog(DIALOG_PROGRESS);
+                if (!mExcludedItemsList.contains(RINGTONES_NAME)) {
+                    if (mTheme.getHasRingtone())
+                        RingtoneUtils.setRingtone(ThemeDetailActivity.this, mTheme.getTitle(),
+                                mTheme.getAuthor(), false);
+                    if (mTheme.getHasNotification())
+                        RingtoneUtils.setRingtone(ThemeDetailActivity.this, mTheme.getTitle(),
+                                mTheme.getAuthor(), true);
+                }
             } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
                 dismissDialog(DIALOG_PROGRESS);
                 SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
@@ -318,15 +303,6 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
             }
         }
     };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
-        mAdapter.destroyImages();
-        mAdapter = null;
-        System.gc();
-    }
 
     @Override
     protected void onResume() {
@@ -406,102 +382,10 @@ public class ThemeDetailActivity extends Activity implements SlidingUpPanelLayou
         ((ImageView)panel.findViewById(R.id.drag_view)).setImageResource(R.drawable.ic_slide_down);
     }
 
-    public class ImageAdapter extends BaseAdapter {
-        private Context mContext;
-
-        private ImageView[] mImages;
-
-        public ImageAdapter(Context c) {
-            mContext = c;
-            if (mImages == null) {
-                mImages = new ImageView[mPreviewList.length];
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return mPreviewList.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (mImages[position] == null) {
-                mImages[position] = new ImageView(mContext);
-                mImages[position].setLayoutParams(new Gallery.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-                FileInputStream is = null;
-                try {
-                    is = new FileInputStream(THEMES_PATH + "/.cache/" +
-                        mTheme.getFileName() + "/" + mPreviewList[position]);
-                } catch (FileNotFoundException e) {
-                }
-                if (is != null) {
-                    BitmapFactory.Options opts = new BitmapFactory.Options();
-                    opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                    opts.inDensity = DisplayMetrics.DENSITY_HIGH;
-                    opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
-                    opts.inScaled = true;
-                    Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
-                    Drawable drawable = new BitmapDrawable(bmp);
-                    mImages[position].setImageDrawable(drawable);
-                } else
-                    mImages[position].setImageResource(R.drawable.no_preview);
-                mImages[position].setScaleType(ImageView.ScaleType.FIT_CENTER);
-            }
-
-            return mImages[position];
-
-            //return mImages[position];
-        }
-        /** Returns the size (0.0f to 1.0f) of the views
-         * depending on the 'offset' to the center. */
-        public float getScale(boolean focused, int offset) {
-            /* Formula: 1 / (2 ^ offset) */
-            return Math.max(0, 1.0f / (float)Math.pow(2, Math.abs(offset)));
-        }
-
-        public void destroyImages() {
-            for (int i = 0; mImages != null && i < mImages.length; i++) {
-                if (mImages[i] != null) {
-                    if (mImages[i].getDrawable() != null)
-                        mImages[i].getDrawable().setCallback(null);
-                    mImages[i].setImageDrawable(null);
-                }
-            }
-        }
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_PROGRESS:
-                mProgressDialog = new ProgressDialog(this);
-                mProgressDialog.setMessage(getResources().getText(R.string.applying_theme));
-                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                mProgressDialog.setCancelable(false );
-                mProgressDialog.setProgress(0);
-                mProgressDialog.show();
-                return mProgressDialog;
-            default:
-                return null;
-        }
-    }
-
     private void applyTheme(String theme, boolean applyFont, boolean scaleBoot, boolean removeExistingTheme) {
         IThemeManagerService ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
         try {
-            ts.applyTheme(FileProvider.CONTENT + ThemeUtils.stripPath(theme), mExcludedItemsList,
+            ts.applyTheme(FileProvider.CONTENT + FileUtils.stripPath(theme), mExcludedItemsList,
                     applyFont, scaleBoot, removeExistingTheme);
             showDialog(DIALOG_PROGRESS);
         } catch (Exception e) {

@@ -33,6 +33,7 @@ import android.support.v4.view.ViewPager;
 
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
+import com.android.thememanager.fragment.BackupRestoreFragment;
 import com.android.thememanager.fragment.GetThemesFragment;
 import com.android.thememanager.fragment.MixThemesFragment;
 import com.android.thememanager.fragment.ThemeChooserFragment;
@@ -58,6 +59,8 @@ public class ThemeManagerTabActivity extends Activity {
                 ThemeChooserFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_mixer)),
                 MixThemesFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_backup_restore)),
+                BackupRestoreFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(getString(R.string.tab_get_themes)),
                 GetThemesFragment.class, null);
 

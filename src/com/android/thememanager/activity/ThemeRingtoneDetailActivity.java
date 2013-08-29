@@ -36,8 +36,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.android.thememanager.FileUtils;
 import com.android.thememanager.Globals;
 import com.android.thememanager.R;
+import com.android.thememanager.RingtoneUtils;
 import com.android.thememanager.SimpleDialogs;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
@@ -92,7 +94,7 @@ public class ThemeRingtoneDetailActivity extends Activity
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ThemeUtils.extractThemRingtones(ThemeUtils.stripExtension(mTheme.getFileName()),
+                ThemeUtils.extractThemRingtones(FileUtils.stripExtension(mTheme.getFileName()),
                         mTheme.getThemePath());
             }
         });
@@ -152,7 +154,7 @@ public class ThemeRingtoneDetailActivity extends Activity
             ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
             try {
                 ts.applyThemeRingtone(FileProvider.CONTENT + RINGTONE_NAME);
-                setRingtone(false);
+                RingtoneUtils.setRingtone(this, mTheme.getTitle(), mTheme.getAuthor(), false);
             } catch (RemoteException re) {
                 SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
                         ThemeRingtoneDetailActivity.this);
@@ -161,12 +163,11 @@ public class ThemeRingtoneDetailActivity extends Activity
             ts = IThemeManagerService.Stub.asInterface(ServiceManager.getService("ThemeService"));
             try {
                 ts.applyThemeRingtone(FileProvider.CONTENT + NOTIFICATION_NAME);
-                setRingtone(false);
+                RingtoneUtils.setRingtone(this, mTheme.getTitle(), mTheme.getAuthor(), true);
             } catch (RemoteException re) {
                 SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
                         ThemeRingtoneDetailActivity.this);
             }
-            setRingtone(true);
         }
     }
 
@@ -178,48 +179,6 @@ public class ThemeRingtoneDetailActivity extends Activity
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.prepare();
         } catch (IOException e) {
-        }
-    }
-
-    private void setRingtone(boolean isNotification) {
-        String dstFilePath;
-        if (isNotification)
-            dstFilePath = "/data/system/theme/" + NOTIFICATION_NAME;
-        else
-            dstFilePath = "/data/system/theme/" + RINGTONE_NAME;
-        if (dstFilePath != null) {
-            File f = new File(dstFilePath);
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.DATA, dstFilePath);
-            values.put(MediaStore.MediaColumns.TITLE, mTheme.getTitle());
-            values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3");
-            values.put(MediaStore.MediaColumns.SIZE, f.length());
-            values.put(MediaStore.Audio.Media.ARTIST,mTheme.getAuthor());
-            values.put(MediaStore.Audio.Media.IS_RINGTONE, !isNotification);
-            values.put(MediaStore.Audio.Media.IS_NOTIFICATION, isNotification);
-            values.put(MediaStore.Audio.Media.IS_ALARM, false);
-            values.put(MediaStore.Audio.Media.IS_MUSIC, false);
-
-            Uri uri = MediaStore.Audio.Media.getContentUriForPath(f.getAbsolutePath());
-            Uri newUri = null;
-            Cursor c = getContentResolver().query(uri, new String[] {MediaStore.MediaColumns._ID},
-                    MediaStore.MediaColumns.DATA + "='" + dstFilePath + "'", null, null);
-            if (c != null && c.getCount() > 0) {
-                c.moveToFirst();
-                long id = c.getLong(0);
-                c.close();
-                newUri = Uri.withAppendedPath(Uri.parse("content://media/internal/audio/media"), "" + id);
-                getContentResolver().update(uri, values, MediaStore.MediaColumns._ID + "=" + id, null);
-            }
-            if (newUri == null)
-                newUri = getContentResolver().insert(uri, values);
-            try {
-                if (!isNotification)
-                    RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE, newUri);
-                else
-                    RingtoneManager.setActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION, newUri);
-            } catch (Exception e) {
-            }
         }
     }
 

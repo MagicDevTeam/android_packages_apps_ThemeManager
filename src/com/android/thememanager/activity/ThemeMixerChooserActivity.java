@@ -233,10 +233,11 @@ public class ThemeMixerChooserActivity extends Activity {
 
         public PreviewAdapter(Context c) {
             mContext = c;
+            int numColumns = Math.max(3, mGridView.getNumColumns());
+            int spacingTotal = mGridView.getHorizontalSpacing() * (numColumns - 1);
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
-            mPreviewWidth = dm.widthPixels / 3;
-            mPreviewHeight = dm.heightPixels / 3;
-
+            mPreviewWidth = dm.widthPixels / numColumns - spacingTotal;
+            mPreviewHeight = dm.heightPixels / numColumns;
             preloadPreviews();
         }
 

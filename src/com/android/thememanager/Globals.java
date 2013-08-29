@@ -17,12 +17,18 @@ package com.android.thememanager;
 
 import android.os.Environment;
 
+import java.io.File;
+
 public class Globals {
     public static final String THEME_PATH = "/ChaOS/theme";
     public static final String DEFAULT_THEME_PATH = Environment.getExternalStorageDirectory() + THEME_PATH;
     public static final String CACHE_DIR = DEFAULT_THEME_PATH + "/.cache";
     public static final String SYSTEM_THEME_PATH = "/system/media";
+    public static final String DATA_THEME_PATH = "/data/system/theme";
+    public static final String SYSTEM_FONT_PATH = "/data/fonts";
+    public static final String RINGTONES_PATH = DATA_THEME_PATH + File.separator + "ringtones";
     public static final String DEFAULT_SYSTEM_THEME = SYSTEM_THEME_PATH + "/default.ctz";
+    public static final String BACKUP_PATH = Environment.getExternalStorageDirectory() + "/ChaOS/backup";
 
     public static final String ACTION_THEME_APPLIED = "com.android.server.ThemeManager.action.THEME_APPLIED";
     public static final String ACTION_THEME_NOT_APPLIED = "com.android.server.ThemeManager.action.THEME_NOT_APPLIED";

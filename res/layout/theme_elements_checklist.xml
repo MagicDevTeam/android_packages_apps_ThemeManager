@@ -53,9 +53,9 @@
             style="@style/ThemeItemChecklist"
             android:text="@string/mixer_walllpaper_label" />
         <CheckBox
-            android:id="@+id/has_ringtones"
+            android:id="@+id/has_lockscreen_wallpaper"
             style="@style/ThemeItemChecklist"
-            android:text="@string/mixer_ringtones_label" />
+            android:text="@string/mixer_lockscreen_wallpaper_label" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,6 +65,15 @@
             android:id="@+id/has_bootani"
             style="@style/ThemeItemChecklist"
             android:text="@string/mixer_bootanimation_label" />
+        <CheckBox
+            android:id="@+id/has_ringtones"
+            style="@style/ThemeItemChecklist"
+            android:text="@string/mixer_ringtones_label" />
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
         <CheckBox
             android:id="@+id/has_fonts"
             style="@style/ThemeItemChecklist"

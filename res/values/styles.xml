@@ -31,11 +31,13 @@
 
     <style name="MixerLabel" parent="@android:style/TextAppearance.Small">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/mixer_item_label_color</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
     </style>
 
     <style name="ThemeSection" parent="@android:style/TextAppearance.Small">

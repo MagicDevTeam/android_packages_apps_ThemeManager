@@ -170,6 +170,9 @@ public class ThemeUtils {
 
     public static boolean extractThemeWallpaper(String themeId, String themePath) {
         try {
+            if ((new File(Globals.CACHE_DIR + "/" +
+                    themeId + "/default_wallpaper.jpg")).exists())
+                return true;
             ZipFile zip = new ZipFile(themePath);
             ZipEntry ze = null;
 
@@ -184,6 +187,33 @@ public class ThemeUtils {
                 InputStream is = zip.getInputStream(ze);
                 FileOutputStream  out = new FileOutputStream(Globals.CACHE_DIR + "/" +
                         themeId + "/default_wallpaper.jpg");
+                BitmapFactory.decodeStream(is).compress(Bitmap.CompressFormat.JPEG,
+                        50, out);
+            }
+            zip.close();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean extractThemeLockscreenWallpaper(String themeId, String themePath) {
+        try {
+            ZipFile zip = new ZipFile(themePath);
+            ZipEntry ze = null;
+
+            if (!themeCacheDirExists(themeId))
+                createThemeCacheDir(themeId);
+
+            ze = zip.getEntry("wallpaper/default_lock_wallpaper.jpg");
+            if (ze == null)
+                ze = zip.getEntry("wallpaper/default_lock_wallpaper.png");
+
+            if (ze != null) {
+                InputStream is = zip.getInputStream(ze);
+                FileOutputStream  out = new FileOutputStream(Globals.CACHE_DIR + "/" +
+                        themeId + "/default_lock_wallpaper.jpg");
                 BitmapFactory.decodeStream(is).compress(Bitmap.CompressFormat.JPEG,
                         50, out);
             }
@@ -287,8 +317,9 @@ public class ThemeUtils {
             theme.setIsDefaultTheme(isDefaultTheme);
             theme.setHasWallpaper(zip.getEntry("wallpaper/default_wallpaper.jpg") != null ||
                     zip.getEntry("wallpaper/default_wallpaper.png") != null);
+            theme.setHasLockscreenWallpaper(zip.getEntry("wallpaper/default_lock_wallpaper.jpg") != null ||
+                    zip.getEntry("wallpaper/default_lock_wallpaper.png") != null);
             theme.setHasIcons(zip.getEntry("icons") != null);
-            theme.setHasLockscreen(zip.getEntry("lockscreen") != null);
             theme.setHasContacts(zip.getEntry("com.android.contacts") != null);
             theme.setHasDialer(zip.getEntry("com.android.dialer") != null);
             theme.setHasSystemUI(zip.getEntry("com.android.systemui") != null);

@@ -42,8 +42,8 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_IS_COS_THEME,
             ThemeSQLiteHelper.COLUMN_IS_DEFAULT_THEME,
             ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER,
+            ThemeSQLiteHelper.COLUMN_HAS_LOCK_WALLPAPER,
             ThemeSQLiteHelper.COLUMN_HAS_ICONS,
-            ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN,
             ThemeSQLiteHelper.COLUMN_HAS_CONTACTS,
             ThemeSQLiteHelper.COLUMN_HAS_DIALER,
             ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI,
@@ -80,8 +80,8 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_IS_COS_THEME, theme.getIsCosTheme());
         values.put(ThemeSQLiteHelper.COLUMN_IS_DEFAULT_THEME, theme.getIsDefaultTheme());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER, theme.getHasWallpaper());
+        values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCK_WALLPAPER, theme.getHasLockscreenWallpaper());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_ICONS, theme.getHasIcons());
-        values.put(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN, theme.getHasLockscreen());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS, theme.getHasContacts());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_DIALER, theme.getHasDialer());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_SYSTEMUI, theme.getHasSystemUI());
@@ -236,6 +236,24 @@ public class ThemesDataSource {
         return themes;
     }
 
+    public List<Theme> getLockscreenWallpaperThemes() {
+        List<Theme> themes = new ArrayList<Theme>();
+
+        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
+                allColumns, ThemeSQLiteHelper.COLUMN_HAS_LOCK_WALLPAPER + "='1'",
+                null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Theme theme = cursorToTheme(cursor);
+            themes.add(theme);
+            cursor.moveToNext();
+        }
+        // Make sure to close the cursor
+        cursor.close();
+        return themes;
+    }
+
     public List<Theme> getSystemUIThemes() {
         List<Theme> themes = new ArrayList<Theme>();
 
@@ -259,24 +277,6 @@ public class ThemesDataSource {
 
         Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
                 allColumns, ThemeSQLiteHelper.COLUMN_HAS_FRAMEWORK + "='1'",
-                null, null, null, null);
-
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Theme theme = cursorToTheme(cursor);
-            themes.add(theme);
-            cursor.moveToNext();
-        }
-        // Make sure to close the cursor
-        cursor.close();
-        return themes;
-    }
-
-    public List<Theme> getLockscreenThemes() {
-        List<Theme> themes = new ArrayList<Theme>();
-
-        Cursor cursor = database.query(ThemeSQLiteHelper.TABLE_THEMES,
-                allColumns, ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN + "='1'",
                 null, null, null, null);
 
         cursor.moveToFirst();
@@ -427,8 +427,8 @@ public class ThemesDataSource {
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_WALLPAPER)) == 1);
         theme.setHasIcons(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_ICONS)) == 1);
-        theme.setHasLockscreen(cursor.getInt(
-                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_LOCKSCREEN)) == 1);
+        theme.setHasLockscreenWallpaper(cursor.getInt(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_LOCK_WALLPAPER)) == 1);
         theme.setHasContacts(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_CONTACTS)) == 1);
         theme.setHasDialer(cursor.getInt(

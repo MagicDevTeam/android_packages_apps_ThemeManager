@@ -105,6 +105,10 @@
         style="@style/ThemeItem"
         android:text="@string/mixer_walllpaper_label" />
     <CheckBox
+        android:id="@+id/has_lockscreen_wallpaper"
+        style="@style/ThemeItem"
+        android:text="@string/mixer_lockscreen_wallpaper_label" />
+    <CheckBox
         android:id="@+id/has_ringtones"
         style="@style/ThemeItem"
         android:text="@string/mixer_ringtones_label" />

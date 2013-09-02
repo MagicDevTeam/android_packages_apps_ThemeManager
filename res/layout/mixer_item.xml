@@ -12,7 +12,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/mixer_item_height"
     android:background="#ff666666"
     >
@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/mixer_icon"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
@@ -30,7 +30,7 @@
     <TextView
         android:id="@+id/mixer_label"
         style="@style/MixerLabel"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         />
 
 </LinearLayout>

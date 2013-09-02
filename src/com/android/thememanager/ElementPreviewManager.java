@@ -23,6 +23,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -123,7 +124,14 @@ public class ElementPreviewManager {
                     previewName = PreviewHelper.getIconPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                    previewName = PreviewHelper.getLauncherPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    // ensure we have a lockscreen wallpaper to preview
+                    ThemeUtils.extractThemeWallpaper(theme.getFileName(), theme.getThemePath());
+                    previewName = PreviewHelper.getWallpaperPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
+                    // ensure we have a lockscreen wallpaper to preview
+                    ThemeUtils.extractThemeLockscreenWallpaper(theme.getFileName(), theme.getThemePath());
+                    previewName = PreviewHelper.getLockWallpaperPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                     previewName = PreviewHelper.getStatusbarPreviews(Globals.CACHE_DIR + "/" + themeId)[0];

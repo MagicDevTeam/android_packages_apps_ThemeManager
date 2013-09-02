@@ -31,9 +31,10 @@ public class Theme {
     public static final int THEME_ELEMENT_TYPE_DIALER = 4;
     public static final int THEME_ELEMENT_TYPE_MMS = 5;
     public static final int THEME_ELEMENT_TYPE_WALLPAPER = 6;
-    public static final int THEME_ELEMENT_TYPE_RINGTONES = 7;
-    public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 8;
-    public static final int THEME_ELEMENT_TYPE_FONT = 9;
+    public static final int THEME_ELEMENT_TYPE_LOCK_WALLPAPER = 7;
+    public static final int THEME_ELEMENT_TYPE_RINGTONES = 8;
+    public static final int THEME_ELEMENT_TYPE_BOOTANIMATION = 9;
+    public static final int THEME_ELEMENT_TYPE_FONT = 10;
 
     public static int[] sElementIcons = {
             R.drawable.ic_icons,
@@ -43,6 +44,7 @@ public class Theme {
             R.drawable.ic_dialer,
             R.drawable.ic_mms,
             R.drawable.ic_wallpaper,
+            R.drawable.ic_lock_wallpaper,
             R.drawable.ic_ringtones,
             R.drawable.ic_bootani,
             R.drawable.ic_fonts };
@@ -55,6 +57,7 @@ public class Theme {
             R.string.mixer_dialer_label,
             R.string.mixer_mms_label,
             R.string.mixer_walllpaper_label,
+            R.string.mixer_lockscreen_wallpaper_label,
             R.string.mixer_ringtones_label,
             R.string.mixer_bootanimation_label,
             R.string.mixer_font_label };
@@ -70,8 +73,8 @@ public class Theme {
     private boolean isCosTheme;
     private boolean isDefaultTheme;
     private boolean hasWallpaper;
+    private boolean hasLockscreenWallpaper;
     private boolean hasIcons;
-    private boolean hasLockscreen;
     private boolean hasContacts;
     private boolean hasDialer;
     private boolean hasSystemUI;
@@ -180,12 +183,12 @@ public class Theme {
         this.hasIcons = hasIcons;
     }
 
-    public boolean getHasLockscreen() {
-        return hasLockscreen;
+    public boolean getHasLockscreenWallpaper() {
+        return hasLockscreenWallpaper;
     }
 
-    public void setHasLockscreen(boolean hasLockscreen) {
-        this.hasLockscreen = hasLockscreen;
+    public void setHasLockscreenWallpaper(boolean hasLockscreenWallpaper) {
+        this.hasLockscreenWallpaper = hasLockscreenWallpaper;
     }
 
     public boolean getHasContacts() {
@@ -300,6 +303,7 @@ public class Theme {
         ((TextView)content.findViewById(R.id.theme_designer)).setText(theme.getDesigner());
         ((CheckBox)content.findViewById(R.id.has_icons)).setChecked(theme.getHasIcons());
         ((CheckBox)content.findViewById(R.id.has_wallpaper)).setChecked(theme.getHasWallpaper());
+        ((CheckBox)content.findViewById(R.id.has_lockscreen_wallpaper)).setChecked(theme.getHasLockscreenWallpaper());
         ((CheckBox)content.findViewById(R.id.has_systemui)).setChecked(theme.getHasSystemUI());
         ((CheckBox)content.findViewById(R.id.has_framework)).setChecked(theme.getHasFramework());
         ((CheckBox)content.findViewById(R.id.has_contacts)).setChecked(theme.getHasContacts());

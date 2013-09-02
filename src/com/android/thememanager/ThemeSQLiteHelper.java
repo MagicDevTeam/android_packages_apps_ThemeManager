@@ -33,8 +33,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_IS_COS_THEME = "cos_theme";
     public static final String COLUMN_IS_DEFAULT_THEME = "default_theme";
     public static final String COLUMN_HAS_WALLPAPER = "has_wallpaper";
+    public static final String COLUMN_HAS_LOCK_WALLPAPER = "has_lock_wallpaper";
     public static final String COLUMN_HAS_ICONS = "has_icons";
-    public static final String COLUMN_HAS_LOCKSCREEN = "has_lockscreen";
     public static final String COLUMN_HAS_CONTACTS = "has_contacts";
     public static final String COLUMN_HAS_DIALER = "has_dialer";
     public static final String COLUMN_HAS_SYSTEMUI = "has_systemui";
@@ -46,9 +46,10 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_HAS_FONT = "has_font";
     public static final String COLUMN_LAST_MODIFIED = "last_modified";
     public static final String COLUMN_IS_COMPLETE = "is_complete";
+    public static final String COLUMN_PREVIEWS_LIST = "previews_list";
 
     private static final String DATABASE_NAME = "themesdb";
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     // Database creation SQL statement
     private static final String DATABASE_CREATE = "create table "
@@ -65,8 +66,8 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
             + COLUMN_IS_COS_THEME + " integer, "
             + COLUMN_IS_DEFAULT_THEME + " integer, "
             + COLUMN_HAS_WALLPAPER + " integer, "
+            + COLUMN_HAS_LOCK_WALLPAPER + " integer, "
             + COLUMN_HAS_ICONS + " integer, "
-            + COLUMN_HAS_LOCKSCREEN + " integer, "
             + COLUMN_HAS_CONTACTS + " integer, "
             + COLUMN_HAS_DIALER + " integer, "
             + COLUMN_HAS_SYSTEMUI + " integer, "
@@ -91,13 +92,6 @@ public class ThemeSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         int version = oldVersion;
-/*
-        if (version < 4) {
-            db.execSQL("ALTER TABLE themes ADD COLUMN has_mms INTEGER NOT NULL DEFAULT 0;");
-            db.setTransactionSuccessful();
-            version = 4;
-        }
-*/
         //if (version != DATABASE_VERSION) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_THEMES);
             onCreate(db);

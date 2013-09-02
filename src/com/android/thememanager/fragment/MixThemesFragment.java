@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -66,9 +67,11 @@ public class MixThemesFragment extends Fragment {
 
     public static class MixerAdapter extends BaseAdapter {
         private Context mContext;
+        private int mViewHeight;
 
         public MixerAdapter(Context c) {
             mContext = c;
+            mViewHeight = c.getResources().getDimensionPixelSize(R.dimen.mixer_item_height);
         }
 
         public int getCount() {
@@ -88,6 +91,7 @@ public class MixThemesFragment extends Fragment {
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.mixer_item, null);
+                v.setLayoutParams(new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mViewHeight));
             }
             if (Theme.sElementIcons[position] != 0) {
                 ImageView i = (ImageView)v.findViewById(R.id.mixer_icon);//mImages[position];//new ImageView(mContext);

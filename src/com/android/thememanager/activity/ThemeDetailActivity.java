@@ -59,6 +59,7 @@ import static cos.content.res.ThemeResources.MMS_PACKAGE;
 import static cos.content.res.ThemeResources.RINGTONES_NAME;
 import static cos.content.res.ThemeResources.SYSTEMUI_PACKAGE;
 import static cos.content.res.ThemeResources.WALLPAPER_NAME;
+import static cos.content.res.ThemeResources.LOCKSCREEN_WALLPAPER_NAME;
 
 public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUpPanelLayout.PanelSlideListener {
     private SlidingUpPanelLayout mSlidingPanel;
@@ -110,6 +111,7 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
     private void initItemsChecklist() {
         initChecklistItem(R.id.has_icons, mTheme.getHasIcons());
         initChecklistItem(R.id.has_wallpaper, mTheme.getHasWallpaper());
+        initChecklistItem(R.id.has_lockscreen_wallpaper, mTheme.getHasLockscreenWallpaper());
         initChecklistItem(R.id.has_systemui, mTheme.getHasSystemUI());
         initChecklistItem(R.id.has_framework, mTheme.getHasFramework());
         initChecklistItem(R.id.has_contacts, mTheme.getHasContacts());
@@ -149,6 +151,16 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
                     } else {
                         if (!mExcludedItemsList.contains(WALLPAPER_NAME))
                             mExcludedItemsList.add(WALLPAPER_NAME);
+                        mRemoveExistingThemeCheckBox.setChecked(false);
+                    }
+                    break;
+                case R.id.has_lockscreen_wallpaper:
+                    if (isChecked) {
+                        if (mExcludedItemsList.contains(LOCKSCREEN_WALLPAPER_NAME))
+                            mExcludedItemsList.remove(LOCKSCREEN_WALLPAPER_NAME);
+                    } else {
+                        if (!mExcludedItemsList.contains(LOCKSCREEN_WALLPAPER_NAME))
+                            mExcludedItemsList.add(LOCKSCREEN_WALLPAPER_NAME);
                         mRemoveExistingThemeCheckBox.setChecked(false);
                     }
                     break;

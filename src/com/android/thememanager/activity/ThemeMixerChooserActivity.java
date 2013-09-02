@@ -118,6 +118,9 @@ public class ThemeMixerChooserActivity extends Activity {
             case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
                 list = dataSource.getWallpaperThemes();
                 break;
+            case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
+                list = dataSource.getLockscreenWallpaperThemes();
+                break;
             case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                 list = dataSource.getSystemUIThemes();
                 break;
@@ -169,6 +172,9 @@ public class ThemeMixerChooserActivity extends Activity {
                             break;
                         case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
                             ts.resetThemeWallpaper();
+                            break;
+                        case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
+                            ts.resetThemeLockscreenWallpaper();
                             break;
                         case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                             ts.resetThemeSystemUI();
@@ -262,6 +268,9 @@ public class ThemeMixerChooserActivity extends Activity {
 
                 holder.name.setText(mThemeList.get(i).getTitle());
                 holder.preview.setImageResource(R.drawable.empty_preview);
+                if (mElementType == Theme.THEME_ELEMENT_TYPE_WALLPAPER ||
+                        mElementType == Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER)
+                    holder.preview.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                 if (mThemeList.get(i).getIsCosTheme())
                     holder.osTag.setImageResource(R.drawable.chaos);

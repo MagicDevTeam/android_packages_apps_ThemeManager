@@ -51,7 +51,7 @@
     <string name="mixer_walllpaper_label">Wallpaper</string>
     <string name="mixer_systemui_label">Status bar</string>
     <string name="mixer_framework_label">Framework</string>
-    <string name="mixer_lockscreen_label">Lockscreen</string>
+    <string name="mixer_lockscreen_wallpaper_label">Lockscreen Wallpaper</string>
     <string name="mixer_contacts_label">Contacts</string>
     <string name="mixer_dialer_label">Dialer</string>
     <string name="mixer_ringtones_label">Ringtones</string>

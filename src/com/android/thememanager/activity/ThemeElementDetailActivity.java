@@ -72,6 +72,14 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
                 mPreviewList = PreviewHelper.getWallpaperPreviews(THEMES_PATH + "/.cache/" +
                         themeName);
                 break;
+            case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
+                if (!(new File(THEMES_PATH + "/.cache/" +
+                        themeName + "/default_lock_wallpaper.jpg")).exists()) {
+                    ThemeUtils.extractThemeLockscreenWallpaper(themeName, mTheme.getThemePath());
+                }
+                mPreviewList = PreviewHelper.getLockWallpaperPreviews(THEMES_PATH + "/.cache/" +
+                        themeName);
+                break;
             case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                 mPreviewList = PreviewHelper.getStatusbarPreviews(THEMES_PATH + "/.cache/" +
                         themeName);
@@ -198,6 +206,9 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
                     break;
                 case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
                     ts.applyThemeWallpaper(FileProvider.CONTENT + themeFileName);
+                    break;
+                case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
+                    ts.applyThemeLockscreenWallpaper(FileProvider.CONTENT + themeFileName);
                     break;
                 case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
                     ts.applyThemeSystemUI(FileProvider.CONTENT + themeFileName);

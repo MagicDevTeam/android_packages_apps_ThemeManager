@@ -31,6 +31,7 @@ public class PreviewHelper {
     public static final String PREVIEW_LOCKSCREEN_PREFIX = "preview_lockscreen_";
     public static final String PREVIEW_FONTS_PREFIX = "preview_fonts_";
     public static final String PREVIEW_WALLPAPER_PREFIX = "default_wallpaper";
+    public static final String PREVIEW_LOCK_WALLPAPER_PREFIX = "default_lock_wallpaper";
 
     static FilenameFilter mAllPreviewsFilter = new FilenameFilter() {
         @Override
@@ -153,6 +154,17 @@ public class PreviewHelper {
         }
     };
 
+    static FilenameFilter mLockWallpaperPreviewsFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String s) {
+            if (s.toLowerCase().contains(PREVIEW_LOCK_WALLPAPER_PREFIX) &&
+                    s.toLowerCase().endsWith(".jpg"))
+                return true;
+            else
+                return false;
+        }
+    };
+
     public static String[] getAllPreviews(String path) {
         File dir = new File(path);
         String[] dirList = null;
@@ -246,18 +258,6 @@ public class PreviewHelper {
         return dirList;
     }
 
-    public static String[] getLockscreenPreviews(String path) {
-        File dir = new File(path);
-        String[] dirList = null;
-        if (dir.exists() && dir.isDirectory())
-            dirList = dir.list(mLockscreenPreviewsFilter);
-
-        if (dirList != null)
-            Arrays.sort(dirList);
-
-        return dirList;
-    }
-
     public static String[] getFontsPreviews(String path) {
         File dir = new File(path);
         String[] dirList = null;
@@ -282,4 +282,15 @@ public class PreviewHelper {
         return dirList;
     }
 
+    public static String[] getLockWallpaperPreviews(String path) {
+        File dir = new File(path);
+        String[] dirList = null;
+        if (dir.exists() && dir.isDirectory())
+            dirList = dir.list(mLockWallpaperPreviewsFilter);
+
+        if (dirList != null)
+            Arrays.sort(dirList);
+
+        return dirList;
+    }
 }

@@ -11,5 +11,5 @@
 */
 -->
 <resources>
-    <dimen name="mixer_item_height">120dp</dimen>
+    <dimen name="mixer_item_height">80dp</dimen>
 </resources>

@@ -21,6 +21,7 @@
     <string name="menu_info">Theme Info</string>
     <string name="menu_save_theme">Save</string>
     <string name="menu_rename_backup">Rename backup</string>
+    <string name="menu_overwrite_backup">Overwrite backup</string>
     <string name="menu_delete_backup">Delete backup</string>
 
     <string name="btn_apply_theme">Apply</string>
@@ -138,6 +139,16 @@
     <string name="dlg_restore_backup_body">Restore \"%s\"</string>
     <string name="dlg_restore_backup_cancel">Cancel</string>
     <string name="dlg_restore_backup_delete">Restore</string>
+
+    <string name="dlg_overwrite_backup_title">Overwrite theme</string>
+    <string name="dlg_overwrite_backup_body">Overwrite \'%s\' with current theme?</string>
+    <string name="dlg_overwrite_backup_cancel">Cancel</string>
+    <string name="dlg_overwrite_backup_overwrite">Overwrite</string>
+
+    <string name="dlg_delete_backup_title">Delete backup</string>
+    <string name="dlg_delete_backup_body">Delete %s?</string>
+    <string name="dlg_delete_backup_cancel">Cancel</string>
+    <string name="dlg_delete_backup_delete">Delete</string>
 
     <string name="backup_saved_on">Saved on: %s</string>
     <string name="backup_size">%.2fMB</string>

@@ -41,6 +41,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.thememanager.FileUtils;
@@ -137,11 +138,11 @@ public class BackupRestoreFragment extends ListFragment {
         switch (item.getItemId()) {
             case R.id.menu_delete_backup:
                 index = info.targetView.getId();
-                File backup = new File(Globals.BACKUP_PATH + File.separator + mBackupList[index]);
-                if (backup.exists())
-                    backup.delete();
-
-                updateList();
+                deleteBackupWithConfirmation(index);
+                return true;
+            case R.id.menu_overwrite_backup:
+                index = info.targetView.getId();
+                overwriteBackup(index);
                 return true;
             case R.id.menu_rename_backup:
                 index = info.targetView.getId();
@@ -150,6 +151,14 @@ public class BackupRestoreFragment extends ListFragment {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void deleteBackup(int index) {
+        File backup = new File(Globals.BACKUP_PATH + File.separator + mBackupList[index]);
+        if (backup.exists())
+            backup.delete();
+
+        updateList();
     }
 
     private void updateList() {
@@ -312,7 +321,10 @@ public class BackupRestoreFragment extends ListFragment {
         byte[] buffer = new byte[1024];
 
         try{
-            FileOutputStream fos = new FileOutputStream(zipFileName);
+            File f = new File(zipFileName);
+            if (f.exists())
+                f.delete();
+            FileOutputStream fos = new FileOutputStream(f);
             ZipOutputStream zos = new ZipOutputStream(fos);
             zos.setLevel(9);
             List<String> fileList = new ArrayList<String>();
@@ -424,6 +436,36 @@ public class BackupRestoreFragment extends ListFragment {
         }
     }
 
+    private void overwriteBackup(final int index) {
+        SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_overwrite_backup_overwrite),
+                getString(R.string.dlg_overwrite_backup_cancel),
+                getString(R.string.dlg_overwrite_backup_title),
+                String.format(getString(R.string.dlg_overwrite_backup_body),
+                        FileUtils.stripExtension(mBackupList[index].toString())),
+                getActivity(), new SimpleDialogs.OnYesNoResponse() {
+                    @Override
+                    public void onYesNoResponse(boolean isYes) {
+                        if (isYes)
+                            (new BackupThemeTask()).execute(FileUtils.stripExtension(mBackupList[index]));
+                    }
+                });
+    }
+
+    private void deleteBackupWithConfirmation(final int index) {
+        SimpleDialogs.displayYesNoDialog(getString(R.string.dlg_delete_backup_delete),
+                getString(R.string.dlg_delete_backup_cancel),
+                getString(R.string.dlg_delete_backup_title),
+                String.format(getString(R.string.dlg_delete_backup_body),
+                        FileUtils.stripExtension(mBackupList[index].toString())),
+                getActivity(), new SimpleDialogs.OnYesNoResponse() {
+            @Override
+            public void onYesNoResponse(boolean isYes) {
+                if (isYes)
+                    deleteBackup(index);
+            }
+        });
+    }
+
     class BackupThemeAdapter extends BaseAdapter {
         private DateFormat mDateFormat = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, Locale.getDefault());
 
@@ -461,10 +503,34 @@ public class BackupRestoreFragment extends ListFragment {
             tv = (TextView) convertView.findViewById(R.id.size);
             tv.setText(String.format(getString(R.string.backup_size, size)));
 
+            ImageView iv = (ImageView) convertView.findViewById(R.id.save);
+            iv.setTag(Integer.valueOf(position));
+            iv.setOnClickListener(mSaveButtonListener);
+
+            iv = (ImageView) convertView.findViewById(R.id.delete);
+            iv.setTag(Integer.valueOf(position));
+            iv.setOnClickListener(mDeleteButtonListener);
+
             convertView.setId(position);
 
             return convertView;
         }
+
+        View.OnClickListener mSaveButtonListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer index = (Integer) v.getTag();
+                overwriteBackup(index);
+            }
+        };
+
+        View.OnClickListener mDeleteButtonListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer index = (Integer) v.getTag();
+                deleteBackupWithConfirmation(index);
+            }
+        };
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

@@ -37,7 +37,7 @@ public class SimpleDialogs {
 				dialog.dismiss();
 				callback.onYesNoResponse(true);
 			}
-			
+
 		})
 		.setNeutralButton(noText, new DialogInterface.OnClickListener() {
 			@Override

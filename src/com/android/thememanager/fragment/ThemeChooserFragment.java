@@ -74,8 +74,9 @@ public class ThemeChooserFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        this.setRetainInstance(true);
-        this.setHasOptionsMenu(true);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
+        getActivity().setProgressBarIndeterminateVisibility(true);
 	}
 
     @Override
@@ -358,6 +359,7 @@ public class ThemeChooserFragment extends Fragment {
             runWhenReady(new Runnable() {
                 @Override
                 public void run() {
+                    getActivity().setProgressBarIndeterminateVisibility(false);
                     markAsDone();
                 }
             });

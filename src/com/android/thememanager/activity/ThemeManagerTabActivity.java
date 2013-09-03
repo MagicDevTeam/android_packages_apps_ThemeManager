@@ -16,9 +16,6 @@
 package com.android.thememanager.activity;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import com.android.thememanager.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -27,16 +24,17 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Window;
 
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.android.thememanager.Theme;
-import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.fragment.BackupRestoreFragment;
 import com.android.thememanager.fragment.GetThemesFragment;
 import com.android.thememanager.fragment.MixThemesFragment;
 import com.android.thememanager.fragment.ThemeChooserFragment;
+
+import com.android.thememanager.R;
 
 public class ThemeManagerTabActivity extends Activity {
     ViewPager mViewPager;
@@ -45,6 +43,8 @@ public class ThemeManagerTabActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         mViewPager = new ViewPager(this);
         mViewPager.setId(424242);

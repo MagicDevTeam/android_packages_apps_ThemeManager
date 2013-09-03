@@ -38,9 +38,10 @@ import com.android.thememanager.R;
 import com.android.thememanager.Theme;
 import com.android.thememanager.widget.CoverFlowPageTransformer;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.chameleonos.support.widget.LinePageIndicator;
 import org.chameleonos.support.widget.PagerContainer;
@@ -153,33 +154,34 @@ abstract public class DetailBaseActivity extends Activity {
             @Override
             protected Object doInBackground(Object[] params) {
                 int i = 0;
-                for (final ImageView preview : mImages) {
-                    FileInputStream is = null;
-                    try {
-                        is = new FileInputStream(THEMES_PATH + "/.cache/" +
-                                mTheme.getFileName() + "/" + mPreviewList[i]);
-                    } catch (FileNotFoundException e) {
-                    }
-                    if (is != null) {
-                        BitmapFactory.Options opts = new BitmapFactory.Options();
-                        opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                        opts.inDensity = DisplayMetrics.DENSITY_HIGH;
-                        opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
-                        opts.inScaled = true;
-                        Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
-                        final Drawable drawable = new BitmapDrawable(bmp);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                preview.setImageDrawable(drawable);
+                try {
+                    ZipFile zip = new ZipFile(mTheme.getThemePath());
+                    ZipEntry ze;
+                    for (final ImageView preview : mImages) {
+                        ze = zip.getEntry(mPreviewList[i]);
+                        InputStream is = ze != null ? zip.getInputStream(ze) : null;
+                        if (is != null) {
+                            BitmapFactory.Options opts = new BitmapFactory.Options();
+                            opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                            opts.inDensity = DisplayMetrics.DENSITY_HIGH;
+                            opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
+                            opts.inScaled = true;
+                            Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
+                            final Drawable drawable = new BitmapDrawable(bmp);
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    preview.setImageDrawable(drawable);
+                                }
+                            });
+                            try {
+                                is.close();
+                            } catch (IOException e) {
                             }
-                        });
-                        try {
-                            is.close();
-                        } catch (IOException e) {
                         }
+                        i++;
                     }
-                    i++;
+                } catch (IOException e) {
                 }
                 return null;
             }

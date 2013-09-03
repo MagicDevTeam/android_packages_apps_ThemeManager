@@ -66,11 +66,6 @@ public class ThemeManagerTabActivity extends Activity {
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
-        } else {
-            //check if there are any themes available, if not show the "Get Themes" tab
-            List<Theme> themes = ThemeUtils.getAllThemes(this);
-            if (themes == null || themes.size() == 0)
-                bar.setSelectedNavigationItem(2);
         }
     }
 

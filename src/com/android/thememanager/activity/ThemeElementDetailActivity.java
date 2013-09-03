@@ -61,56 +61,37 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
         String themeName = FileUtils.stripPath(mTheme.getFileName());
         switch (mElementType) {
             case Theme.THEME_ELEMENT_TYPE_ICONS:
-                mPreviewList = PreviewHelper.getIconPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getIconPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                if (!(new File(THEMES_PATH + "/.cache/" +
-                        themeName + "/default_wallpaper.jpg")).exists()) {
-                    ThemeUtils.extractThemeWallpaper(themeName, mTheme.getThemePath());
-                }
-                mPreviewList = PreviewHelper.getWallpaperPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getWallpaperPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
-                if (!(new File(THEMES_PATH + "/.cache/" +
-                        themeName + "/default_lock_wallpaper.jpg")).exists()) {
-                    ThemeUtils.extractThemeLockscreenWallpaper(themeName, mTheme.getThemePath());
-                }
-                mPreviewList = PreviewHelper.getLockWallpaperPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getLockWallpaperPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
-                mPreviewList = PreviewHelper.getStatusbarPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getStatusbarPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
-                mPreviewList = PreviewHelper.getLauncherPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getLauncherPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_CONTACTS:
-                mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getContactsPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_DIALER:
-                mPreviewList = PreviewHelper.getDialerPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getDialerPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_RINGTONES:
-                mPreviewList = PreviewHelper.getContactsPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getContactsPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
-                mPreviewList = PreviewHelper.getBootanimationPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getBootanimationPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_MMS:
-                mPreviewList = PreviewHelper.getMmsPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getMmsPreviews(mTheme);
                 break;
             case Theme.THEME_ELEMENT_TYPE_FONT:
-                mPreviewList = PreviewHelper.getFontsPreviews(THEMES_PATH + "/.cache/" +
-                        themeName);
+                mPreviewList = PreviewHelper.getFontsPreviews(mTheme);
                 break;
         }
 

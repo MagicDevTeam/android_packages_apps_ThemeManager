@@ -16,24 +16,21 @@
 package com.android.thememanager;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
 
 public class ThemeUtils {
     private static final String TAG = "ThemeUtils";
@@ -143,88 +140,6 @@ public class ThemeUtils {
         f.setWritable(true, false);
     }
 
-    public static boolean extractThemePreviews(String themeId, String themePath) {
-        try {
-            FileInputStream fis = new FileInputStream(themePath);
-            ZipInputStream zis = new ZipInputStream(fis);
-            ZipEntry ze = null;
-
-            if (!themeCacheDirExists(themeId))
-                createThemeCacheDir(themeId);
-
-            while ((ze = zis.getNextEntry()) != null) {
-                if (ze.getName().contains("preview_")) {
-                    String previewName = ze.getName().substring(ze.getName().lastIndexOf('/') + 1);
-                    FileOutputStream out = new FileOutputStream(Globals.CACHE_DIR + "/" + themeId + "/" + previewName);
-                    copyInputStream(zis, out);
-                    zis.closeEntry();
-                }
-            }
-            zis.close();
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean extractThemeWallpaper(String themeId, String themePath) {
-        try {
-            if ((new File(Globals.CACHE_DIR + "/" +
-                    themeId + "/default_wallpaper.jpg")).exists())
-                return true;
-            ZipFile zip = new ZipFile(themePath);
-            ZipEntry ze = null;
-
-            if (!themeCacheDirExists(themeId))
-                createThemeCacheDir(themeId);
-
-            ze = zip.getEntry("wallpaper/default_wallpaper.jpg");
-            if (ze == null)
-                ze = zip.getEntry("wallpaper/default_wallpaper.png");
-
-            if (ze != null) {
-                InputStream is = zip.getInputStream(ze);
-                FileOutputStream  out = new FileOutputStream(Globals.CACHE_DIR + "/" +
-                        themeId + "/default_wallpaper.jpg");
-                BitmapFactory.decodeStream(is).compress(Bitmap.CompressFormat.JPEG,
-                        50, out);
-            }
-            zip.close();
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static boolean extractThemeLockscreenWallpaper(String themeId, String themePath) {
-        try {
-            ZipFile zip = new ZipFile(themePath);
-            ZipEntry ze = null;
-
-            if (!themeCacheDirExists(themeId))
-                createThemeCacheDir(themeId);
-
-            ze = zip.getEntry("wallpaper/default_lock_wallpaper.jpg");
-            if (ze == null)
-                ze = zip.getEntry("wallpaper/default_lock_wallpaper.png");
-
-            if (ze != null) {
-                InputStream is = zip.getInputStream(ze);
-                FileOutputStream  out = new FileOutputStream(Globals.CACHE_DIR + "/" +
-                        themeId + "/default_lock_wallpaper.jpg");
-                BitmapFactory.decodeStream(is).compress(Bitmap.CompressFormat.JPEG,
-                        50, out);
-            }
-            zip.close();
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
     public static boolean extractThemRingtones(String themeId, String themePath) {
         try {
             ZipFile zip = new ZipFile(themePath);
@@ -292,8 +207,7 @@ public class ThemeUtils {
                 if(!dataSource.entryIsOlder(themeId, lastModified)) {
                     dataSource.close();
                     return true;
-                } else
-                    deleteThemeCacheDir(themeId);
+                }
             }
 
             ZipFile zip = new ZipFile(themePath);
@@ -332,6 +246,8 @@ public class ThemeUtils {
             theme.setIsComplete(theme.getHasSystemUI() && theme.getHasFramework() &&
                     theme.getHasMms() && theme.getHasContacts());
             theme.setLastModified(lastModified);
+            theme.setPreviewsList(
+                    createPreviewList(zip, theme.getHasWallpaper(), theme.getHasLockscreenWallpaper()));
 
             try {
                 dataSource.createThemeEntry(theme);
@@ -344,6 +260,29 @@ public class ThemeUtils {
         }
 
         return true;
+    }
+
+    private static String createPreviewList(ZipFile zip, boolean hasWallpaper, boolean hasLockWallpaper) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            String delimeter = "";
+            ZipEntry ze;
+            for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements();) {
+                ze = e.nextElement();
+                if (ze.getName().contains("preview_")) {
+                    builder.append(delimeter);
+                    delimeter = "|";
+                    builder.append(ze.getName());
+                }
+            }
+            if (hasWallpaper)
+                builder.append("|wallpaper/default_wallpaper.jpg");
+            if (hasLockWallpaper)
+                builder.append("|wallpaper/default_lock_wallpaper.jpg");
+            return builder.toString();
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     public static ThemeDetails getThemeDetails(InputStream descriptionEntry)

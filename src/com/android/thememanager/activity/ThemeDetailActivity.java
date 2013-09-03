@@ -82,8 +82,7 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
 
         mHandler = new Handler();
 
-        mPreviewList = PreviewHelper.getAllPreviews(THEMES_PATH + "/.cache/" +
-                mTheme.getFileName());
+        mPreviewList = PreviewHelper.getAllPreviews(mTheme);
 
         ((TextView)findViewById(R.id.theme_name)).setText(mTheme.getTitle());
 

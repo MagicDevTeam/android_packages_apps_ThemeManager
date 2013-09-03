@@ -86,6 +86,7 @@ public class Theme {
     private boolean hasFont;
     private boolean isComplete;
     private long lastModified;
+    private String previewsList;
 
     public long getId() {
         return id;
@@ -277,6 +278,14 @@ public class Theme {
 
     public void setLastModified(long lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public String getPreviewsList() {
+        return previewsList;
+    }
+
+    public void setPreviewsList(String previewsList) {
+        this.previewsList = previewsList;
     }
 
     public static void showThemeDetails(Context context, Theme theme) {

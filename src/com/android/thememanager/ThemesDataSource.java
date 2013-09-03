@@ -53,7 +53,8 @@ public class ThemesDataSource {
             ThemeSQLiteHelper.COLUMN_HAS_BOOTANIMATION,
             ThemeSQLiteHelper.COLUMN_HAS_MMS,
             ThemeSQLiteHelper.COLUMN_HAS_FONT,
-            ThemeSQLiteHelper.COLUMN_IS_COMPLETE };
+            ThemeSQLiteHelper.COLUMN_IS_COMPLETE,
+            ThemeSQLiteHelper.COLUMN_PREVIEWS_LIST };
 
     public ThemesDataSource(Context context) {
         dbHelper = new ThemeSQLiteHelper(context);
@@ -92,6 +93,7 @@ public class ThemesDataSource {
         values.put(ThemeSQLiteHelper.COLUMN_HAS_MMS, theme.getHasMms());
         values.put(ThemeSQLiteHelper.COLUMN_HAS_FONT, theme.getHasFont());
         values.put(ThemeSQLiteHelper.COLUMN_IS_COMPLETE, theme.getIsComplete());
+        values.put(ThemeSQLiteHelper.COLUMN_PREVIEWS_LIST, theme.getPreviewsList());
         long insertId;
         if (entryExists(theme.getFileName()))
             insertId = database.update(ThemeSQLiteHelper.TABLE_THEMES, values,
@@ -449,6 +451,8 @@ public class ThemesDataSource {
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_HAS_FONT)) == 1);
         theme.setIsComplete(cursor.getInt(
                 cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_IS_COMPLETE)) == 1);
+        theme.setPreviewsList(cursor.getString(
+                cursor.getColumnIndexOrThrow(ThemeSQLiteHelper.COLUMN_PREVIEWS_LIST)));
         return theme;
     }
 }

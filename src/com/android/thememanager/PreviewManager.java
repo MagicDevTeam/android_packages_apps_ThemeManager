@@ -23,12 +23,12 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.WeakHashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class PreviewManager {
     private static final boolean DEBUG = true;
@@ -90,8 +90,7 @@ public class PreviewManager {
             @Override
             public void handleMessage(Message message) {
                 long delay = 0;
-                if (ThemeUtils.themeCacheDirExists(theme.getFileName()))
-                    delay = holder.index * 50;
+                delay = holder.index * 50;
                 if (message.obj != null)
                     holder.preview.setImageDrawableAnimated((BitmapDrawable) message.obj, delay);
                 else
@@ -113,21 +112,13 @@ public class PreviewManager {
     }
 
     private InputStream fetch(Theme theme) throws IOException {
-        if (!ThemeUtils.themeCacheDirExists(theme.getFileName())) {
-            ThemeUtils.extractThemePreviews(theme.getFileName(), theme.getThemePath());
+        ZipFile zip = new ZipFile(theme.getThemePath());
+        ZipEntry ze = zip.getEntry("preview/preview_launcher_0.png");
+        if (ze == null) {
+            String[] previewList = PreviewHelper.getAllPreviews(theme);
+            if (previewList.length > 0)
+                ze = zip.getEntry(previewList[0]);
         }
-
-        File preview = new File(Globals.CACHE_DIR + "/" + theme.getFileName() + "/preview_launcher_0.png");
-        FileInputStream fis = null;
-        if (preview.exists()) {
-            fis = new FileInputStream(preview);
-        }else {
-            String[] previewsList = PreviewHelper.getAllPreviews(Globals.CACHE_DIR + "/" + theme.getFileName());
-            if (previewsList != null && previewsList.length > 0)
-                fis = new FileInputStream(Globals.CACHE_DIR + "/" +
-                        theme.getFileName() + "/" + previewsList[0]);
-        }
-
-        return fis;
+        return ze != null ? zip.getInputStream(ze) : null;
     }
 }

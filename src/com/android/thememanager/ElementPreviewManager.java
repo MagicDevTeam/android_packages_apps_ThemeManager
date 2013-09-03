@@ -23,12 +23,12 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ElementPreviewManager {
     private static final boolean DEBUG = false;
@@ -90,8 +90,7 @@ public class ElementPreviewManager {
             @Override
             public void handleMessage(Message message) {
                 long delay = 0;
-                if (ThemeUtils.themeCacheDirExists(theme.getFileName()))
-                    delay = holder.index * 50;
+                delay = holder.index * 50;
                 if (message.obj != null)
                     holder.preview.setImageDrawableAnimated((BitmapDrawable) message.obj, delay);
                 else
@@ -113,60 +112,49 @@ public class ElementPreviewManager {
     }
 
     private InputStream fetch(Theme theme, int elementType) throws IOException {
-        if (!ThemeUtils.themeCacheDirExists(theme.getFileName())) {
-            ThemeUtils.extractThemePreviews(theme.getFileName(), theme.getThemePath());
-        }
-        String previewName = null;
-        String themeId = theme.getFileName();
+        String previewName = "";
         try{
             switch(elementType) {
                 case Theme.THEME_ELEMENT_TYPE_ICONS:
-                    previewName = PreviewHelper.getIconPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getIconPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_WALLPAPER:
-                    // ensure we have a lockscreen wallpaper to preview
-                    ThemeUtils.extractThemeWallpaper(theme.getFileName(), theme.getThemePath());
-                    previewName = PreviewHelper.getWallpaperPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getWallpaperPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_LOCK_WALLPAPER:
-                    // ensure we have a lockscreen wallpaper to preview
-                    ThemeUtils.extractThemeLockscreenWallpaper(theme.getFileName(), theme.getThemePath());
-                    previewName = PreviewHelper.getLockWallpaperPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getLockWallpaperPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_SYSTEMUI:
-                    previewName = PreviewHelper.getStatusbarPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getStatusbarPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_FRAMEWORK:
-                    previewName = PreviewHelper.getLauncherPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getLauncherPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_CONTACTS:
-                    previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getContactsPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_DIALER:
-                    previewName = PreviewHelper.getDialerPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getDialerPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_RINGTONES:
-                    previewName = PreviewHelper.getContactsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getContactsPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_BOOTANIMATION:
-                    previewName = PreviewHelper.getBootanimationPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getBootanimationPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_MMS:
-                    previewName = PreviewHelper.getMmsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getMmsPreviews(theme)[0];
                     break;
                 case Theme.THEME_ELEMENT_TYPE_FONT:
-                    previewName = PreviewHelper.getFontsPreviews(Globals.CACHE_DIR + "/" + themeId)[0];
+                    previewName = PreviewHelper.getFontsPreviews(theme)[0];
                     break;
             }
         } catch (Exception e) {
             previewName = null;
         }
 
-        FileInputStream fis = null;
-        if (previewName != null) {
-            fis = new FileInputStream(Globals.CACHE_DIR + "/" + themeId + "/" + previewName);
-        }
-
-        return fis;
+        ZipFile zip = new ZipFile(theme.getThemePath());
+        ZipEntry ze = previewName != null ? zip.getEntry(previewName) : null;
+        return ze != null ? zip.getInputStream(ze) : null;
     }
 }

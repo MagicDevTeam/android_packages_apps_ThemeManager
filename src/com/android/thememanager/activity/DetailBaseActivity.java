@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -28,7 +29,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -157,17 +157,17 @@ abstract public class DetailBaseActivity extends Activity {
                 try {
                     ZipFile zip = new ZipFile(mTheme.getThemePath());
                     ZipEntry ze;
+
+                    final Resources res = getResources();
                     for (final ImageView preview : mImages) {
                         ze = zip.getEntry(mPreviewList[i]);
                         InputStream is = ze != null ? zip.getInputStream(ze) : null;
                         if (is != null) {
                             BitmapFactory.Options opts = new BitmapFactory.Options();
                             opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                            opts.inDensity = DisplayMetrics.DENSITY_HIGH;
-                            opts.inTargetDensity = mContext.getResources().getDisplayMetrics().densityDpi;
-                            opts.inScaled = true;
+                            opts.inSampleSize = 2;
                             Bitmap bmp = BitmapFactory.decodeStream(is, null, opts);
-                            final Drawable drawable = new BitmapDrawable(bmp);
+                            final Drawable drawable = new BitmapDrawable(res, bmp);
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {

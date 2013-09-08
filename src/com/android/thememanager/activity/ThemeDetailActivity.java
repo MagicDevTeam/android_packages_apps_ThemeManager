@@ -23,7 +23,6 @@ import android.content.res.IThemeManagerService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ServiceManager;
-import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -297,8 +296,8 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            dismissDialog(DIALOG_PROGRESS);
             if (Globals.ACTION_THEME_APPLIED.equals(action)) {
-                dismissDialog(DIALOG_PROGRESS);
                 if (!mExcludedItemsList.contains(RINGTONES_NAME)) {
                     if (mTheme.getHasRingtone())
                         RingtoneUtils.setRingtone(ThemeDetailActivity.this, mTheme.getTitle(),
@@ -308,7 +307,6 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
                                 mTheme.getAuthor(), true);
                 }
             } else if (Globals.ACTION_THEME_NOT_APPLIED.equals(action)) {
-                dismissDialog(DIALOG_PROGRESS);
                 SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
                         ThemeDetailActivity.this);
             }
@@ -322,6 +320,7 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
         // due to a theme change.
         try {
             dismissDialog(DIALOG_PROGRESS);
+            unlockScreenOrientation();
         } catch (Exception e) {}
 
         mAdapter.notifyDataSetChanged();
@@ -398,6 +397,7 @@ public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUp
         try {
             ts.applyTheme(FileProvider.CONTENT + FileUtils.stripPath(theme), mExcludedItemsList,
                     applyFont, scaleBoot, removeExistingTheme);
+            lockScreenOrientation();
             showDialog(DIALOG_PROGRESS);
         } catch (Exception e) {
             SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,

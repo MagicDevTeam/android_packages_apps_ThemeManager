@@ -11,6 +11,5 @@
 */
 -->
 <resources>
-    <dimen name="mixer_item_height">80dp</dimen>
-    <dimen name="coverflow_item_width">280dp</dimen>
+    <dimen name="coverflow_item_width">180dp</dimen>
 </resources>

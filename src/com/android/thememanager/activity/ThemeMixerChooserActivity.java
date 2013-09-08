@@ -62,7 +62,7 @@ public class ThemeMixerChooserActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_theme_chooser);
+		setContentView(R.layout.fragment_theme_chooser);
 
         mElementType = getIntent().getIntExtra("type", 0);
         mThemeList = themeList(mElementType);
@@ -239,11 +239,17 @@ public class ThemeMixerChooserActivity extends Activity {
 
         public PreviewAdapter(Context c) {
             mContext = c;
-            int numColumns = Math.max(3, mGridView.getNumColumns());
+            int numColumns = getResources().getInteger(R.integer.gridviewNumColumns);
             int spacingTotal = mGridView.getHorizontalSpacing() * (numColumns - 1);
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
+            float aspectRatio = 1;
+            if (dm.heightPixels > dm.widthPixels)
+                aspectRatio = (float)dm.heightPixels / dm.widthPixels;
+            else
+                aspectRatio = (float)dm.widthPixels / dm.heightPixels;
+
             mPreviewWidth = dm.widthPixels / numColumns - spacingTotal;
-            mPreviewHeight = dm.heightPixels / numColumns;
+            mPreviewHeight = (int)(mPreviewWidth * aspectRatio);
             preloadPreviews();
         }
 

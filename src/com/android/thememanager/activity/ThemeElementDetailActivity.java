@@ -23,7 +23,6 @@ import android.content.res.IThemeManagerService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ServiceManager;
-import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -132,6 +131,7 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
                 SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,
                         ThemeElementDetailActivity.this);
             }
+            unlockScreenOrientation();
         }
     };
 
@@ -142,6 +142,7 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
         // due to a theme change.
         try {
             dismissDialog(DIALOG_PROGRESS);
+            unlockScreenOrientation();
         } catch (Exception e) {}
 
         mAdapter.notifyDataSetChanged();
@@ -219,6 +220,7 @@ public class ThemeElementDetailActivity extends DetailBaseActivity {
                         ts.applyThemeFont(FileProvider.CONTENT + themeFileName);
                     break;
             }
+            lockScreenOrientation();
             showDialog(DIALOG_PROGRESS);
         } catch (Exception e) {
             SimpleDialogs.displayOkDialog(R.string.dlg_theme_failed_title, R.string.dlg_theme_failed_body,

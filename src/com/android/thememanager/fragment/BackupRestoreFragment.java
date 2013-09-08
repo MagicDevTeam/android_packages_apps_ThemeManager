@@ -86,7 +86,7 @@ public class BackupRestoreFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.backup_restore_fragment, null);
+        View v = inflater.inflate(R.layout.fragment_backup_restore, null);
 
         return v;
     }

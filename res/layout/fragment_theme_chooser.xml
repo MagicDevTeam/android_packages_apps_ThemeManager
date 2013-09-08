@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The ChameleonOS Project
+**
+** * Licensed under the GNU GPLv2 license
+**
+** The text of the license can be found in the LICENSE file
+** or at https://www.gnu.org/licenses/gpl-2.0.txt
+*/
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ThemeChooserActivity" >
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        >
+
+        <ImageView
+            android:id="@+id/loadingIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/chameleon"
+            android:visibility="gone"
+            />
+
+        <GridView
+            android:id="@+id/coverflow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:layout_margin="2dp"
+            android:numColumns="@integer/gridviewNumColumns"
+            android:horizontalSpacing="5dp"
+            android:verticalSpacing="5dp"
+            android:visibility="visible"
+            />
+    </FrameLayout>
+
+</LinearLayout>

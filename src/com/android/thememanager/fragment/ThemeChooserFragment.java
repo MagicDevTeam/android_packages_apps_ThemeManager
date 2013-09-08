@@ -81,7 +81,7 @@ public class ThemeChooserFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_theme_chooser, container, false);
+        View v = inflater.inflate(R.layout.fragment_theme_chooser, container, false);
 
         ThemeUtils.createCacheDir();
 
@@ -259,11 +259,17 @@ public class ThemeChooserFragment extends Fragment {
 
         public PreviewAdapter(Context c) {
             mContext = c;
-            int numColumns = Math.max(3, mGridView.getNumColumns());
+            int numColumns = getResources().getInteger(R.integer.gridviewNumColumns);
             int spacingTotal = mGridView.getHorizontalSpacing() * (numColumns - 1);
             DisplayMetrics dm = c.getResources().getDisplayMetrics();
+            float aspectRatio = 1;
+            if (dm.heightPixels > dm.widthPixels)
+                aspectRatio = (float)dm.heightPixels / dm.widthPixels;
+            else
+                aspectRatio = (float)dm.widthPixels / dm.heightPixels;
+
             mPreviewWidth = dm.widthPixels / numColumns - spacingTotal;
-            mPreviewHeight = dm.heightPixels / numColumns;
+            mPreviewHeight = (int)(mPreviewWidth * aspectRatio);
             preloadPreviews();
         }
 

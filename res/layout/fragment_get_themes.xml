@@ -27,7 +27,7 @@
 
     <TextView
         style="@style/ThemeSection"
-        android:text="@string/get_themes_chameleonos" />
+        android:text="@string/get_themes_mm" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

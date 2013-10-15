@@ -3,6 +3,7 @@
 /*
 **
 ** Copyright 2013, The ChameleonOS Project
+** Copyright 2013, The MagicMod Project
 **
 ** * Licensed under the GNU GPLv2 license
 **
@@ -84,7 +85,7 @@
     <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
 
     <string name="get_themes_getting_started">Some external links to themes to get you started.</string>
-    <string name="get_themes_chameleonos">ChameleonOS Themes</string>
+    <string name="get_themes_mm">MagicMod Themes</string>
     <string name="get_themes_miui">MIUI Themes (note: not all elements theme)</string>
 
     <string name="dlg_apply_theme_with_font_title">Apply theme with font</string>

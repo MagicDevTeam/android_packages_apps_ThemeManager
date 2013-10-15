@@ -65,7 +65,7 @@
     <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
 
     <string name="get_themes_getting_started">Zum Einstieg einige Externe Links zu Themen.</string>
-    <string name="get_themes_chameleonos">ChameleonOS Themes</string>
+    <string name="get_themes_mm">MagicMod Themes</string>
     <string name="get_themes_miui">MIUI Themes (note: not all elements theme)</string>
 
     <string name="dlg_apply_theme_with_font_title">Anwenden mit Schriftart</string>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2013, The ChameleonOS Project
+** Copyright 2013, The MagicMod Project
+**
+** * Licensed under the GNU GPLv2 license
+**
+** The text of the license can be found in the LICENSE file
+** or at https://www.gnu.org/licenses/gpl-2.0.txt
+*/
+-->
+<resources>
+
+    
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">设置</string><string name="app_name">Theme Manager</string>
+    <string name="menu_reset">复位主题</string>
+    <string name="menu_reset_element">复位</string>
+    <string name="menu_delete_theme">删除主题</string>
+    <string name="menu_info">主题信息</string>
+    <string name="menu_save_theme">保存</string>
+    <string name="menu_rename_backup">重命名备份文件</string>
+    <string name="menu_overwrite_backup">覆盖备份文件</string>
+    <string name="menu_delete_backup">删除备份</string>
+
+    <string name="btn_apply_theme">使用</string>
+    <string name="btn_ok">OK</string>
+
+    <string name="btn_play">Play</string>
+    <string name="btn_set">设置</string>
+
+    <string name="ringtone">铃声</string>
+    <string name="notification">通知</string>
+
+    <string name="loading_themes">装载主题..</string>
+    <string name="applying_theme">应用主题...</string>
+    <string name="installing_theme">安装主题..</string>
+    <string name="saving_theme">保存当前主题..</string>
+    <string name="restoring_theme">恢复主题...</string>
+
+    <string name="tab_themes">完整主题</string>
+    <string name="tab_mixer">主题混搭</string>
+    <string name="tab_get_themes">下载主题</string>
+    <string name="tab_backup_restore">备份还原</string>
+
+    <string name="coming_soon">功能建设中！</string>
+
+    <string name="remove_existing_theme">移除当前使用的主题</string>
+
+    <string name="mixer_icons_label">图标</string>
+    <string name="mixer_walllpaper_label">壁纸</string>
+    <string name="mixer_systemui_label">状态栏</string>
+    <string name="mixer_framework_label">框架</string>
+    <string name="mixer_lockscreen_wallpaper_label">锁屏壁纸</string>
+    <string name="mixer_contacts_label">联系人</string>
+    <string name="mixer_dialer_label">拨号</string>
+    <string name="mixer_ringtones_label">铃音</string>
+    <string name="mixer_bootanimation_label">开机动画</string>
+    <string name="mixer_mms_label">信息</string>
+    <string name="mixer_font_label">字体</string>
+    <string name="mixer_launcher_label">启动器</string>
+    <string name="mixer_third_party_apps">第三方程序</string>
+
+    <string name="not_a_theme_file">File is not a theme!</string>
+
+    <string name="theme_info_details">主题信息</string>
+    <string name="theme_info_name">名称：</string>
+    <string name="theme_info_author">作者：</string>
+    <string name="theme_info_designer">设计者：</string>
+    <string name="theme_info_version">版本：</string>
+
+    <!-- ChameleonOS theme links -->
+    <string name="get_themes_goo_title">goo.im</string>
+    <string name="get_themes_goo_link">http://goo.im/devs/ChameleonOS/themes/</string>
+    <string name="get_themes_chaos_forums_title">ChameleonOS Forums</string>
+    <string name="get_themes_chaos_forums_link">http://forums.chameleonos.org/forums/theme-releases.10/</string>
+    <!-- MIUI theme links -->
+    <string name="get_themes_pimpmymiui_title">Pimp My MIUI</string>
+    <string name="get_themes_pimpmymiui_link">http://pimpmymiui.com/themes/full-themes</string>
+    <string name="get_themes_droidviews_title">Droid Views</string>
+    <string name="get_themes_droidviews_link">http://droidviews.com/tag/miui-jb-themes/</string>
+    <string name="get_themes_miui_title">MIUI forums</string>
+    <string name="get_themes_miui_link">http://en.miui.com/forum.php?gid=3</string>
+
+    <string name="get_themes_getting_started">Some external links to themes to get you started.</string>
+    <string name="get_themes_mm">MagicMod主题</string>
+    <string name="get_themes_miui">MIUI Themes (note: not all elements theme)</string>
+
+    <string name="dlg_apply_theme_with_font_title">使用当前主题及字体</string>
+    <string name="dlg_apply_theme_with_font_body">当前主题包含的字体文件需要重启系统以使用。</string>
+    <string name="dlg_apply_theme_with_font_without_reboot">仅使用主题（放弃使用字体）</string>
+    <string name="dlg_apply_theme_with_font_and_reboot">使用主题和字体并重启系统</string>
+
+    <string name="dlg_apply_font_title">使用字体</string>
+    <string name="dlg_apply_font_body">系统从前前会有部分前一主题的字体信息残留。</string>
+    <string name="dlg_apply_font_without_reboot">使用字体，延迟重启</string>
+    <string name="dlg_apply_font_and_reboot">使用字体并立即重启</string>
+
+    <string name="dlg_reset_theme_with_font_title">删除字体和主题</string>
+    <string name="dlg_reset_theme_with_font_body">需要重启以恢复字体配置</string>
+    <string name="dlg_reset_theme_with_font_without_reboot">删除主题，保留字体</string>
+    <string name="dlg_reset_theme_with_font_and_reboot">删除字体和主题，然后重启</string>
+
+    <string name="dlg_reset_font_title">删除字体</string>
+    <string name="dlg_reset_font_body">需要重启系统以便正确删除第三方字体.</string>
+    <string name="dlg_reset_font_without_reboot">Leave custom font installed</string>
+    <string name="dlg_reset_font_and_reboot">删除字体并重启</string>
+
+    <string name="dlg_scale_boot_title">Scale boot animation</string>
+    <string name="dlg_scale_boot_body">Scaling the boot animation will allow it to be resized to fit your device better.\n\nIf you encounter a blank animation, you should try re-applying this animation without scaling.</string>
+    <string name="dlg_scale_boot_no_scaling">Apply without scaling</string>
+    <string name="dlg_scale_boot_with_scaling">Apply with scaling</string>
+
+    <string name="dlg_theme_failed_title">Oooooops!</string>
+    <string name="dlg_theme_failed_body">严重错误，安装过程已取消.\n\n请重新尝试安装或使用其他主题.</string>
+
+    <string name="dlg_install_theme_title">安装主题</string>
+    <string name="dlg_install_theme_body">安装当前主题?</string>
+    <string name="dlg_install_theme_cancel">取消</string>
+    <string name="dlg_install_theme_install">安装</string>
+
+    <string name="dlg_theme_exists_title">主题已存在</string>
+    <string name="dlg_theme_exists_body">当前主题已存在.\n\n是否确认覆盖</string>
+    <string name="dlg_theme_exists_cancel">取消</string>
+    <string name="dlg_theme_exists_install">安装</string>
+
+    <string name="dlg_backup_theme_title">备份当前主题</string>
+    <string name="dlg_backup_theme_body">B备份名</string>
+    <string name="dlg_backup_theme_cancel">放弃</string>
+    <string name="dlg_backup_theme_save">保存</string>
+
+    <string name="dlg_rename_backup_title">重命名备份</string>
+    <string name="dlg_rename_backup_body">备份名</string>
+    <string name="dlg_rename_backup_cancel">取消</string>
+    <string name="dlg_rename_backup_save">重命名</string>
+
+    <string name="dlg_restore_backup_title">恢复备份</string>
+    <string name="dlg_restore_backup_body">还原 \"%s\"</string>
+    <string name="dlg_restore_backup_cancel">取消</string>
+    <string name="dlg_restore_backup_delete">还原</string>
+
+    <string name="dlg_overwrite_backup_title">覆盖主题</string>
+    <string name="dlg_overwrite_backup_body">使用当前主题并覆盖 \'%s\' ?</string>
+    <string name="dlg_overwrite_backup_cancel">取消</string>
+    <string name="dlg_overwrite_backup_overwrite">覆盖</string>
+
+    <string name="dlg_delete_backup_title">删除备份</string>
+    <string name="dlg_delete_backup_body">删除 %s?</string>
+    <string name="dlg_delete_backup_cancel">取消</string>
+    <string name="dlg_delete_backup_delete">删除</string>
+
+    <string name="backup_saved_on">Saved on: %s</string>
+    <string name="backup_size">%.2fMB</string>
+    <string name="backup_not_saved">当前主题未保存</string>
+</resources>

@@ -40,14 +40,13 @@ import com.android.thememanager.Globals;
 import com.android.thememanager.R;
 import com.android.thememanager.Theme;
 import com.android.thememanager.widget.CoverFlowPageTransformer;
+import com.magicmod.support.widget.LinePageIndicator;
+import com.magicmod.support.widget.PagerContainer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.chameleonos.support.widget.LinePageIndicator;
-import org.chameleonos.support.widget.PagerContainer;
 
 abstract public class DetailBaseActivity extends Activity {
     protected static final String TAG = "ThemeManager";

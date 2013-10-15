@@ -15,6 +15,18 @@
 
 package com.android.thememanager.activity;
 
+import static cos.content.res.ThemeResources.BOOTANI_NAME;
+import static cos.content.res.ThemeResources.CHAOS_FRAMEWORK_NAME;
+import static cos.content.res.ThemeResources.CONTACTS_PACKAGE;
+import static cos.content.res.ThemeResources.DIALER_PACKAGE;
+import static cos.content.res.ThemeResources.FONTS_NAME;
+import static cos.content.res.ThemeResources.ICONS_NAME;
+import static cos.content.res.ThemeResources.LOCKSCREEN_WALLPAPER_NAME;
+import static cos.content.res.ThemeResources.MMS_PACKAGE;
+import static cos.content.res.ThemeResources.RINGTONES_NAME;
+import static cos.content.res.ThemeResources.SYSTEMUI_PACKAGE;
+import static cos.content.res.ThemeResources.WALLPAPER_NAME;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,23 +54,10 @@ import com.android.thememanager.SimpleDialogs;
 import com.android.thememanager.Theme;
 import com.android.thememanager.ThemeUtils;
 import com.android.thememanager.provider.FileProvider;
+import com.magicmod.support.widget.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.chameleonos.support.widget.SlidingUpPanelLayout;
-
-import static cos.content.res.ThemeResources.BOOTANI_NAME;
-import static cos.content.res.ThemeResources.CHAOS_FRAMEWORK_NAME;
-import static cos.content.res.ThemeResources.CONTACTS_PACKAGE;
-import static cos.content.res.ThemeResources.DIALER_PACKAGE;
-import static cos.content.res.ThemeResources.FONTS_NAME;
-import static cos.content.res.ThemeResources.ICONS_NAME;
-import static cos.content.res.ThemeResources.MMS_PACKAGE;
-import static cos.content.res.ThemeResources.RINGTONES_NAME;
-import static cos.content.res.ThemeResources.SYSTEMUI_PACKAGE;
-import static cos.content.res.ThemeResources.WALLPAPER_NAME;
-import static cos.content.res.ThemeResources.LOCKSCREEN_WALLPAPER_NAME;
 
 public class ThemeDetailActivity extends DetailBaseActivity implements SlidingUpPanelLayout.PanelSlideListener {
     private SlidingUpPanelLayout mSlidingPanel;

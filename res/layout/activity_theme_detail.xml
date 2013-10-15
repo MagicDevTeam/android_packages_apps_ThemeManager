@@ -10,7 +10,7 @@
 ** or at https://www.gnu.org/licenses/gpl-2.0.txt
 */
 -->
-<org.chameleonos.support.widget.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.magicmod.support.widget.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
@@ -93,4 +93,4 @@
     </LinearLayout>
 
 
-</org.chameleonos.support.widget.SlidingUpPanelLayout>
+</com.magicmod.support.widget.SlidingUpPanelLayout>

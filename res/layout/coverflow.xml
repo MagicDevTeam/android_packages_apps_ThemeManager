@@ -6,18 +6,18 @@
     android:layout_height="0dp"
     android:layout_weight="1" >
 
-    <org.chameleonos.support.widget.PagerContainer
+    <com.magicmod.support.widget.PagerContainer
         android:id="@+id/previews"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
         android:layout_marginBottom="5dip" >
-        <org.chameleonos.support.view.VelocityViewPager
+        <com.magicmod.support.view.VelocityViewPager
             android:layout_width="@dimen/coverflow_item_width"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal" />
-    </org.chameleonos.support.widget.PagerContainer>
-    <org.chameleonos.support.widget.LinePageIndicator
+    </com.magicmod.support.widget.PagerContainer>
+    <com.magicmod.support.widget.LinePageIndicator
         android:id="@+id/page_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

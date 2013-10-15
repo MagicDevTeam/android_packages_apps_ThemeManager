@@ -28,3 +28,8 @@ proguard/
 *.iws
 .idea/
 
+# extra for keep aosp clean
+libs/
+lint.xml
+proguard-project.txt
+project.properties

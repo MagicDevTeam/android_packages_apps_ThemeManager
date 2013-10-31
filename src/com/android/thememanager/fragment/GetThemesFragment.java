@@ -39,6 +39,7 @@ public class GetThemesFragment extends Fragment {
 
         View v = layoutInflater.inflate(R.layout.fragment_get_themes, viewGroup, false);
 
+        /*
         setHtmlLink((TextView)v.findViewById(R.id.goo), getString(R.string.get_themes_goo_link),
                 getString(R.string.get_themes_goo_title));
         setHtmlLink((TextView)v.findViewById(R.id.chaos_forums), getString(R.string.get_themes_chaos_forums_link),
@@ -49,7 +50,7 @@ public class GetThemesFragment extends Fragment {
                 getString(R.string.get_themes_droidviews_title));
         setHtmlLink((TextView)v.findViewById(R.id.miui_forums), getString(R.string.get_themes_miui_link),
                 getString(R.string.get_themes_miui_title));
-
+*/
         return v;
     }
 

@@ -18,6 +18,15 @@
         >
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_red_light"
+        android:text="@string/coming_soon"
+        android:gravity="center" />
+     <!-- 
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -64,5 +73,6 @@
         android:id="@+id/miui_forums"
         style="@style/ThemeLink"
         android:text="@string/get_themes_miui_title" />
+        -->
 
 </LinearLayout>

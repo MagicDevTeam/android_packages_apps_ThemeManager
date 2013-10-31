@@ -297,7 +297,7 @@ public class ThemeChooserFragment extends Fragment {
                 holder.preview.setImageResource(R.drawable.empty_preview);
 
                 if (mThemesList.get(i).getIsCosTheme())
-                    holder.osTag.setImageResource(R.drawable.chaos);
+                    holder.osTag.setImageResource(R.drawable.mm);
                 else
                     holder.osTag.setImageResource(R.drawable.miui);
             }

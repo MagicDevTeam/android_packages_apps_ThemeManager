@@ -279,7 +279,7 @@ public class ThemeMixerChooserActivity extends Activity {
                     holder.preview.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                 if (mThemeList.get(i).getIsCosTheme())
-                    holder.osTag.setImageResource(R.drawable.chaos);
+                    holder.osTag.setImageResource(R.drawable.mm);
                 else
                     holder.osTag.setImageResource(R.drawable.miui);
             }

@@ -22,7 +22,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@android:color/holo_red_light"
-        android:text="@string/coming_soon"
+        android:text="@string/coming_soon_dl_info"
         android:gravity="center" />
      <!-- 
     <TextView

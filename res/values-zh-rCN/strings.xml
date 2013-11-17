@@ -46,7 +46,8 @@
     <string name="tab_backup_restore">备份还原</string>
 
     <string name="coming_soon">功能建设中！</string>
-
+    <string name="coming_soon_dl_info">下载功能建设中，请手动将下载的miui主题复制到sd卡的MagicMod/theme目录下！！</string>
+    
     <string name="remove_existing_theme">移除当前使用的主题</string>
 
     <string name="mixer_icons_label">图标</string>

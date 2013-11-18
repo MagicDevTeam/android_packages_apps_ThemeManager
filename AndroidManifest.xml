@@ -43,6 +43,8 @@
                 <data android:mimeType="application/x-compressed" />
                 <data android:mimeType="application/x-compress" />
                 <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/miui-mtz"/>
+                <data android:mimeType="application/mm-ctz"/>
             </intent-filter>
         </activity>
 
